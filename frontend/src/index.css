@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'inter-thin';
+    src: url(/public/font/Inter-Thin.ttf);
+  }
+  @font-face {
+    font-family: 'inter-medium';
+    src: url(/public/font/Inter-Medium.ttf);
+  }
+  @font-face {
+    font-family: 'inter-bold';
+    src: url(/public/font/Inter-Bold.ttf);
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
