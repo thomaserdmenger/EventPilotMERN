@@ -1,13 +1,15 @@
 import cloudinary from "cloudinary";
 
-export async function uploadImage(buffer) {
+export async function uploadProfileImage(buffer) {
   const uploadResult = await new Promise((resolve) => {
     cloudinary.v2.uploader
-      // folder ergänzen
-      // evtl auf Größe zuschneiden?
-      .upload_stream((error, result) => {
-        return resolve(result);
-      })
+      .upload_stream(
+        { folder: "EventPilot/profileImages" },
+        (error, uploadResult) => {
+          console.log(error);
+          return resolve(uploadResult);
+        }
+      )
       .end(buffer);
   });
   return uploadResult;
