@@ -1,10 +1,10 @@
 import cloudinary from "cloudinary";
 
-export async function uploadProfileImage(buffer) {
+export async function uploadImage(buffer, cloudinaryPath) {
   const uploadResult = await new Promise((resolve) => {
     cloudinary.v2.uploader
       .upload_stream(
-        { folder: "EventPilot/profileImages" },
+        { folder: `EventPilot/${cloudinaryPath}` },
         (error, uploadResult) => {
           console.log(error);
           return resolve(uploadResult);

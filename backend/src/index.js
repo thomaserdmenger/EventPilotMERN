@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cloudinary from "cloudinary";
+import { eventRouter } from "./events/events.routes.js";
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
+
+app.use("/api/v1/events", eventRouter);
 
 await mongoose.connect(process.env.MONGODB_URI, { dbName: "EventPilot" });
 const PORT = process.env.PORT || 9000;
