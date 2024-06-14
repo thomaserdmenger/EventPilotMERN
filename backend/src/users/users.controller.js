@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { User } from "./users.model.js";
 import { createSixDigitCode } from "../utils/createSixDigitCode.js";
 import { userToView } from "../utils/userToView.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -17,8 +18,6 @@ export const registerUserCtrl = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
     const verificationCode = createSixDigitCode();
 
-    // await sendEmail()
-
     const registerdUser = await User.create({
       firstname,
       lastname,
@@ -26,6 +25,14 @@ export const registerUserCtrl = async (req, res) => {
       email,
       password: passwordHash,
       verificationCode,
+    });
+
+    await sendEmail({
+      to: registerdUser.email,
+      subject: "Welcome to Event Pilot",
+      text: `Hi ${registerdUser.firstname} ${registerdUser.lastname},
+        Welcome to Event Pilot.
+        Please enter your 6 Digit Code to verify your Email-address: ${registerdUser.verificationCode}`,
     });
 
     res.json({ user: userToView(registerdUser) });
