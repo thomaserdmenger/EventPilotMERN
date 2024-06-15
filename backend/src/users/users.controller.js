@@ -3,6 +3,7 @@ import { User } from "./users.model.js";
 import { createSixDigitCode } from "../utils/createSixDigitCode.js";
 import { userToView } from "../utils/userToView.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { createAccessToken } from "../utils/createAccessToken.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -38,7 +39,77 @@ export const registerUserCtrl = async (req, res) => {
     res.json({ user: userToView(registerdUser) });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message || "Could not register user." });
+  }
+};
+
+export const verifyUserEmailCtrl = async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    if (user.isVerified) return res.status(400).json("E-Mail already verified.");
+
+    if (user.verificationCode !== verificationCode)
+      return res.status(500).json("Wrong Verification Code. Try again.");
+
+    const verifiedUser = await User.findOneAndUpdate(
+      { email },
+      { $set: { isVerified: true } },
+      { new: true }
+    );
+
+    res.json({ user: userToView(verifiedUser) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not verify user email." });
+  }
+};
+
+export const loginUserCtrl = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    if (!user.isVerified)
+      return res.status(400).json("Please verify your Email address to login to your account.");
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json("Incorrect password. Please try again.");
+    }
+
+    const accessToken = createAccessToken(user);
+
+    res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
+
+    // # Add Bookmarks and Participants (Registered Events)
+
+    res.json({ user: userToView(user) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not login user." });
+  }
+};
+
+export const showOneUserCtrl = async (req, res) => {
+  try {
+    const user = await User.findById(req.authenticatedUser._id);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    // # Add User Reviews
+
+    res.json({ user: userToView(user) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not show particular user." });
   }
 };
 
@@ -54,5 +125,17 @@ export const patchUserCtrl = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not edit user." });
+  }
+};
+
+export const deleteOneUserCtrl = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.authenticatedUser._id);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    res.json({ user: userToView(user) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not delete particular user." });
   }
 };
