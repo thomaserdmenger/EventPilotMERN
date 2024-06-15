@@ -13,7 +13,7 @@ import {
 const upload = multer({ storage: multer.memoryStorage() });
 
 export const userRouter = Router()
-  .get("/user", doUserAuth, showOneUserCtrl)
+  .get("/user/:userId", doUserAuth, showOneUserCtrl)
   .post("/register", registerUserCtrl)
   .post("/verify-email", verifyUserEmailCtrl)
   .post("/login", loginUserCtrl)

@@ -101,7 +101,9 @@ export const loginUserCtrl = async (req, res) => {
 
 export const showOneUserCtrl = async (req, res) => {
   try {
-    const user = await User.findById(req.authenticatedUser._id);
+    const userId = req.params.userId;
+
+    const user = await User.findById(userId);
     if (!user) return res.status(400).json("User not found. Please register.");
 
     // # Add User Reviews
