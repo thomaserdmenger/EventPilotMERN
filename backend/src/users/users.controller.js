@@ -3,6 +3,7 @@ import { User } from "./users.model.js";
 import { createSixDigitCode } from "../utils/createSixDigitCode.js";
 import { userToView } from "../utils/userToView.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { createAccessToken } from "../utils/createAccessToken.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -65,6 +66,34 @@ export const verifyUserEmailCtrl = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not verify user email." });
+  }
+};
+
+export const loginUserCtrl = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    if (!user.isVerified)
+      return res.status(400).json("Please verify your Email address to login to your account.");
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(400).json("Incorrect password. Please try again.");
+    }
+
+    const accessToken = createAccessToken(user);
+
+    res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
+
+    res.json({ user: userToView(user) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not login user." });
   }
 };
 
