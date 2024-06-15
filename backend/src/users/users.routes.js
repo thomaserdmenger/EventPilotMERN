@@ -13,9 +13,9 @@ import {
 const upload = multer({ storage: multer.memoryStorage() });
 
 export const userRouter = Router()
-  .get("/user/:userId", doUserAuth, showOneUserCtrl)
+  .get("/:userId", doUserAuth, showOneUserCtrl)
   .post("/register", registerUserCtrl)
   .post("/verify-email", verifyUserEmailCtrl)
   .post("/login", loginUserCtrl)
   .patch("/:userId", upload.single("profileImage"), patchUserCtrl)
-  .delete("/user", doUserAuth, deleteOneUserCtrl);
+  .delete("/", doUserAuth, deleteOneUserCtrl);

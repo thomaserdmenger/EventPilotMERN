@@ -135,7 +135,9 @@ export const deleteOneUserCtrl = async (req, res) => {
     const user = await User.findByIdAndDelete(req.authenticatedUser._id);
     if (!user) return res.status(400).json("User not found. Please register.");
 
-    res.json({ user: userToView(user) });
+    res.clearCookie("accessToken");
+
+    res.json({ user: userToView(user), message: "User successfully deleted" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not delete particular user." });
