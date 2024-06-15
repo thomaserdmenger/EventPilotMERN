@@ -38,7 +38,33 @@ export const registerUserCtrl = async (req, res) => {
     res.json({ user: userToView(registerdUser) });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message || "Could not register user." });
+  }
+};
+
+export const verifyUserEmailCtrl = async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    if (user.isVerified) return res.status(400).json("E-Mail already verified.");
+
+    if (user.verificationCode !== verificationCode)
+      return res.status(500).json("Wrong Verification Code. Try again.");
+
+    const verifiedUser = await User.findOneAndUpdate(
+      { email },
+      { $set: { isVerified: true } },
+      { new: true }
+    );
+
+    res.json({ user: userToView(verifiedUser) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not verify user email." });
   }
 };
 
