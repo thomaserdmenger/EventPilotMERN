@@ -90,6 +90,22 @@ export const loginUserCtrl = async (req, res) => {
 
     res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
 
+    // # Add Bookmarks and Participants (Registered Events)
+
+    res.json({ user: userToView(user) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not login user." });
+  }
+};
+
+export const showOneUserCtrl = async (req, res) => {
+  try {
+    const user = await User.findById(req.authenticatedUser._id);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    // # Add User Reviews
+
     res.json({ user: userToView(user) });
   } catch (error) {
     console.log(error);
