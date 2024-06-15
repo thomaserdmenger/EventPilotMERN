@@ -1,7 +1,8 @@
 import { DatePicker } from "@mui/x-date-pickers";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
 
 const AddEventPage = () => {
@@ -20,28 +21,29 @@ const AddEventPage = () => {
   //
 
   return (
-    <main>
-      <h2>add event</h2>
-      <input type="text" placeholder="Title of your event" />
-      <form>
-        <MobileDateTimePicker
-          value={startDate}
-          onChange={(newValue) => setStartDate(newValue)}
-          label="start date and time"
-        />
-        {/*  // --> value.$d = Sat Jun 22 2024 01:00:00 GMT+0200 (Mitteleuropäische Sommerzeit) */}
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <main>
+        <h2>add event</h2>
+        <input type="text" placeholder="Title of your event" />
+        <form>
+          <MobileDateTimePicker
+            value={startDate}
+            onChange={(newValue) => setStartDate(newValue)}
+            label="start date and time"
+          />
+          {/*  // --> value.$d = Sat Jun 22 2024 01:00:00 GMT+0200 (Mitteleuropäische Sommerzeit) */}
 
-        <MobileDateTimePicker
-          value={endDate}
-          onChange={(newValue) => setEndDate(newValue)}
-          label="end date and time"
-        />
-        <input type="text" placeholder="Location" />
-        {/* categories */}
-        <input type="radio" />
-        <input type="text" placeholder="Description of your event" />
-        <input type="file" />
-        {/* 
+          <MobileDateTimePicker
+            value={endDate}
+            onChange={(newValue) => setEndDate(newValue)}
+            label="end date and time"
+          />
+          <input type="text" placeholder="Location" />
+          {/* categories */}
+          <input type="radio" />
+          <input type="text" placeholder="Description of your event" />
+          <input type="file" />
+          {/* 
       userId, --> authenticatedUser
       title,
       dates: {
@@ -52,8 +54,9 @@ const AddEventPage = () => {
       categories,
       description,
       eventImage: uploadResult.secure_url, */}
-      </form>
-    </main>
+        </form>
+      </main>
+    </LocalizationProvider>
   );
 };
 
