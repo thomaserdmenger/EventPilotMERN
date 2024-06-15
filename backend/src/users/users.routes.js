@@ -19,5 +19,5 @@ export const userRouter = Router()
   .post("/verify-email", verifyUserEmailCtrl)
   .post("/login", loginUserCtrl)
   .post("/logout", doUserAuth, logoutUserCtrl)
-  .patch("/:userId", doUserAuth, upload.single("profileImage"), patchUserCtrl)
+  .patch("/", doUserAuth, upload.single("profileImage"), patchUserCtrl)
   .delete("/", doUserAuth, deleteOneUserCtrl);
