@@ -1,34 +1,13 @@
-import { useEffect, useState } from 'react'
-
-const SplashScreen = ({ duration = 600 }) => {
-  const [splash, setSplash] = useState(true)
-  const [toggle, setTogle] = useState(true)
-
-  const active = () => {
-    if (toggle) {
-      setTogle(false)
-    } else {
-      setSplash(false)
-    }
-  }
-  useEffect(() => {
-    const remove = setTimeout(() => {
-      active()
-    }, duration)
-    return () => {
-      clearTimeout(remove)
-    }
-  }, [toggle])
-
+const SplashScreen = () => {
   return (
     <>
-      {splash && (
-        <div className="h-svh">
-          <div>
-            <h1>Splash Screen</h1>
-          </div>
-        </div>
-      )}
+      <div className="h-svh w-full absolute z-50 bg-gradient-to-t from-blue-2 to-purple-3 flex items-center justify-center">
+        <img
+          className="animate-bounce"
+          src="../../public/svg/splashLoginLogo.svg"
+          alt="Logo"
+        />
+      </div>
     </>
   )
 }
