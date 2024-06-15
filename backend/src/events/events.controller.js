@@ -25,13 +25,15 @@ export const getUpcomingEventsCtrl = async (_, res) => {
 
 export const postAddEventCtrl = async (req, res) => {
   try {
+    const authenticatedUserId = req.authenticatedUser._id;
     const { userId, title, dates, location, categories, description } =
       req.body;
     // console.log(typeof dates);
     const eventImage = req.file;
+    // // Dates umwandeln in Timestamps für spätere Verarbeitung? .getTime()
+    //   const startDate = new Date(startDate.$d).getTime(); // timestamp
 
     if (
-      !userId ||
       !title ||
       !dates ||
       !location ||
@@ -48,14 +50,20 @@ export const postAddEventCtrl = async (req, res) => {
     // Daten sollen in der Zukunft liegen (> als Date now() sein)
     // Titel, Description sollen eine gewisse Länge nicht über- und unterschreiten
 
-    const user = await User.findById(userId);
-    if (!user)
-      return res.status(404).json({ message: "This user does not exist." });
+    if (!authenticatedUserId)
+      return res.status(400).json({
+        message: "You are not authorized.",
+      });
+
+    // const authenticatedUser = await User.findById(authenticatedUserId);
+    // if (!authenticatedUser)
+    //   return res.status(404).json({ message: "This user does not exist." });
 
     // upload the event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
 
     const result = await Event.create({
+      // userId: authenticatedUserId,
       userId,
       title,
       // dates: {
