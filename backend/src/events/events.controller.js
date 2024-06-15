@@ -2,10 +2,19 @@ import { User } from "../users/users.model.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
 
-export const getUpcomingEventsCtrl = async (req, res) => {
+export const getUpcomingEventsCtrl = async (_, res) => {
   try {
     // alle Events aus der Zukunft
-    // sortiert nach Datum, nächste zuerst
+    // sortiert nach Datum, früheste zuerst
+    const result = await Event.find({
+      date: {
+        start: {
+          $gte: Date.now(), // --> is timestamp - works?!
+        },
+      },
+    }).sort({ dates: { start: -1 } });
+    //-> funktioniert das Reinnavigieren zum Startdatum so?
+    res.json({ result });
   } catch (error) {
     console.log(error);
     res
@@ -18,7 +27,9 @@ export const postAddEventCtrl = async (req, res) => {
   try {
     const { userId, title, dates, location, categories, description } =
       req.body;
+    // console.log(typeof dates);
     const eventImage = req.file;
+
     if (
       !userId ||
       !title ||
@@ -34,9 +45,8 @@ export const postAddEventCtrl = async (req, res) => {
       });
 
     // -> Weitere Fehlerabfragen:
-    // Daten sollen in der Zukunft liegen
-    // Titel, Description sollen eine gewisse Länge haben
-    // Categories soll mind eine ausgewählt sein
+    // Daten sollen in der Zukunft liegen (> als Date now() sein)
+    // Titel, Description sollen eine gewisse Länge nicht über- und unterschreiten
 
     const user = await User.findById(userId);
     if (!user)
@@ -48,10 +58,11 @@ export const postAddEventCtrl = async (req, res) => {
     const result = await Event.create({
       userId,
       title,
-      dates: {
-        start: dates.start,
-        end: dates.end,
-      },
+      // dates: {
+      //   start: dates.start,
+      //   end: dates.end,
+      // },  //# weil in Thunderclient als ein string weitergegeben wird - wie läuft es übers Frontend mit Icaros UI?
+      dates,
       location,
       categories,
       description,
