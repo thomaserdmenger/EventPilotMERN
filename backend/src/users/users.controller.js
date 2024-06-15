@@ -99,6 +99,16 @@ export const loginUserCtrl = async (req, res) => {
   }
 };
 
+export const logoutUserCtrl = async (req, res) => {
+  try {
+    res.clearCookie("accessToken");
+    res.json({ message: "Logout successful!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not logout user." });
+  }
+};
+
 export const showOneUserCtrl = async (req, res) => {
   try {
     const userId = req.params.userId;

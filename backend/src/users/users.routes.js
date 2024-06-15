@@ -4,6 +4,7 @@ import { doUserAuth } from "../middleware/doUserAuth.js";
 import {
   deleteOneUserCtrl,
   loginUserCtrl,
+  logoutUserCtrl,
   patchUserCtrl,
   registerUserCtrl,
   showOneUserCtrl,
@@ -17,5 +18,6 @@ export const userRouter = Router()
   .post("/register", registerUserCtrl)
   .post("/verify-email", verifyUserEmailCtrl)
   .post("/login", loginUserCtrl)
-  .patch("/:userId", upload.single("profileImage"), patchUserCtrl)
+  .post("/logout", doUserAuth, logoutUserCtrl)
+  .patch("/:userId", doUserAuth, upload.single("profileImage"), patchUserCtrl)
   .delete("/", doUserAuth, deleteOneUserCtrl);
