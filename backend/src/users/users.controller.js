@@ -109,7 +109,7 @@ export const showOneUserCtrl = async (req, res) => {
     res.json({ user: userToView(user) });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.message || "Could not login user." });
+    res.status(500).json({ message: error.message || "Could not show particular user." });
   }
 };
 
@@ -125,5 +125,17 @@ export const patchUserCtrl = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not edit user." });
+  }
+};
+
+export const deleteOneUserCtrl = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.authenticatedUser._id);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    res.json({ user: userToView(user) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not delete particular user." });
   }
 };

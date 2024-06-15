@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import { doUserAuth } from "../middleware/doUserAuth.js";
 import {
+  deleteOneUserCtrl,
   loginUserCtrl,
   patchUserCtrl,
   registerUserCtrl,
@@ -16,4 +17,5 @@ export const userRouter = Router()
   .post("/register", registerUserCtrl)
   .post("/verify-email", verifyUserEmailCtrl)
   .post("/login", loginUserCtrl)
-  .patch("/:userId", upload.single("profileImage"), patchUserCtrl);
+  .patch("/:userId", upload.single("profileImage"), patchUserCtrl)
+  .delete("/user", doUserAuth, deleteOneUserCtrl);
