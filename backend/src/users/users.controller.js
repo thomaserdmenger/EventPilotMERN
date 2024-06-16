@@ -45,6 +45,29 @@ export const registerUserCtrl = async (req, res) => {
   }
 };
 
+export const resentEmailCtrl = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json("User not found. Please register.");
+    if (user.isVerified) return res.status(400).json("User is already verified.");
+
+    await sendEmail({
+      to: user.email,
+      subject: "Welcome to Event Pilot",
+      text: `Hi ${user.firstname} ${user.lastname},
+        Welcome to Event Pilot.
+        Please enter your 6 Digit Code to verify your Email-address: ${user.verificationCode}`,
+    });
+
+    res.json({ message: "Email successfully resent" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not resend validation code." });
+  }
+};
+
 export const verifyUserEmailCtrl = async (req, res) => {
   try {
     const { email, verificationCode } = req.body;
