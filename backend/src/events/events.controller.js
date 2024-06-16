@@ -88,7 +88,7 @@ export const postAddEventCtrl = async (req, res) => {
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
       location,
-      categories,
+      categories: categories.split(","),
       description,
       eventImage: uploadResult.secure_url,
     });

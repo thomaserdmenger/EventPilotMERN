@@ -7,15 +7,14 @@ import { categories } from "../constants/categories.js";
 
 const AddEventPage = () => {
   const [errorMessage, setErrorMessage] = useState();
-  const [categoriesArray, setCategoriesArray] = useState(["Sports"]);
-  console.log(categoriesArray);
+  const [categoriesArray, setCategoriesArray] = useState([]);
 
-  // beim Klick prüfen, ob Kategorie schon im array ist
+  // check if clicked category is already part of array -> return boolean
   const checkCategoriesArray = (category) => {
     return categoriesArray.some((item) => category === item);
   };
-  console.log(checkCategoriesArray("Sports"));
 
+  // depending on checked click: either add or delete category from array -> return updated array
   const handleCatArray = (category) => {
     const isClicked = checkCategoriesArray(category);
     if (isClicked) {
@@ -28,11 +27,14 @@ const AddEventPage = () => {
     }
   };
 
+  // add event fetch
   const addEvent = async (e) => {
     e.preventDefault();
 
     const form = e.target;
     const formData = new FormData(form);
+    formData.append("categories", categoriesArray);
+
     const res = await fetch(`${backendUrl}/api/v1/events`, {
       method: "POST",
       credentials: "include",
@@ -40,9 +42,11 @@ const AddEventPage = () => {
     });
 
     const data = await res.json();
+
     if (!data.result) return setErrorMessage(data.message);
     setErrorMessage("");
   };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <main>
@@ -55,9 +59,6 @@ const AddEventPage = () => {
           <MobileDateTimePicker label="end date and time" name="endDate" />
           <input type="text" placeholder="Location" name="location" />
 
-          {/* //# Wie Kategorien Values bekommen? */}
-          {/* mit formData.append? */}
-          {/* data.append ("name", "Martina Schmitz"); */}
           <h3>Categories</h3>
           {categories?.map((singleCategory) => (
             <p
@@ -71,11 +72,6 @@ const AddEventPage = () => {
               {singleCategory}
             </p>
           ))}
-          <input
-            type="text"
-            placeholder="categories placeholder"
-            name="categories"
-          />
 
           <textarea
             type="text"
