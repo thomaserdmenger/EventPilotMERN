@@ -25,17 +25,26 @@ export const getUpcomingEventsCtrl = async (_, res) => {
 
 export const postAddEventCtrl = async (req, res) => {
   try {
-    const authenticatedUserId = req.authenticatedUser._id;
-    const { userId, title, dates, location, categories, description } =
-      req.body;
-    // console.log(typeof dates);
+    // const authenticatedUserId = req.authenticatedUser._id;
+    const {
+      userId,
+      title,
+      startDate,
+      endDate,
+      location,
+      categories,
+      description,
+    } = req.body;
     const eventImage = req.file;
-    // // Dates umwandeln in Timestamps für spätere Verarbeitung? .getTime()
-    //   const startDate = new Date(startDate.$d).getTime(); // timestamp
 
+    const startDateTimestamp = new Date(startDate).getTime();
+    const endDateTimestamp = new Date(endDate).getTime();
+
+    // Error Handling
     if (
       !title ||
-      !dates ||
+      !startDate ||
+      !endDate ||
       !location ||
       !categories ||
       !description ||
@@ -46,31 +55,38 @@ export const postAddEventCtrl = async (req, res) => {
         message: "Please fill in all input fields and add an image.",
       });
 
+    if (startDateTimestamp > endDateTimestamp)
+      return res.status(422).json({
+        message: "Enddate must be later than startdate.",
+      });
+
+    if (startDateTimestamp < Date.now())
+      return res.status(422).json({
+        message: "Startdate must be in the future.",
+      });
+
     // -> Weitere Fehlerabfragen:
-    // Daten sollen in der Zukunft liegen (> als Date now() sein)
     // Titel, Description sollen eine gewisse Länge nicht über- und unterschreiten
 
-    if (!authenticatedUserId)
-      return res.status(400).json({
-        message: "You are not authorized.",
-      });
+    // if (!authenticatedUserId)
+    //   return res.status(400).json({
+    //     message: "You are not authorized.",
+    //   });
 
     // const authenticatedUser = await User.findById(authenticatedUserId);
     // if (!authenticatedUser)
     //   return res.status(404).json({ message: "This user does not exist." });
 
-    // upload the event-image to cloudinary-folder EventPilot/eventImages
+    // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
 
+    // finally create new Event ...
     const result = await Event.create({
       // userId: authenticatedUserId,
       userId,
       title,
-      // dates: {
-      //   start: dates.start,
-      //   end: dates.end,
-      // },  //# weil in Thunderclient als ein string weitergegeben wird - wie läuft es übers Frontend mit Icaros UI?
-      dates,
+      startDate: startDateTimestamp,
+      endDate: endDateTimestamp,
       location,
       categories,
       description,
