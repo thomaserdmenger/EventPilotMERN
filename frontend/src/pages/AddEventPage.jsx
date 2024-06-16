@@ -3,9 +3,31 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
 import { backendUrl } from "../api/api";
+import { categories } from "../constants/categories.js";
 
 const AddEventPage = () => {
   const [errorMessage, setErrorMessage] = useState();
+  const [categoriesArray, setCategoriesArray] = useState(["Sports"]);
+  console.log(categoriesArray);
+
+  // beim Klick prüfen, ob Kategorie schon im array ist
+  const checkCategoriesArray = (category) => {
+    return categoriesArray.some((item) => category === item);
+  };
+  console.log(checkCategoriesArray("Sports"));
+
+  const handleCatArray = (category) => {
+    const isClicked = checkCategoriesArray(category);
+    if (isClicked) {
+      // wenn true: filtern und state neu setzen
+      const filteredArray = categoriesArray.filter((item) => item !== category);
+      return setCategoriesArray(filteredArray);
+    } else if (!isClicked) {
+      // wenn false: spread und speichern
+      return setCategoriesArray([...categoriesArray, category]);
+    }
+  };
+
   const addEvent = async (e) => {
     e.preventDefault();
 
@@ -18,7 +40,7 @@ const AddEventPage = () => {
     });
 
     const data = await res.json();
-    console.log(data);
+    if (!data.result) return setErrorMessage(data.message);
     setErrorMessage("");
   };
   return (
@@ -30,13 +52,25 @@ const AddEventPage = () => {
           <input type="text" placeholder="UserId" name="userId" />
           <input type="text" placeholder="Title of your event" name="title" />
           <MobileDateTimePicker label="start date and time" name="startDate" />
-          {/*  // --> value.$d = Sat Jun 22 2024 01:00:00 GMT+0200 (Mitteleuropäische Sommerzeit) */}
           <MobileDateTimePicker label="end date and time" name="endDate" />
           <input type="text" placeholder="Location" name="location" />
 
           {/* //# Wie Kategorien Values bekommen? */}
-          {/* hier dann über json-Datei mit allen Kategorien mappen für die Anzeige */}
+          {/* mit formData.append? */}
+          {/* data.append ("name", "Martina Schmitz"); */}
           <h3>Categories</h3>
+          {categories?.map((singleCategory) => (
+            <p
+              onClick={() => handleCatArray(singleCategory)}
+              className={
+                checkCategoriesArray(singleCategory) ? "text-blue-500" : ""
+              }
+              key={singleCategory}
+              name={singleCategory}
+            >
+              {singleCategory}
+            </p>
+          ))}
           <input
             type="text"
             placeholder="categories placeholder"
