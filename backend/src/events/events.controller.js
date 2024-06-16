@@ -4,16 +4,11 @@ import { Event } from "./events.model.js";
 
 export const getUpcomingEventsCtrl = async (_, res) => {
   try {
-    // alle Events aus der Zukunft
-    // sortiert nach Datum, früheste zuerst
     const result = await Event.find({
-      date: {
-        start: {
-          $gte: Date.now(), // --> is timestamp - works?!
-        },
+      startDate: {
+        $gte: Date.now(),
       },
-    }).sort({ dates: { start: -1 } });
-    //-> funktioniert das Reinnavigieren zum Startdatum so?
+    }).sort({ startDate: 1 });
     res.json({ result });
   } catch (error) {
     console.log(error);
@@ -25,6 +20,7 @@ export const getUpcomingEventsCtrl = async (_, res) => {
 
 export const postAddEventCtrl = async (req, res) => {
   try {
+    // # statt userId auf authenticatedUserId umstellen, sobald Icaro das im Frontend implementiert hat
     // const authenticatedUserId = req.authenticatedUser._id;
     const {
       userId,
@@ -64,9 +60,14 @@ export const postAddEventCtrl = async (req, res) => {
       return res.status(422).json({
         message: "Startdate must be in the future.",
       });
-
-    // -> Weitere Fehlerabfragen:
-    // Titel, Description sollen eine gewisse Länge nicht über- und unterschreiten
+    if (title < 5 || title > 20)
+      return res.status(422).json({
+        message: "Title must be between 5 and 20 characters.",
+      });
+    if (description < 20 || description > 500)
+      return res.status(422).json({
+        message: "Description must be between 20 and 500 characters.",
+      });
 
     // if (!authenticatedUserId)
     //   return res.status(400).json({
