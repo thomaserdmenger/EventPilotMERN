@@ -7,6 +7,7 @@ import "dotenv/config";
 import cloudinary from "cloudinary";
 import { userRouter } from "./users/users.routes.js";
 import { eventRouter } from "./events/events.routes.js";
+import { bookmarkRouter } from "./bookmarks/bookmarks.routes.js";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(morgan("dev"));
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/events", eventRouter);
+app.use("/api/v1/bookmarks", bookmarkRouter);
 
 await mongoose.connect(process.env.MONGODB_URI, { dbName: "EventPilot" });
 const PORT = process.env.PORT || 9000;

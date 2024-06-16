@@ -4,6 +4,8 @@ import { createSixDigitCode } from "../utils/createSixDigitCode.js";
 import { userToView } from "../utils/userToView.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { createAccessToken } from "../utils/createAccessToken.js";
+import { trusted } from "mongoose";
+import { Bookmark } from "../bookmarks/bookmarks.model.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -90,18 +92,32 @@ export const loginUserCtrl = async (req, res) => {
 
     res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
 
-    // # Add Bookmarks and Participants (Registered Events)
+    const bookmarks = await Bookmark.find({ userId: user._id });
 
-    res.json({ user: userToView(user) });
+    // # Add Participants (Registered Events)
+
+    res.json({ user: userToView(user), bookmarks });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not login user." });
   }
 };
 
+export const logoutUserCtrl = async (req, res) => {
+  try {
+    res.clearCookie("accessToken");
+    res.json({ message: "Logout successful!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not logout user." });
+  }
+};
+
 export const showOneUserCtrl = async (req, res) => {
   try {
-    const user = await User.findById(req.authenticatedUser._id);
+    const userId = req.params.userId;
+
+    const user = await User.findById(userId);
     if (!user) return res.status(400).json("User not found. Please register.");
 
     // # Add User Reviews
@@ -117,11 +133,31 @@ export const patchUserCtrl = async (req, res) => {
   try {
     // req.body => zu ändernde Daten
 
+    const { firstname, lastname, username, bio, interests } = req.body;
+    console.log(req.body);
+
+    const user = await User.findById(req.authenticatedUser._id);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
     const image = req.file;
     // hier Aufruf von uploadImage(image.buffer) in Abhängigkeit davon, ob ein image existiert
     const uploadResult = image ? await uploadProfileImage(image.buffer) : undefined;
     // hier alle weiteren Funktionen, um den User zu speichern
     // und uploadResult.secure_url als imageProfile im user speichern
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.authenticatedUser._id,
+      {
+        firstname,
+        lastname,
+        username,
+        bio,
+        interests,
+      },
+      { new: true }
+    );
+
+    res.json({ user: userToView(updatedUser) });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not edit user." });
@@ -133,7 +169,9 @@ export const deleteOneUserCtrl = async (req, res) => {
     const user = await User.findByIdAndDelete(req.authenticatedUser._id);
     if (!user) return res.status(400).json("User not found. Please register.");
 
-    res.json({ user: userToView(user) });
+    res.clearCookie("accessToken");
+
+    res.json({ user: userToView(user), message: "User successfully deleted" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not delete particular user." });
