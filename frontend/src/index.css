@@ -4,16 +4,16 @@
 
 @layer base {
   @font-face {
-    font-family: 'inter-thin';
-    src: url(/public/font/Inter-Thin.ttf);
+    font-family: 'roboto-thin';
+    src: url(/public/font/Roboto-Thin.ttf);
   }
   @font-face {
-    font-family: 'inter-medium';
-    src: url(/public/font/Inter-Medium.ttf);
+    font-family: 'roboto-medium';
+    src: url(/public/font/Roboto-Medium.ttf);
   }
   @font-face {
-    font-family: 'inter-bold';
-    src: url(/public/font/Inter-Bold.ttf);
+    font-family: 'roboto-bold';
+    src: url(/public/font/Roboto-Bold.ttf);
   }
 }
 
