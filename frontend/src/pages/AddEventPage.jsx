@@ -57,6 +57,8 @@ const AddEventPage = () => {
           <input type="text" placeholder="Title of your event" name="title" />
           <MobileDateTimePicker label="start date and time" name="startDate" />
           <MobileDateTimePicker label="end date and time" name="endDate" />
+
+          {/* //# Location mit externer API vorschlagen? */}
           <input type="text" placeholder="Location" name="location" />
 
           <h3>Categories</h3>
