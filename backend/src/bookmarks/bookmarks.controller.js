@@ -2,6 +2,21 @@ import { Event } from "../events/events.model.js";
 import { User } from "../users/users.model.js";
 import { Bookmark } from "./bookmarks.model.js";
 
+export const getUserBookmarksCtrl = async (req, res) => {
+  try {
+    const userId = req.authenticatedUser._id;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    const bookmarks = await Bookmark.find({ userId });
+    res.json({ userId, bookmarks });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not get bookmarks." });
+  }
+};
+
 export const postBookmarkCtrl = async (req, res) => {
   try {
     const userId = req.authenticatedUser._id;
