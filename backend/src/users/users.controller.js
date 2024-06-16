@@ -5,6 +5,7 @@ import { userToView } from "../utils/userToView.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { createAccessToken } from "../utils/createAccessToken.js";
 import { trusted } from "mongoose";
+import { Bookmark } from "../bookmarks/bookmarks.model.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -91,9 +92,11 @@ export const loginUserCtrl = async (req, res) => {
 
     res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
 
-    // # Add Bookmarks and Participants (Registered Events)
+    const bookmarks = await Bookmark.find({ userId: user._id });
 
-    res.json({ user: userToView(user) });
+    // # Add Participants (Registered Events)
+
+    res.json({ user: userToView(user), bookmarks });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not login user." });
