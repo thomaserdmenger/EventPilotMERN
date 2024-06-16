@@ -1,4 +1,3 @@
-import { User } from "../users/users.model.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
 
@@ -99,5 +98,21 @@ export const postAddEventCtrl = async (req, res) => {
     res
       .status(500)
       .json({ message: error.message || "Could not post new event." });
+  }
+};
+
+export const getSingleEventCtrl = async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+
+    const result = await Event.findById(eventId);
+    // # participants populaten
+    // # bookmarks auch?
+    res.json({ result });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not find this event." });
   }
 };
