@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { doUserAuth } from "../middleware/doUserAuth.js";
-import { postFollowUserCtrl } from "./followers.controller.js";
+import { deleteUnfollowUserCtrl, postFollowUserCtrl } from "./followers.controller.js";
 
-export const followerRouter = Router().post("/", doUserAuth, postFollowUserCtrl);
+export const followerRouter = Router()
+  .post("/", doUserAuth, postFollowUserCtrl)
+  .delete("/", doUserAuth, deleteUnfollowUserCtrl);
