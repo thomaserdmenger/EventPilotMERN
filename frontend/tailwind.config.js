@@ -17,9 +17,9 @@ export default {
         'yellow-1': '#FFB21C',
       },
       fontFamily: {
-        'inter-thin': ['inter-thin', 'sans-serif'],
-        'inter-medium': ['inter-medium', 'sans-serif'],
-        'inter-bold': ['inter-bold', 'sans-serif'],
+        'roboto-thin': ['roboto-thin', 'sans-serif'],
+        'roboto-medium': ['roboto-medium', 'sans-serif'],
+        'roboto-bold': ['roboto-bold', 'sans-serif'],
       },
     },
   },
