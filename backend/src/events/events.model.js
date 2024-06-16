@@ -4,11 +4,8 @@ const eventSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true },
-    // dates: {
-    //   start: { type: String, required: true },
-    //   end: { type: String, required: true },
-    // },
-    dates: { type: String, required: true }, //# weil in Thunderclient als ein string weitergegeben wird - wie läuft es übers Frontend  mit Icaros UI?
+    startDate: { type: Number, required: true }, // as timestamp
+    endDate: { type: Number, required: true }, // as timestamp
     location: { type: String, required: true },
     categories: [{ type: String, required: true }],
     description: { type: String, required: true },

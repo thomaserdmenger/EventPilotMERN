@@ -1,59 +1,56 @@
-import { DatePicker } from "@mui/x-date-pickers";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
+import { backendUrl } from "../api/api";
 
 const AddEventPage = () => {
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [errorMessage, setErrorMessage] = useState();
+  const addEvent = async (e) => {
+    e.preventDefault();
 
-  //   console.log(startDate.$d);
-  //   console.log(endDate.$d);
-  //   const start = new Date(startDate.$d).getTime(); // timestamp
-  //   console.log(start);
+    const form = e.target;
+    const formData = new FormData(form);
+    const res = await fetch(`${backendUrl}/api/v1/events`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
 
-  // Funktion, um Event zu adden
-  // Felder prüfen: Start-Date kleiner als End-Date
-  // Dates umwandeln in Timestamps für spätere Verarbeitung? .getTime()
-  // Textinhalte auf Länge prüfen
-  //
-
+    const data = await res.json();
+    console.log(data);
+    setErrorMessage("");
+  };
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <main>
         <h2>add event</h2>
-        <input type="text" placeholder="Title of your event" />
-        <form>
-          <MobileDateTimePicker
-            value={startDate}
-            onChange={(newValue) => setStartDate(newValue)}
-            label="start date and time"
-          />
+        <form className="flex flex-col" onSubmit={addEvent}>
+          {/* userId löschen, wenn auth steht: */}
+          <input type="text" placeholder="UserId" name="userId" />
+          <input type="text" placeholder="Title of your event" name="title" />
+          <MobileDateTimePicker label="start date and time" name="startDate" />
           {/*  // --> value.$d = Sat Jun 22 2024 01:00:00 GMT+0200 (Mitteleuropäische Sommerzeit) */}
+          <MobileDateTimePicker label="end date and time" name="endDate" />
+          <input type="text" placeholder="Location" name="location" />
 
-          <MobileDateTimePicker
-            value={endDate}
-            onChange={(newValue) => setEndDate(newValue)}
-            label="end date and time"
+          {/* //# Wie Kategorien Values bekommen? */}
+          {/* hier dann über json-Datei mit allen Kategorien mappen für die Anzeige */}
+          <h3>Categories</h3>
+          <input
+            type="text"
+            placeholder="categories placeholder"
+            name="categories"
           />
-          <input type="text" placeholder="Location" />
-          {/* categories */}
-          <input type="radio" />
-          <input type="text" placeholder="Description of your event" />
-          <input type="file" />
-          {/* 
-      userId, --> authenticatedUser
-      title,
-      dates: {
-            start: dates.start,
-            end: dates.end,
-         },
-      location,
-      categories,
-      description,
-      eventImage: uploadResult.secure_url, */}
+
+          <textarea
+            type="text"
+            placeholder="Description of your event"
+            name="description"
+          />
+          <input type="file" name="eventImage" />
+          <button type="submit">Add your event</button>
+          {errorMessage ? <p className=" text-red-800">{errorMessage}</p> : ""}
         </form>
       </main>
     </LocalizationProvider>
