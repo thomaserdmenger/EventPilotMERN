@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const followerSchema = new mongoose.Schema(
   {
-    isFollowingId: {
+    userId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    isFollowedId: {
+    followedUserId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
