@@ -7,12 +7,6 @@ import { backendUrl } from "../api/api";
 import { categories } from "../constants/categories.js";
 
 const EventForm = ({ eventToEdit }) => {
-  // * Idee
-  // on EditEventPage: fetch event with the params-id
-  // give infos via props to EventForm => eventToEdit
-  // fill inputs in eventForm with fetched infos
-  // if there is no eventToEdit => addEvent Funktionen
-
   const [errorMessage, setErrorMessage] = useState();
 
   // states and useEffect to fill input fields if it's an edit event form:
@@ -20,6 +14,7 @@ const EventForm = ({ eventToEdit }) => {
   const [location, setLocation] = useState("");
   const [categoriesArray, setCategoriesArray] = useState([]);
   const [description, setDescription] = useState("");
+  //   const [eventImage, setEventImage] = useState("");
 
   useEffect(() => {
     if (eventToEdit) {
@@ -58,13 +53,14 @@ const EventForm = ({ eventToEdit }) => {
     const form = e.target;
     const formData = new FormData(form);
     formData.append("categories", categoriesArray);
+
     // for (const value of formData.entries()) {
     //   console.log(value);
     // } //# Daten kommen in formData an, werden dort gespeichert, aber req.body erreicht das backend nicht - warum?
 
     const res = await fetch(`${backendUrl}/api/v1/events/${eventToEdit._id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "multipart/form-data" },
+      //   headers: { "Content-Type": "multipart/form-data" },
       credentials: "include",
       body: formData,
     });
@@ -137,7 +133,11 @@ const EventForm = ({ eventToEdit }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <input type="file" name="eventImage" />
+          <input
+            type="file"
+            name="eventImage"
+            // onChange={(e) => setEventImage(e.target.files[0])}
+          />
           <button type="submit">
             {eventToEdit ? "Edit your event" : "Add your event"}
           </button>
