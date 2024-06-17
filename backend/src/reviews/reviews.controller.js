@@ -28,3 +28,28 @@ export const postAddReviewCtrl = async (req, res) => {
     res.status(500).json({ message: error.message || "Cannot review user." });
   }
 };
+
+export const deleteReviewCtrl = async (req, res) => {
+  try {
+    const userId = req.authenticatedUser._id;
+    const { reviewedUserId } = req.body;
+
+    console.log({ userId, reviewedUserId });
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    const reviewedUser = await User.findById(reviewedUserId);
+    if (!reviewedUser) return res.status(400).json("Could not review user. User does not exist.");
+
+    const review = await Review.findOne({ reviewedUserId, "reviews.userId": userId });
+    if (!review) return res.status(400).json("Cannot delete review. Review does not exist.");
+
+    await Review.deleteOne({ reviewedUserId, "reviews.userId": userId });
+
+    res.json({ message: "Review successfully deleted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Cannot delete review." });
+  }
+};
