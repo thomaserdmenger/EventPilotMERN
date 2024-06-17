@@ -29,6 +29,41 @@ export const postAddReviewCtrl = async (req, res) => {
   }
 };
 
+export const patchUpdateReviewCtrl = async (req, res) => {
+  try {
+    const userId = req.authenticatedUser._id;
+    const { reviewedUserId, stars, text } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(400).json("User not found. Please register.");
+
+    const reviewedUser = await User.findById(reviewedUserId);
+    if (!reviewedUser) return res.status(400).json("Could not review user. User does not exist.");
+
+    if (userId === reviewedUserId) return res.status(400).json("You could not review yourself");
+
+    if (text?.length > 140)
+      return res.status(400).json("The review text may contain a maximum of 140 characters.");
+
+    const updatedReview = await Review.findOneAndUpdate(
+      { reviewedUserId, "reviews.userId": userId },
+      {
+        reviewedUserId,
+        reviews: { userId, stars, text },
+      },
+      { new: true }
+    );
+
+    res.json({
+      reviewedUserId,
+      reviews: { userId, stars: updatedReview.reviews.stars, text: updatedReview.reviews.text },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Cannot update review." });
+  }
+};
+
 export const deleteReviewCtrl = async (req, res) => {
   try {
     const userId = req.authenticatedUser._id;
