@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     verificationCode: { type: String },
     isVerified: { type: Boolean, default: false, required: true },
-    profileImg: { type: String }, // default: Profil-Bild ergänzen
+    profileImage: { public_id: { type: String }, secure_url: { type: String } }, // default: Profil-Bild ergänzen
     bio: { type: String, default: "Hi, I'm using EventPilot." },
     interests: [{ type: String }],
   },

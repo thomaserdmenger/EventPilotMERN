@@ -220,6 +220,7 @@ export const patchEditEventCtrl = async (req, res) => {
     if (!authenticatedUser)
       return res.status(404).json({ message: "This user does not exist." });
 
+    // update event
     const updateInfo = {
       title: title,
       startDate: startDateTimestamp,
