@@ -3,20 +3,13 @@ import { Participant } from "../eventRegistration/eventRegistration.model.js";
 import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
+import { User } from "../users/users.model.js";
 
 export const postAddEventCtrl = async (req, res) => {
   try {
-    // # statt userId auf authenticatedUserId umstellen, sobald Icaro das im Frontend implementiert hat
-    // const authenticatedUserId = req.authenticatedUser._id;
-    const {
-      userId,
-      title,
-      startDate,
-      endDate,
-      location,
-      categories,
-      description,
-    } = req.body;
+    const authenticatedUserId = req.authenticatedUser._id;
+    const { title, startDate, endDate, location, categories, description } =
+      req.body;
     const eventImage = req.file;
 
     const startDateTimestamp = new Date(startDate).getTime();
@@ -55,14 +48,14 @@ export const postAddEventCtrl = async (req, res) => {
         message: "Description must be between 20 and 500 characters.",
       });
 
-    // if (!authenticatedUserId)
-    //   return res.status(400).json({
-    //     message: "You are not authorized.",
-    //   });
+    if (!authenticatedUserId)
+      return res.status(400).json({
+        message: "You are not authorized.",
+      });
 
-    // const authenticatedUser = await User.findById(authenticatedUserId);
-    // if (!authenticatedUser)
-    //   return res.status(404).json({ message: "This user does not exist." });
+    const authenticatedUser = await User.findById(authenticatedUserId);
+    if (!authenticatedUser)
+      return res.status(404).json({ message: "This user does not exist." });
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
@@ -70,7 +63,7 @@ export const postAddEventCtrl = async (req, res) => {
     // finally create new Event ...
     const newEvent = await Event.create({
       // userId: authenticatedUserId,
-      userId,
+      userId: authenticatedUserId,
       title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
@@ -203,8 +196,15 @@ export const patchEditEventCtrl = async (req, res) => {
     console.log(startDateTimestamp);
 
     // #Error Handling noch einfügen
-    // authUser exists
     // für die einzelnen Update-Inputs gelten die gleichen Regeln wie für addEvent-Inputs
+    const authenticatedUserId = req.authenticatedUser._id;
+    if (!authenticatedUserId)
+      return res.status(400).json({
+        message: "You are not authorized.",
+      });
+    const authenticatedUser = await User.findById(authenticatedUserId);
+    if (!authenticatedUser)
+      return res.status(404).json({ message: "This user does not exist." });
 
     const updateInfo = {
       title: req.body.title,

@@ -13,7 +13,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 export const eventRouter = Router()
   .get("/upcoming", getUpcomingEventsCtrl)
   .get("/trending")
-  .post("/", upload.single("eventImage"), postAddEventCtrl) // doJwtAuth ergänzen
+  .post("/", doUserAuth, upload.single("eventImage"), postAddEventCtrl)
   .get("/:eventId", getSingleEventCtrl)
-  .patch("/:eventId", upload.single("eventImage"), patchEditEventCtrl) // doJwtAuth ergänzen
+  .patch(
+    "/:eventId",
+    doUserAuth,
+    upload.single("eventImage"),
+    patchEditEventCtrl
+  ) // doJwtAuth ergänzen
   .delete("/:eventId", deleteEventCtrl); // doJwtAuth ergänzen
