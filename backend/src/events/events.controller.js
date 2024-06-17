@@ -174,56 +174,53 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.json({
         message: `Could not find event with the id ${eventId}`,
       });
-    console.log(req); //# hier kommt kein body mehr an - why?
-    console.log(req.file);
-    console.log(req.body);
-    if (req.body)
-      return res.json({
-        message: `Could not find body for the event with the id ${eventId}`,
-      });
+    console.log({ bodyCtrl: req.body });
+    console.log({ fileCtrl: req.file });
 
-    //if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    // else: take the old event-image infos and save them anew
     const eventImage = req.file ? req.file : null;
+    let public_id;
+    let secure_url;
     if (eventImage) {
       deleteImage(eventToEdit.eventImage.public_id);
       const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-      return uploadResult;
+      console.log({ uploadImageResultCtrl: uploadResult });
+      public_id = uploadResult.public_id;
+      secure_url = uploadResult.secure_url;
+    } else {
+      public_id = eventToEdit.eventImage.public_id;
+      secure_url = eventToEdit.eventImage.public_id;
     }
 
+    // convert timestamps
     const startDateTimestamp = req.body.startDate
-      ? new Date(startDate).getTime()
+      ? new Date(req.body.startDate).getTime()
       : eventToEdit.startDate;
     const endDateTimestamp = req.body.endDate
-      ? new Date(endDate).getTime()
+      ? new Date(req.body.endDate).getTime()
       : eventToEdit.endDate;
+    console.log(startDateTimestamp);
 
     // #Error Handling noch einfügen
     // authUser exists
     // für die einzelnen Update-Inputs gelten die gleichen Regeln wie für addEvent-Inputs
 
-    const updateBody = {
+    const updateInfo = {
       title: req.body.title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
       location: req.body.location,
-      categories: req.body.categories,
+      categories: req.body.categories.split(","),
       description: req.body.description,
+      "eventImage.public_id": public_id,
+      "eventImage.secure_url": secure_url,
     };
-
-    const updateInfo = eventImage
-      ? {
-          ...updateBody,
-          eventImage: {
-            public_id: uploadResult.public_id,
-            secure_url: uploadResult.secure_url,
-          },
-        }
-      : updateBody;
-    console.log(updateInfo);
 
     const editedEvent = await Event.findByIdAndUpdate(eventId, updateInfo, {
       new: true,
     });
+
     res.json({ editedEvent });
   } catch (error) {
     console.log(error);
