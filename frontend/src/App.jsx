@@ -12,11 +12,11 @@ const App = () => {
   useEffect(() => {
     setTimeout(() => {
       setSplash(false)
-    }, 3000)
+    }, 2000)
   }, [])
 
   return (
-    <div className="w-[24.375rem] mx-auto relative font-roboto-medium ">
+    <div className="max-w-[30rem] mx-auto relative font-roboto-medium bg-white ">
       {splash ?
         <SplashScreen />
       : <BrowserRouter>

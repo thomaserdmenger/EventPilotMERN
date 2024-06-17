@@ -1,12 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 import EmailIcon from '@mui/icons-material/Email'
 import LockIcon from '@mui/icons-material/Lock'
-import PersonIcon from '@mui/icons-material/Person'
-import Person4Icon from '@mui/icons-material/Person4'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { useState } from 'react'
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import PasswordIcon from '@mui/icons-material/Password'
+import LogoCanvas from '../components/LogoCanvas'
 
 const SignUpPage = () => {
   const [email, setEmail] = useState('')
@@ -16,44 +18,39 @@ const SignUpPage = () => {
   const [lastname, setLastname] = useState('')
   const [username, setUsername] = useState('')
 
-  console.log(password, confirmPassword)
+  const navigate = useNavigate()
 
-  console.log(
-    email,
-    username,
-    password,
-    confirmPassword,
-    lastname,
-    firstname,
-  )
+  const signup = e => {
+    e.preventDefault()
+    navigate('/verify')
+  }
+
   return (
-    <div className="min-h-screen flex flex-col justify-between px-5 pb-12 pt-8">
+    <div className="min-h-svh flex flex-col justify-between px-5 pb-12  pt-4">
       <div>
-        <img
-          src="../../public/svg/splashLoginLogo.svg"
-          alt="Logo"
-          className="w-1/2 mx-auto mb-4"
-        />
-        <h1 className="text-center mb-6 text-purple-1 text-xl">Sign Up</h1>
+        <LogoCanvas scale={0.3} />
+        <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+          Sign Up
+        </h1>
         <form className="flex flex-col gap-6">
           <CustomInput
             type={'text'}
             label={'Firstname'}
-            icon={<PersonIcon sx={{ color: '#00ECAA' }} />}
+            icon={<AccountCircleIcon sx={{ color: '#00ECAA' }} />}
             onChange={e => setfirstname(e.target.value)}
             value={firstname}
           />
           <CustomInput
             type={'text'}
             label={'Lastname'}
-            icon={<PersonIcon sx={{ color: '#00ECAA' }} />}
+            icon={<AccountCircleIcon sx={{ color: '#00ECAA' }} />}
             onChange={e => setLastname(e.target.value)}
             value={lastname}
           />
           <CustomInput
             type={'text'}
             label={'Username'}
-            icon={<Person4Icon sx={{ color: '#00ECAA' }} />}
+            icon={<AccountCircleOutlinedIcon sx={{ color: '#00ECAA' }} />}
             onChange={e => setUsername(e.target.value)}
             value={username}
           />
@@ -67,14 +64,14 @@ const SignUpPage = () => {
           <CustomInput
             type={'password'}
             label={'Password'}
-            icon={<LockIcon sx={{ color: '#00ECAA' }} />}
+            icon={<PasswordIcon sx={{ color: '#00ECAA' }} />}
             onChange={e => setPassword(e.target.value)}
             value={password}
           />
           <CustomInput
             type={'password'}
             label={'Confirm Password'}
-            icon={<LockIcon sx={{ color: '#00ECAA' }} />}
+            icon={<PasswordIcon sx={{ color: '#00ECAA' }} />}
             onChange={e => setConfirmPassword(e.target.value)}
             value={confirmPassword}
           />
@@ -90,6 +87,7 @@ const SignUpPage = () => {
           padding={'15px'}
           text={'Sign Up'}
           endIcon={<ArrowCircleRightIcon />}
+          onClick={signup}
         />
         <p className="text-sm text-green-1">
           Don’t have an account?{' '}
