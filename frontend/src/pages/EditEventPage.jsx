@@ -10,11 +10,21 @@ import EventForm from "../components/EventForm.jsx";
 
 const EditEventPage = () => {
   const { eventId } = useParams();
+  const [eventToEdit, setEventToEdit] = useState();
 
-  useEffect(() => {}, [eventId]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(`${backendUrl}/api/v1/events/${eventId}`);
+
+      const data = await res.json();
+      setEventToEdit(data.event);
+    };
+    fetchData();
+  }, [eventId]);
+
   return (
     <main>
-      <EventForm />
+      <EventForm eventToEdit={eventToEdit} />
     </main>
   );
 };
