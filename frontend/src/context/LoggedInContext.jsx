@@ -1,26 +1,22 @@
-import { createContext, useEffect, useState } from 'react'
-export const LoggedInContext = createContext()
+import { createContext, useEffect, useState } from "react";
+export const LoggedInContext = createContext();
 
 export const LoggedInProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [loading, setLoading] = useState(true)
-
-  console.log(loggedIn, loading)
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loggedInLocalStorage = JSON.parse(
-      localStorage.getItem('loggedIn'),
-    )
+    const loggedInLocalStorage = JSON.parse(localStorage.getItem("loggedIn"));
 
     if (loggedInLocalStorage) {
-      setLoggedIn(loggedInLocalStorage)
+      setLoggedIn(loggedInLocalStorage);
     }
-    setLoading(false)
-  }, [])
+    setLoading(false);
+  }, []);
 
   return (
     <LoggedInContext.Provider value={{ loggedIn, setLoggedIn, loading }}>
       {children}
     </LoggedInContext.Provider>
-  )
-}
+  );
+};
