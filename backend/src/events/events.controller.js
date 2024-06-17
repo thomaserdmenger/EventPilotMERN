@@ -18,7 +18,6 @@ export const postAddEventCtrl = async (req, res) => {
       description,
     } = req.body;
     const eventImage = req.file;
-    console.log(typeof categories);
 
     const startDateTimestamp = new Date(startDate).getTime();
     const endDateTimestamp = new Date(endDate).getTime();
@@ -174,6 +173,13 @@ export const patchEditEventCtrl = async (req, res) => {
     if (!eventToEdit)
       return res.json({
         message: `Could not find event with the id ${eventId}`,
+      });
+    console.log(req); //# hier kommt kein body mehr an - why?
+    console.log(req.file);
+    console.log(req.body);
+    if (req.body)
+      return res.json({
+        message: `Could not find body for the event with the id ${eventId}`,
       });
 
     //if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image

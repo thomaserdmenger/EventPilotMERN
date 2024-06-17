@@ -15,5 +15,5 @@ export const eventRouter = Router()
   .get("/trending")
   .post("/", upload.single("eventImage"), postAddEventCtrl) // doJwtAuth ergänzen
   .get("/:eventId", getSingleEventCtrl)
-  .patch("/:eventId", doUserAuth, patchEditEventCtrl)
-  .delete("/:eventId", doUserAuth, deleteEventCtrl);
+  .patch("/:eventId", patchEditEventCtrl) // doJwtAuth ergänzen
+  .delete("/:eventId", deleteEventCtrl); // doJwtAuth ergänzen
