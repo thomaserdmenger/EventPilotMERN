@@ -3,20 +3,13 @@ import { Participant } from "../eventRegistration/eventRegistration.model.js";
 import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
+import { User } from "../users/users.model.js";
 
 export const postAddEventCtrl = async (req, res) => {
   try {
-    // # statt userId auf authenticatedUserId umstellen, sobald Icaro das im Frontend implementiert hat
-    // const authenticatedUserId = req.authenticatedUser._id;
-    const {
-      userId,
-      title,
-      startDate,
-      endDate,
-      location,
-      categories,
-      description,
-    } = req.body;
+    const authenticatedUserId = req.authenticatedUser._id;
+    const { title, startDate, endDate, location, categories, description } =
+      req.body;
     const eventImage = req.file;
 
     const startDateTimestamp = new Date(startDate).getTime();
@@ -55,14 +48,14 @@ export const postAddEventCtrl = async (req, res) => {
         message: "Description must be between 20 and 500 characters.",
       });
 
-    // if (!authenticatedUserId)
-    //   return res.status(400).json({
-    //     message: "You are not authorized.",
-    //   });
+    if (!authenticatedUserId)
+      return res.status(400).json({
+        message: "You are not authorized.",
+      });
 
-    // const authenticatedUser = await User.findById(authenticatedUserId);
-    // if (!authenticatedUser)
-    //   return res.status(404).json({ message: "This user does not exist." });
+    const authenticatedUser = await User.findById(authenticatedUserId);
+    if (!authenticatedUser)
+      return res.status(404).json({ message: "This user does not exist." });
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
@@ -70,7 +63,7 @@ export const postAddEventCtrl = async (req, res) => {
     // finally create new Event ...
     const newEvent = await Event.create({
       // userId: authenticatedUserId,
-      userId,
+      userId: authenticatedUserId,
       title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
@@ -174,56 +167,74 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.json({
         message: `Could not find event with the id ${eventId}`,
       });
-    console.log(req); //# hier kommt kein body mehr an - why?
-    console.log(req.file);
-    console.log(req.body);
-    if (req.body)
-      return res.json({
-        message: `Could not find body for the event with the id ${eventId}`,
-      });
 
-    //if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    const { title, startDate, endDate, location, categories, description } =
+      req.body;
+
+    // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    // else: take the old event-image infos and save them anew
     const eventImage = req.file ? req.file : null;
+    let public_id;
+    let secure_url;
     if (eventImage) {
       deleteImage(eventToEdit.eventImage.public_id);
       const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-      return uploadResult;
+      public_id = uploadResult.public_id;
+      secure_url = uploadResult.secure_url;
+    } else {
+      public_id = eventToEdit.eventImage.public_id;
+      secure_url = eventToEdit.eventImage.public_id;
     }
 
-    const startDateTimestamp = req.body.startDate
+    // convert timestamps
+    const startDateTimestamp = startDate
       ? new Date(startDate).getTime()
       : eventToEdit.startDate;
-    const endDateTimestamp = req.body.endDate
+    const endDateTimestamp = endDate
       ? new Date(endDate).getTime()
       : eventToEdit.endDate;
 
-    // #Error Handling noch einfügen
-    // authUser exists
-    // für die einzelnen Update-Inputs gelten die gleichen Regeln wie für addEvent-Inputs
+    // Error Handling
+    if (startDateTimestamp > endDateTimestamp)
+      return res.status(422).json({
+        message: "Enddate must be later than startdate.",
+      });
+    if (startDateTimestamp < Date.now())
+      return res.status(422).json({
+        message: "Startdate must be in the future.",
+      });
+    if (title < 5 || title > 20)
+      return res.status(422).json({
+        message: "Title must be between 5 and 20 characters.",
+      });
+    if (description < 20 || description > 500)
+      return res.status(422).json({
+        message: "Description must be between 20 and 500 characters.",
+      });
+    const authenticatedUserId = req.authenticatedUser._id;
+    if (!authenticatedUserId)
+      return res.status(400).json({
+        message: "You are not authorized.",
+      });
+    const authenticatedUser = await User.findById(authenticatedUserId);
+    if (!authenticatedUser)
+      return res.status(404).json({ message: "This user does not exist." });
 
-    const updateBody = {
-      title: req.body.title,
+    const updateInfo = {
+      title: title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
-      location: req.body.location,
-      categories: req.body.categories,
-      description: req.body.description,
+      location: location,
+      categories: categories.split(","),
+      description: description,
+      "eventImage.public_id": public_id,
+      "eventImage.secure_url": secure_url,
     };
-
-    const updateInfo = eventImage
-      ? {
-          ...updateBody,
-          eventImage: {
-            public_id: uploadResult.public_id,
-            secure_url: uploadResult.secure_url,
-          },
-        }
-      : updateBody;
-    console.log(updateInfo);
 
     const editedEvent = await Event.findByIdAndUpdate(eventId, updateInfo, {
       new: true,
     });
+
     res.json({ editedEvent });
   } catch (error) {
     console.log(error);

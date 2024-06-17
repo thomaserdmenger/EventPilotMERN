@@ -6,7 +6,8 @@ export async function uploadImage(buffer, cloudinaryPath) {
       .upload_stream(
         { folder: `EventPilot/${cloudinaryPath}` },
         (error, uploadResult) => {
-          console.log(error);
+          console.log({ uploadImageError: error });
+          // console.log({ uploadImageResult: uploadResult });
           return resolve(uploadResult);
         }
       )

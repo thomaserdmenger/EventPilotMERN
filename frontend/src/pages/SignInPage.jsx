@@ -11,20 +11,17 @@ import { LoggedInContext } from "../context/LoggedInContext";
 import { backendUrl } from "../api/api";
 
 const SignInPage = () => {
-  const { setUser } = useContext(UserContext);
-  const { loggedIn, setLoggedIn } = useContext(LoggedInContext);
-  const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [successMessage, setSuccessMassage] = useState(false);
-  const [password, setPassword] = useState("");
+  const { user, setUser } = useContext(UserContext)
+  const { loggedIn, setLoggedIn } = useContext(LoggedInContext)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
 
-    setErrorMessage(false);
-    setSuccessMassage(false);
+  console.log('signin ', user)
 
     const res = await fetch(`${backendUrl}/api/v1/users/login`, {
       method: "POST",
@@ -37,28 +34,25 @@ const SignInPage = () => {
     });
 
     const data = await res.json();
-
-    if (typeof data === "string" && data?.toLowerCase().includes("incorrect password")) {
-      setErrorMessage(true);
-      setEmail("");
-      setPassword("");
-      setLoggedIn(false);
+    if (
+      typeof data === 'string' &&
+      data?.toLowerCase().includes('incorrect password')
+    ) {
+      setEmail('')
+      setPassword('')
+      setLoggedIn(false)
     }
 
     if (data) {
-      setUser(data);
-      setLoggedIn(true);
-      setSuccessMassage(true);
-
-      setEmail("");
-      setPassword("");
+      setUser(data)
+      setLoggedIn(true)
+      setEmail('')
+      setPassword('')
 
       localStorage.setItem("user", JSON.stringify(data));
       localStorage.setItem("loggedIn", JSON.stringify(true));
 
-      setTimeout(() => {
-        navigate("/");
-      }, 0);
+      navigate('/')
     }
   };
 

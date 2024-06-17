@@ -54,21 +54,16 @@ const EventForm = ({ eventToEdit }) => {
     const formData = new FormData(form);
     formData.append("categories", categoriesArray);
 
-    // for (const value of formData.entries()) {
-    //   console.log(value);
-    // } //# Daten kommen in formData an, werden dort gespeichert, aber req.body erreicht das backend nicht - warum?
-
     const res = await fetch(`${backendUrl}/api/v1/events/${eventToEdit._id}`, {
       method: "PATCH",
       //   headers: { "Content-Type": "multipart/form-data" },
       credentials: "include",
       body: formData,
     });
-    for (const value of formData.entries()) {
-      console.log(value);
-    }
+    // for (const value of formData.entries()) {
+    //   console.log(value);
+    // }
     const data = await res.json();
-    console.log(data);
 
     if (!data.result) return setErrorMessage(data.message);
     setErrorMessage("");
