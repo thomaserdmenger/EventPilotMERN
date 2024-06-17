@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  deleteEventCtrl,
   getSingleEventCtrl,
   getUpcomingEventsCtrl,
   postAddEventCtrl,
@@ -14,4 +15,4 @@ export const eventRouter = Router()
   .post("/", upload.single("eventImage"), postAddEventCtrl) // doJwtAuth ergänzen
   .get("/:eventId", getSingleEventCtrl)
   .patch("/:eventId", doUserAuth)
-  .delete("/:eventId", doUserAuth);
+  .delete("/:eventId", doUserAuth, deleteEventCtrl);

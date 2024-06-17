@@ -66,7 +66,7 @@ export const postAddEventCtrl = async (req, res) => {
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-    console.log(uploadResult);
+
     // finally create new Event ...
     const newEvent = await Event.create({
       // userId: authenticatedUserId,
@@ -98,6 +98,12 @@ export const getUpcomingEventsCtrl = async (_, res) => {
         $gte: Date.now(),
       },
     }).sort({ startDate: 1 });
+
+    if (!upcomingEvents)
+      return res.status(404).json({
+        message: "No upcoming events.",
+      });
+
     res.json({ upcomingEvents });
   } catch (error) {
     console.log(error);
@@ -117,6 +123,11 @@ export const getSingleEventCtrl = async (req, res) => {
       Participant.find({ eventId }),
     ]);
 
+    if (!event)
+      return res.status(404).json({
+        message: `The event with the id ${eventId} does not exist.`,
+      });
+
     res.json({ event, bookmarks, participants });
   } catch (error) {
     console.log(error);
@@ -130,11 +141,23 @@ export const deleteEventCtrl = async (req, res) => {
   try {
     const eventId = req.params.eventId;
 
-    // mit Promise.all() alle Referenzen in Bookmarks, Registrations löschen -> Nachricht an User?
-    const deletedEvent = await Event.findByIdAndDelete(eventId);
-    // cloudinary
-    const deletedImg = await deleteImage(deletedEvent.eventImage.public_id);
-    res.json({ result });
+    // delete event with all referenced bookmarks and registrations
+    const [deletedEvent, deletedBookmarks, deletedParticipants] =
+      await Promise.all([
+        Event.findByIdAndDelete(eventId),
+        Bookmark.deleteMany({ eventId }),
+        Participant.deleteMany({ eventId }),
+      ]);
+
+    if (!deletedEvent)
+      return res.status(404).json({
+        message: `The event with the id ${eventId} does not exist.`,
+      });
+
+    // delete event image from cloudinary
+    deleteImage(deletedEvent.eventImage.public_id);
+
+    res.json({ message: "The event was deleted." });
   } catch (error) {
     console.log(error);
     res
