@@ -5,14 +5,14 @@ import LockIcon from '@mui/icons-material/Lock'
 import { useState } from 'react'
 import LogoCanvas from '../components/LogoCanvas'
 
-const Verify = () => {
+const VerifyEmailPage = () => {
   const [code, setCode] = useState('')
 
   return (
     <div className="min-h-svh flex flex-col justify-between px-5 pb-12  pt-4">
-      <div>
+      <div className="flex flex-col">
         <LogoCanvas scale={0.3} />
-        <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+        <h1 className="text-center mb-6 text-purple-1 self-center font-roboto-bold text-xl border-b-2 border-green-1">
           Verify Email
         </h1>
         <form className="flex flex-col gap-6">
@@ -35,7 +35,7 @@ const Verify = () => {
         <CustomButton
           fontSize="16px"
           width="100%"
-          borderRadius="15px"
+          borderRadius="16px"
           bgcolor="#7254EE"
           bgcolorHover="#5D3EDE"
           padding="15px"
@@ -47,4 +47,4 @@ const Verify = () => {
   )
 }
 
-export default Verify
+export default VerifyEmailPage

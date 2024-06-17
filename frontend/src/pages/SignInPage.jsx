@@ -13,9 +13,9 @@ const SignInPage = () => {
 
   return (
     <div className="min-h-svh flex flex-col justify-between px-5 pb-12 pt-4">
-      <div>
+      <div className="flex flex-col">
         <LogoCanvas scale={0.3} />
-        <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+        <h1 className="text-center mb-6 text-purple-1 self-center font-roboto-bold text-xl border-b-2 border-green-1">
           Sign In
         </h1>
         <form className="flex flex-col gap-6">
@@ -42,7 +42,7 @@ const SignInPage = () => {
           borderRadius="15px"
           bgcolor="#7254EE"
           bgcolorHover="#5D3EDE"
-          padding="15px"
+          padding="16px"
           text="Sign In"
           endIcon={<ArrowCircleRightIcon />}
         />
