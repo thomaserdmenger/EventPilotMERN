@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import { categories } from "../constants/categories.js";
 import EventForm from "../components/EventForm.jsx";
+import EventForm2 from "../components/EventForm2.jsx";
 
 const EditEventPage = () => {
   const { eventId } = useParams();
@@ -25,6 +26,7 @@ const EditEventPage = () => {
   return (
     <main>
       <EventForm eventToEdit={eventToEdit} />
+      {/* <EventForm2 /> */}
     </main>
   );
 };
