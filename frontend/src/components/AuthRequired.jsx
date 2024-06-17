@@ -4,7 +4,7 @@ import { LoggedInContext } from '../context/LoggedInContext'
 
 const AuthRequired = ({ children }) => {
   const { loggedIn } = useContext(LoggedInContext)
-  return loggedIn ? children : <Navigate to="/login" />
+  return loggedIn ? children : <Navigate to="/signin" />
 }
 
 export default AuthRequired

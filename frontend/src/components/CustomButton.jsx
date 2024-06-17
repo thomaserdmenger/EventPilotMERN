@@ -10,6 +10,7 @@ const CustomButton = ({
   text,
   endIcon,
   onClick,
+  border,
 }) => {
   return (
     <Button
@@ -24,6 +25,7 @@ const CustomButton = ({
         width: width,
         fontSize: fontSize,
         textTransform: 'none',
+        border: border,
       }}>
       {text}
     </Button>
