@@ -15,7 +15,7 @@ const Logo = ({ props, scale }) => {
           castShadow
         />
         <group
-          rotation={[-Math.PI, 1.5, 0]}
+          rotation={[-Math.PI, 1.1, 0]}
           scale={[-0.495, -0.217, -0.217]}>
           <mesh
             scale={scale}
