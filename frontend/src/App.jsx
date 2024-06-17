@@ -23,41 +23,41 @@ const App = () => {
 
   return (
     <div className="max-w-[30rem] mx-auto relative font-roboto-medium bg-white ">
-      {splash ?
-        <SplashScreen />
-      : <LoggedInProvider>
-          <UserProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="/"
-                  element={<AuthRequired>'Home'</AuthRequired>}
-                />
-                <Route path="/signin" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/verifyemail" element={<VerifyEmailPage />} />
-                <Route
-                  path="/events/add"
-                  element={
-                    <AuthRequired>
-                      <AddEventPage />
-                    </AuthRequired>
-                  }
-                />
-                <Route
-                  path="/events/edit/:eventId"
-                  element={<EditEventPage />}
-                />
-                <Route path="/userprofile" element={<UserProfilePage />} />
-                <Route
-                  path="/hostprofile/:userId"
-                  element={<HostProfilePage />}
-                />
-              </Routes>
-            </BrowserRouter>
-          </UserProvider>
-        </LoggedInProvider>
-      }
+      <LoggedInProvider>
+        <UserProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={<AuthRequired>'Home'</AuthRequired>}
+              />
+              <Route
+                path="/signin"
+                element={splash ? <SplashScreen /> : <SignInPage />}
+              />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/verifyemail" element={<VerifyEmailPage />} />
+              <Route
+                path="/events/add"
+                element={
+                  <AuthRequired>
+                    <AddEventPage />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/events/edit/:eventId"
+                element={<EditEventPage />}
+              />
+              <Route path="/userprofile" element={<UserProfilePage />} />
+              <Route
+                path="/hostprofile/:userId"
+                element={<HostProfilePage />}
+              />
+            </Routes>
+          </BrowserRouter>
+        </UserProvider>
+      </LoggedInProvider>
     </div>
   )
 }

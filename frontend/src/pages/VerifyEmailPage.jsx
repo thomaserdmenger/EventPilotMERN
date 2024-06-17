@@ -1,41 +1,41 @@
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import { useNavigate } from "react-router-dom";
-import LockIcon from "@mui/icons-material/Lock";
-import { useContext, useState } from "react";
-import LogoCanvas from "../components/LogoCanvas";
-import { backendUrl } from "../api/api";
-import { UserContext } from "../context/UserContext";
+import CustomInput from '../components/CustomInput'
+import CustomButton from '../components/CustomButton'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import { useNavigate } from 'react-router-dom'
+import LockIcon from '@mui/icons-material/Lock'
+import { useContext, useState } from 'react'
+import LogoCanvas from '../components/LogoCanvas'
+import { backendUrl } from '../api/api'
+import { UserContext } from '../context/UserContext'
 
 const VerifyEmailPage = () => {
-  const [sixDigitCode, setSixDigitCode] = useState("");
-  const { user, setUser } = useContext(UserContext);
-  const navigate = useNavigate();
+  const [sixDigitCode, setSixDigitCode] = useState('')
+  const { user, setUser } = useContext(UserContext)
+  const navigate = useNavigate()
 
-  const handleVerify = async (e) => {
-    e.preventDefault();
+  const handleVerify = async e => {
+    e.preventDefault()
 
     if (!sixDigitCode) {
-      return;
+      return
     }
 
     const res = await fetch(`${backendUrl}/api/v1/users/verify-email`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: user.email,
         verificationCode: sixDigitCode,
       }),
-    });
+    })
 
-    const data = await res.json();
-    setUser(data.user);
+    const data = await res.json()
+    setUser(data.user)
 
-    navigate("/signin");
+    navigate('/signin')
 
-    setSixDigitCode("");
-  };
+    setSixDigitCode('')
+  }
 
   return (
     <div className="min-h-svh flex flex-col justify-between px-5 pb-12  pt-4">
@@ -48,12 +48,12 @@ const VerifyEmailPage = () => {
           <CustomInput
             type="text"
             label="Code"
-            icon={<LockIcon sx={{ color: "#00ECAA" }} />}
-            onChange={(e) => setSixDigitCode(e.target.value)}
+            icon={<LockIcon sx={{ color: '#00ECAA' }} />}
+            onChange={e => setSixDigitCode(e.target.value)}
             value={sixDigitCode}
           />
           <p className="text-sm text-green-1">
-            Don’t have a code?{" "}
+            Don’t have a code?{' '}
             <button className="font-roboto-bold text-purple-2 hover:text-purple-1 underline underline-offset-4">
               Resend code
             </button>
@@ -74,7 +74,7 @@ const VerifyEmailPage = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VerifyEmailPage;
+export default VerifyEmailPage

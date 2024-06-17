@@ -11,20 +11,17 @@ import { LoggedInContext } from '../context/LoggedInContext'
 import { backendUrl } from '../api/api'
 
 const SignInPage = () => {
-  const { setUser } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
   const { loggedIn, setLoggedIn } = useContext(LoggedInContext)
   const [email, setEmail] = useState('')
-  const [errorMessage, setErrorMessage] = useState(false)
-  const [successMessage, setSuccessMassage] = useState(false)
   const [password, setPassword] = useState('')
 
   const navigate = useNavigate()
 
+  console.log('signin ', user)
+
   const handleSignIn = async e => {
     e.preventDefault()
-
-    setErrorMessage(false)
-    setSuccessMassage(false)
 
     const res = await fetch(`${backendUrl}/api/v1/users/login`, {
       method: 'POST',
@@ -42,7 +39,6 @@ const SignInPage = () => {
       typeof data === 'string' &&
       data?.toLowerCase().includes('incorrect password')
     ) {
-      setErrorMessage(true)
       setEmail('')
       setPassword('')
       setLoggedIn(false)
@@ -51,17 +47,13 @@ const SignInPage = () => {
     if (data) {
       setUser(data)
       setLoggedIn(true)
-      setSuccessMassage(true)
-
       setEmail('')
       setPassword('')
 
       localStorage.setItem('user', JSON.stringify(data))
       localStorage.setItem('loggedIn', JSON.stringify(true))
 
-      setTimeout(() => {
-        navigate('/')
-      }, 0)
+      navigate('/')
     }
   }
 
