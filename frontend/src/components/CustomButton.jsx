@@ -9,13 +9,13 @@ const CustomButton = ({
   fontSize,
   text,
   endIcon,
-  onCLick,
+  onClick,
 }) => {
   return (
     <Button
       variant="contained"
       endIcon={endIcon}
-      onClick={onCLick}
+      onClick={onClick}
       sx={{
         bgcolor: bgcolor,
         ':hover': { bgcolor: bgcolorHover },

@@ -5,20 +5,19 @@ import EmailIcon from '@mui/icons-material/Email'
 import LockIcon from '@mui/icons-material/Lock'
 import { useState } from 'react'
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import LogoCanvas from '../components/LogoCanvas'
 
 const SignInPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   return (
-    <div className="min-h-screen flex flex-col justify-between px-5 pb-12 pt-8">
+    <div className="min-h-svh flex flex-col justify-between px-5 pb-12 pt-4">
       <div>
-        <img
-          src="../../public/svg/splashLoginLogo.svg"
-          alt="Logo"
-          className="w-1/2 mx-auto mb-4"
-        />
-        <h1 className="text-center mb-6 text-purple-1 text-xl">Sign In</h1>
+        <LogoCanvas scale={0.3} />
+        <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+          Sign In
+        </h1>
         <form className="flex flex-col gap-6">
           <CustomInput
             type="text"

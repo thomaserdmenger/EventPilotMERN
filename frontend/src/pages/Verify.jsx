@@ -1,27 +1,25 @@
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
-import EmailIcon from '@mui/icons-material/Email'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import LockIcon from '@mui/icons-material/Lock'
 import { useState } from 'react'
+import LogoCanvas from '../components/LogoCanvas'
 
 const Verify = () => {
   const [code, setCode] = useState('')
 
   return (
-    <div className="min-h-screen flex flex-col justify-between px-5 pb-12 pt-8">
+    <div className="min-h-svh flex flex-col justify-between px-5 pb-12  pt-4">
       <div>
-        <img
-          src="../../public/svg/splashLoginLogo.svg"
-          alt="Logo"
-          className="w-1/2 mx-auto mb-4"
-        />
-        <h1 className="text-center mb-6 text-purple-1 text-xl">Verify</h1>
+        <LogoCanvas scale={0.3} />
+        <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+          Verify Email
+        </h1>
         <form className="flex flex-col gap-6">
           <CustomInput
             type="text"
             label="Code"
-            icon={<VerifiedUserIcon sx={{ color: '#00ECAA' }} />}
+            icon={<LockIcon sx={{ color: '#00ECAA' }} />}
             onChange={e => setCode(e.target.value)}
             value={code}
           />
@@ -41,8 +39,8 @@ const Verify = () => {
           bgcolor="#7254EE"
           bgcolorHover="#5D3EDE"
           padding="15px"
-          text="Sign Up"
-          endIcon={<ArrowCircleRightIcon />}
+          text="Verify"
+          endIcon={<VerifiedUserIcon />}
         />
       </div>
     </div>
