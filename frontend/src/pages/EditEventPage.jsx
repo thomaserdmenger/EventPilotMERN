@@ -51,7 +51,7 @@ const EditEventPage = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <main>
-        <h2>add event</h2>
+        <h2>edit event</h2>
         <form className="flex flex-col" onSubmit={addEvent}>
           {/* userId löschen, wenn auth steht: */}
           <input type="text" placeholder="UserId" name="userId" />
