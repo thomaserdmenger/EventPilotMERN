@@ -34,7 +34,10 @@ const App = () => {
                 <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/verifyemail" element={<VerifyEmailPage />} />
                 <Route path="/events/add" element={<AddEventPage />} />
-                <Route path="/events/edit" element={<EditEventPage />} />
+                <Route
+                  path="/events/edit/:eventId"
+                  element={<EditEventPage />}
+                />
                 <Route path="/userprofile" element={<UserProfilePage />} />
                 <Route
                   path="/hostprofile/:userId"
