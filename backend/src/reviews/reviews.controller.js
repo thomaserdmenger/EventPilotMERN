@@ -14,9 +14,10 @@ export const postAddReviewCtrl = async (req, res) => {
 
     if (userId === reviewedUserId) return res.status(400).json("You could not review yourself");
 
-    const alreadyReviewed = await Review.findOne({ reviewedUserId, "reviews.userId": userId });
+    if (text?.length > 140)
+      return res.status(400).json("The review text may contain a maximum of 140 characters.");
 
-    console.log(alreadyReviewed);
+    const alreadyReviewed = await Review.findOne({ reviewedUserId, "reviews.userId": userId });
 
     if (alreadyReviewed) return res.status(400).json("You already reviewed this user.");
 
