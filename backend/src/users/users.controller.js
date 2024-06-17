@@ -8,6 +8,7 @@ import { trusted } from "mongoose";
 import { Bookmark } from "../bookmarks/bookmarks.model.js";
 import { Participant } from "../eventRegistration/eventRegistration.model.js";
 import { Follower } from "../followers/followers.model.js";
+import { Review } from "../reviews/reviews.model.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -145,9 +146,12 @@ export const showOneUserCtrl = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(400).json("User not found. Please register.");
 
-    // # Add User Reviews
+    const receivedReviews = await Review.find({ reviewedUserId: userId }).populate(
+      "reviews.userId",
+      "username email"
+    );
 
-    res.json({ user: userToView(user) });
+    res.json({ user: userToView(user), receivedReviews });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not show particular user." });
