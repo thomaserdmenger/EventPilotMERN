@@ -3,6 +3,7 @@ import {
   deleteEventCtrl,
   getSingleEventCtrl,
   getUpcomingEventsCtrl,
+  patchEditEventCtrl,
   postAddEventCtrl,
 } from "./events.controller.js";
 import multer from "multer";
@@ -14,5 +15,5 @@ export const eventRouter = Router()
   .get("/trending")
   .post("/", upload.single("eventImage"), postAddEventCtrl) // doJwtAuth ergänzen
   .get("/:eventId", getSingleEventCtrl)
-  .patch("/:eventId", doUserAuth)
+  .patch("/:eventId", doUserAuth, patchEditEventCtrl)
   .delete("/:eventId", doUserAuth, deleteEventCtrl);

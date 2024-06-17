@@ -18,6 +18,7 @@ export const postAddEventCtrl = async (req, res) => {
       description,
     } = req.body;
     const eventImage = req.file;
+    console.log(typeof categories);
 
     const startDateTimestamp = new Date(startDate).getTime();
     const endDateTimestamp = new Date(endDate).getTime();
@@ -163,5 +164,65 @@ export const deleteEventCtrl = async (req, res) => {
     res
       .status(500)
       .json({ message: error.message || "Could not delete this event." });
+  }
+};
+
+export const patchEditEventCtrl = async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+    const eventToEdit = await Event.findById(eventId);
+    if (!eventToEdit)
+      return res.json({
+        message: `Could not find event with the id ${eventId}`,
+      });
+
+    //if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    const eventImage = req.file ? req.file : null;
+    if (eventImage) {
+      deleteImage(eventToEdit.eventImage.public_id);
+      const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
+      return uploadResult;
+    }
+
+    const startDateTimestamp = req.body.startDate
+      ? new Date(startDate).getTime()
+      : eventToEdit.startDate;
+    const endDateTimestamp = req.body.endDate
+      ? new Date(endDate).getTime()
+      : eventToEdit.endDate;
+
+    // #Error Handling noch einfügen
+    // authUser exists
+    // für die einzelnen Update-Inputs gelten die gleichen Regeln wie für addEvent-Inputs
+
+    const updateBody = {
+      title: req.body.title,
+      startDate: startDateTimestamp,
+      endDate: endDateTimestamp,
+      location: req.body.location,
+      categories: req.body.categories,
+      description: req.body.description,
+    };
+
+    const updateInfo = eventImage
+      ? {
+          ...updateBody,
+          eventImage: {
+            public_id: uploadResult.public_id,
+            secure_url: uploadResult.secure_url,
+          },
+        }
+      : updateBody;
+    console.log(updateInfo);
+
+    const editedEvent = await Event.findByIdAndUpdate(eventId, updateInfo, {
+      new: true,
+    });
+    res.json({ editedEvent });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not edit this event." });
   }
 };
