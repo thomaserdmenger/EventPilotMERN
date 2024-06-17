@@ -60,11 +60,10 @@ const EventForm = ({ eventToEdit }) => {
       credentials: "include",
       body: formData,
     });
-    for (const value of formData.entries()) {
-      console.log(value);
-    }
+    // for (const value of formData.entries()) {
+    //   console.log(value);
+    // }
     const data = await res.json();
-    console.log(data);
 
     if (!data.result) return setErrorMessage(data.message);
     setErrorMessage("");

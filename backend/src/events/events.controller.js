@@ -179,7 +179,6 @@ export const patchEditEventCtrl = async (req, res) => {
     if (eventImage) {
       deleteImage(eventToEdit.eventImage.public_id);
       const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-      console.log({ uploadImageResultCtrl: uploadResult });
       public_id = uploadResult.public_id;
       secure_url = uploadResult.secure_url;
     } else {
@@ -194,7 +193,6 @@ export const patchEditEventCtrl = async (req, res) => {
     const endDateTimestamp = endDate
       ? new Date(endDate).getTime()
       : eventToEdit.endDate;
-    console.log(startDateTimestamp);
 
     // Error Handling
     if (startDateTimestamp > endDateTimestamp)
