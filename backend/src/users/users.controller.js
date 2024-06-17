@@ -11,7 +11,7 @@ import { Follower } from "../followers/followers.model.js";
 import { Review } from "../reviews/reviews.model.js";
 import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
-
+import { Event } from "../events/events.model.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -20,7 +20,9 @@ export const registerUserCtrl = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ errorMessage: "User with this email exists" });
+      return res
+        .status(400)
+        .json({ errorMessage: "User with this email exists" });
     }
 
     const saltRounds = 10;
@@ -59,8 +61,14 @@ export const resentEmailCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
-    if (user.isVerified) return res.status(400).json({ errorMessage: "User is already verified." });
+    if (!user)
+      return res
+        .status(400)
+        .json({ errorMessage: "User not found. Please register." });
+    if (user.isVerified)
+      return res
+        .status(400)
+        .json({ errorMessage: "User is already verified." });
 
     await sendEmail({
       to: user.email,
@@ -85,13 +93,18 @@ export const verifyUserEmailCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    if (!user)
+      return res
+        .status(400)
+        .json({ errorMessage: "User not found. Please register." });
 
-    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
-
-    if (user.isVerified) return res.status(400).json({ errorMessage: "E-Mail already verified." });
+    if (user.isVerified)
+      return res.status(400).json({ errorMessage: "E-Mail already verified." });
 
     if (user.verificationCode !== verificationCode)
-      return res.status(500).json({ errorMessage: "Wrong Verification Code. Try again." });
+      return res
+        .status(500)
+        .json({ errorMessage: "Wrong Verification Code. Try again." });
 
     const verifiedUser = await User.findOneAndUpdate(
       { email },
@@ -114,18 +127,24 @@ export const loginUserCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({errorMessage: "User not found. Please register."});
+    if (!user)
+      return res
+        .status(400)
+        .json({ errorMessage: "User not found. Please register." });
 
     if (!user.isVerified)
       return res.status(400).json({
         user,
-        errorMessage: "Please verify your Email address to login to your account.",
+        errorMessage:
+          "Please verify your Email address to login to your account.",
       });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json({errorMessage:"Incorrect password. Please try again."});
+      return res
+        .status(400)
+        .json({ errorMessage: "Incorrect password. Please try again." });
     }
 
     const accessToken = createAccessToken(user);
@@ -168,7 +187,10 @@ export const showOneUserCtrl = async (req, res) => {
     const userId = req.params.userId;
 
     const user = await User.findById(userId);
-    if (!user) return res.status(400).json({errorMessage:"User not found. Please register."});
+    if (!user)
+      return res
+        .status(400)
+        .json({ errorMessage: "User not found. Please register." });
 
     const receivedReviews = await Review.find({
       reviewedUserId: userId,
@@ -186,7 +208,10 @@ export const showOneUserCtrl = async (req, res) => {
 export const patchUserCtrl = async (req, res) => {
   try {
     const user = await User.findById(req.authenticatedUser._id);
-    if (!user) return res.status(400).json({errorMessage:"User not found. Please register."});
+    if (!user)
+      return res
+        .status(400)
+        .json({ errorMessage: "User not found. Please register." });
 
     const { firstname, lastname, username, bio, interests } = req.body;
 
@@ -207,7 +232,6 @@ export const patchUserCtrl = async (req, res) => {
       public_id = user.profileImage.public_id;
       secure_url = user.profileImage.public_id;
     }
-
 
     // update authenticated user infos
     const updatedUser = await User.findByIdAndUpdate(
@@ -233,19 +257,40 @@ export const patchUserCtrl = async (req, res) => {
 
 export const deleteOneUserCtrl = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.authenticatedUser._id);
-    if (!user) return res.status(400).json({errorMessage: "User not found. Please register."});
+    const authenticatedUserId = req.authenticatedUser._id;
+    const [
+      deletedUser,
+      deletedEvents,
+      deletedReviews,
+      deletedBookmarks,
+      deletedParticipants,
+      deletedFollowing,
+    ] = await Promise.all([
+      User.findByIdAndDelete(authenticatedUserId),
+      Event.deleteMany({ userId: authenticatedUserId }), // # auch eventImage in cloudinary löschen
+      Review.deleteMany({ reviewedUserId: authenticatedUserId }),
+      Bookmark.deleteMany({ userId: authenticatedUserId }),
+      Participant.deleteMany({ userId: authenticatedUserId }),
+      Follower.deleteMany({
+        userId: { $in: authenticatedUserId },
+        followedUserId: { $in: authenticatedUserId },
+      }), // # wird noch nicht gelöscht - Syntax anders?
+    ]);
+    if (!deletedUser)
+      return res.status(400).json({
+        errorMessage: `User with the email ${deletedUser.email} not found. Please register.`,
+      });
 
     res.clearCookie("accessToken");
 
     res.json({
-      user: userToView(user),
-      message: "User successfully deleted",
+      user: userToView(deletedUser),
+      message: "User successfully deleted.",
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      message: error.message || "Could not delete particular user.",
+      message: error.message || "Could not delete this user.",
     });
   }
 };
