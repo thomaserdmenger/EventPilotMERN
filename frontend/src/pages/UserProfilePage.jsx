@@ -11,10 +11,10 @@ const UserProfilePage = () => {
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/followers`, { credentials: "include" });
       const data = await res.json();
-      console.log({ data });
+      // console.log({ data });
     };
 
-    fetchData();
+    // fetchData();
   }, []);
 
   return (

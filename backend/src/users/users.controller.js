@@ -12,6 +12,7 @@ import { Review } from "../reviews/reviews.model.js";
 import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 
+
 export const registerUserCtrl = async (req, res) => {
   try {
     const { firstname, lastname, username, email, password } = req.body;
@@ -19,7 +20,7 @@ export const registerUserCtrl = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ message: "User with this email exists" });
+      return res.status(400).json({ errorMessage: "User with this email exists" });
     }
 
     const saltRounds = 10;
@@ -57,9 +58,9 @@ export const resentEmailCtrl = async (req, res) => {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json("User not found. Please register.");
-    if (user.isVerified)
-      return res.status(400).json("User is already verified.");
+
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
+    if (user.isVerified) return res.status(400).json({ errorMessage: "User is already verified." });
 
     await sendEmail({
       to: user.email,
@@ -69,7 +70,7 @@ export const resentEmailCtrl = async (req, res) => {
         Please enter your 6 Digit Code to verify your Email-address: ${user.verificationCode}`,
     });
 
-    res.json({ message: "Email successfully resent" });
+    res.json({ message: "Email successfully resend" });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -84,13 +85,13 @@ export const verifyUserEmailCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json("User not found. Please register.");
 
-    if (user.isVerified)
-      return res.status(400).json("E-Mail already verified.");
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
+
+    if (user.isVerified) return res.status(400).json({ errorMessage: "E-Mail already verified." });
 
     if (user.verificationCode !== verificationCode)
-      return res.status(500).json("Wrong Verification Code. Try again.");
+      return res.status(500).json({ errorMessage: "Wrong Verification Code. Try again." });
 
     const verifiedUser = await User.findOneAndUpdate(
       { email },
@@ -113,18 +114,18 @@ export const loginUserCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage: "User not found. Please register."});
 
     if (!user.isVerified)
       return res.status(400).json({
         user,
-        message: "Please verify your Email address to login to your account.",
+        errorMessage: "Please verify your Email address to login to your account.",
       });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json("Incorrect password. Please try again.");
+      return res.status(400).json({errorMessage:"Incorrect password. Please try again."});
     }
 
     const accessToken = createAccessToken(user);
@@ -167,7 +168,7 @@ export const showOneUserCtrl = async (req, res) => {
     const userId = req.params.userId;
 
     const user = await User.findById(userId);
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage:"User not found. Please register."});
 
     const receivedReviews = await Review.find({
       reviewedUserId: userId,
@@ -185,7 +186,7 @@ export const showOneUserCtrl = async (req, res) => {
 export const patchUserCtrl = async (req, res) => {
   try {
     const user = await User.findById(req.authenticatedUser._id);
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage:"User not found. Please register."});
 
     const { firstname, lastname, username, bio, interests } = req.body;
 
@@ -206,6 +207,7 @@ export const patchUserCtrl = async (req, res) => {
       public_id = user.profileImage.public_id;
       secure_url = user.profileImage.public_id;
     }
+
 
     // update authenticated user infos
     const updatedUser = await User.findByIdAndUpdate(
@@ -232,7 +234,7 @@ export const patchUserCtrl = async (req, res) => {
 export const deleteOneUserCtrl = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.authenticatedUser._id);
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage: "User not found. Please register."});
 
     res.clearCookie("accessToken");
 
