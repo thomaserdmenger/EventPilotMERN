@@ -1,30 +1,10 @@
-import { User } from "../users/users.model.js";
+import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
 
-export const getUpcomingEventsCtrl = async (_, res) => {
-  try {
-    // alle Events aus der Zukunft
-    // sortiert nach Datum, früheste zuerst
-    const result = await Event.find({
-      date: {
-        start: {
-          $gte: Date.now(), // --> is timestamp - works?!
-        },
-      },
-    }).sort({ dates: { start: -1 } });
-    //-> funktioniert das Reinnavigieren zum Startdatum so?
-    res.json({ result });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ message: error.message || "Could not find upcoming events." });
-  }
-};
-
 export const postAddEventCtrl = async (req, res) => {
   try {
+    // # statt userId auf authenticatedUserId umstellen, sobald Icaro das im Frontend implementiert hat
     // const authenticatedUserId = req.authenticatedUser._id;
     const {
       userId,
@@ -64,9 +44,14 @@ export const postAddEventCtrl = async (req, res) => {
       return res.status(422).json({
         message: "Startdate must be in the future.",
       });
-
-    // -> Weitere Fehlerabfragen:
-    // Titel, Description sollen eine gewisse Länge nicht über- und unterschreiten
+    if (title < 5 || title > 20)
+      return res.status(422).json({
+        message: "Title must be between 5 and 20 characters.",
+      });
+    if (description < 20 || description > 500)
+      return res.status(422).json({
+        message: "Description must be between 20 and 500 characters.",
+      });
 
     // if (!authenticatedUserId)
     //   return res.status(400).json({
@@ -79,7 +64,7 @@ export const postAddEventCtrl = async (req, res) => {
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-
+    console.log(uploadResult);
     // finally create new Event ...
     const result = await Event.create({
       // userId: authenticatedUserId,
@@ -88,15 +73,68 @@ export const postAddEventCtrl = async (req, res) => {
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
       location,
-      categories,
+      categories: categories.split(","),
       description,
-      eventImage: uploadResult.secure_url,
+      eventImage: {
+        public_id: uploadResult.public_id,
+        secure_url: uploadResult.secure_url,
+      },
     });
+    console.log(result);
     res.json({ result });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ message: error.message || "Could not post new event." });
+  }
+};
+
+export const getUpcomingEventsCtrl = async (_, res) => {
+  try {
+    const result = await Event.find({
+      startDate: {
+        $gte: Date.now(),
+      },
+    }).sort({ startDate: 1 });
+    res.json({ result });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not find upcoming events." });
+  }
+};
+
+export const getSingleEventCtrl = async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+
+    const result = await Event.findById(eventId);
+    // # participants populaten
+    // # bookmarks auch?
+    res.json({ result });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not find this event." });
+  }
+};
+
+export const deleteEventCtrl = async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+
+    // mit Promise.all() alle Referenzen in Bookmarks, Registrations löschen -> Nachricht an User?
+    const deletedEvent = await Event.findByIdAndDelete(eventId);
+    // cloudinary
+    const deletedImg = await deleteImage(deletedEvent.eventImage.public_id);
+    res.json({ result });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not delete this event." });
   }
 };

@@ -9,7 +9,7 @@ const eventSchema = new mongoose.Schema(
     location: { type: String, required: true },
     categories: [{ type: String, required: true }],
     description: { type: String, required: true },
-    eventImage: { type: String }, // default: Profil-Bild ergänzen
+    eventImage: { public_id: { type: String }, secure_url: { type: String } }, // default: Profil-Bild ergänzen
   },
   { collection: "events", timestamps: true }
 );
