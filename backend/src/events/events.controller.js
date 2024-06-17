@@ -1,3 +1,5 @@
+import { Bookmark } from "../bookmarks/bookmarks.model.js";
+import { Participant } from "../eventRegistration/eventRegistration.model.js";
 import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
@@ -16,6 +18,7 @@ export const postAddEventCtrl = async (req, res) => {
       description,
     } = req.body;
     const eventImage = req.file;
+    console.log(typeof categories);
 
     const startDateTimestamp = new Date(startDate).getTime();
     const endDateTimestamp = new Date(endDate).getTime();
@@ -64,9 +67,9 @@ export const postAddEventCtrl = async (req, res) => {
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-    console.log(uploadResult);
+
     // finally create new Event ...
-    const result = await Event.create({
+    const newEvent = await Event.create({
       // userId: authenticatedUserId,
       userId,
       title,
@@ -80,8 +83,7 @@ export const postAddEventCtrl = async (req, res) => {
         secure_url: uploadResult.secure_url,
       },
     });
-    console.log(result);
-    res.json({ result });
+    res.json({ newEvent });
   } catch (error) {
     console.log(error);
     res
@@ -92,12 +94,18 @@ export const postAddEventCtrl = async (req, res) => {
 
 export const getUpcomingEventsCtrl = async (_, res) => {
   try {
-    const result = await Event.find({
+    const upcomingEvents = await Event.find({
       startDate: {
         $gte: Date.now(),
       },
     }).sort({ startDate: 1 });
-    res.json({ result });
+
+    if (!upcomingEvents)
+      return res.status(404).json({
+        message: "No upcoming events.",
+      });
+
+    res.json({ upcomingEvents });
   } catch (error) {
     console.log(error);
     res
@@ -110,10 +118,18 @@ export const getSingleEventCtrl = async (req, res) => {
   try {
     const eventId = req.params.eventId;
 
-    const result = await Event.findById(eventId);
-    // # participants populaten
-    // # bookmarks auch?
-    res.json({ result });
+    const [event, bookmarks, participants] = await Promise.all([
+      Event.findById(eventId),
+      Bookmark.find({ eventId }),
+      Participant.find({ eventId }),
+    ]);
+
+    if (!event)
+      return res.status(404).json({
+        message: `The event with the id ${eventId} does not exist.`,
+      });
+
+    res.json({ event, bookmarks, participants });
   } catch (error) {
     console.log(error);
     res
@@ -126,15 +142,87 @@ export const deleteEventCtrl = async (req, res) => {
   try {
     const eventId = req.params.eventId;
 
-    // mit Promise.all() alle Referenzen in Bookmarks, Registrations löschen -> Nachricht an User?
-    const deletedEvent = await Event.findByIdAndDelete(eventId);
-    // cloudinary
-    const deletedImg = await deleteImage(deletedEvent.eventImage.public_id);
-    res.json({ result });
+    // delete event with all referenced bookmarks and registrations
+    const [deletedEvent, deletedBookmarks, deletedParticipants] =
+      await Promise.all([
+        Event.findByIdAndDelete(eventId),
+        Bookmark.deleteMany({ eventId }),
+        Participant.deleteMany({ eventId }),
+      ]);
+
+    if (!deletedEvent)
+      return res.status(404).json({
+        message: `The event with the id ${eventId} does not exist.`,
+      });
+
+    // delete event image from cloudinary
+    deleteImage(deletedEvent.eventImage.public_id);
+
+    res.json({ message: "The event was deleted." });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ message: error.message || "Could not delete this event." });
+  }
+};
+
+export const patchEditEventCtrl = async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+    const eventToEdit = await Event.findById(eventId);
+    if (!eventToEdit)
+      return res.json({
+        message: `Could not find event with the id ${eventId}`,
+      });
+
+    //if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    const eventImage = req.file ? req.file : null;
+    if (eventImage) {
+      deleteImage(eventToEdit.eventImage.public_id);
+      const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
+      return uploadResult;
+    }
+
+    const startDateTimestamp = req.body.startDate
+      ? new Date(startDate).getTime()
+      : eventToEdit.startDate;
+    const endDateTimestamp = req.body.endDate
+      ? new Date(endDate).getTime()
+      : eventToEdit.endDate;
+
+    // #Error Handling noch einfügen
+    // authUser exists
+    // für die einzelnen Update-Inputs gelten die gleichen Regeln wie für addEvent-Inputs
+
+    const updateBody = {
+      title: req.body.title,
+      startDate: startDateTimestamp,
+      endDate: endDateTimestamp,
+      location: req.body.location,
+      categories: req.body.categories,
+      description: req.body.description,
+    };
+
+    const updateInfo = eventImage
+      ? {
+          ...updateBody,
+          eventImage: {
+            public_id: uploadResult.public_id,
+            secure_url: uploadResult.secure_url,
+          },
+        }
+      : updateBody;
+    console.log(updateInfo);
+
+    const editedEvent = await Event.findByIdAndUpdate(eventId, updateInfo, {
+      new: true,
+    });
+    res.json({ editedEvent });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not edit this event." });
   }
 };
