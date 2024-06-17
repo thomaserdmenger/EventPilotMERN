@@ -167,8 +167,9 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.json({
         message: `Could not find event with the id ${eventId}`,
       });
-    console.log({ bodyCtrl: req.body });
-    console.log({ fileCtrl: req.file });
+
+    const { title, startDate, endDate, location, categories, description } =
+      req.body;
 
     // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
     // else: take the old event-image infos and save them anew
@@ -187,16 +188,31 @@ export const patchEditEventCtrl = async (req, res) => {
     }
 
     // convert timestamps
-    const startDateTimestamp = req.body.startDate
-      ? new Date(req.body.startDate).getTime()
+    const startDateTimestamp = startDate
+      ? new Date(startDate).getTime()
       : eventToEdit.startDate;
-    const endDateTimestamp = req.body.endDate
-      ? new Date(req.body.endDate).getTime()
+    const endDateTimestamp = endDate
+      ? new Date(endDate).getTime()
       : eventToEdit.endDate;
     console.log(startDateTimestamp);
 
-    // #Error Handling noch einfügen
-    // für die einzelnen Update-Inputs gelten die gleichen Regeln wie für addEvent-Inputs
+    // Error Handling
+    if (startDateTimestamp > endDateTimestamp)
+      return res.status(422).json({
+        message: "Enddate must be later than startdate.",
+      });
+    if (startDateTimestamp < Date.now())
+      return res.status(422).json({
+        message: "Startdate must be in the future.",
+      });
+    if (title < 5 || title > 20)
+      return res.status(422).json({
+        message: "Title must be between 5 and 20 characters.",
+      });
+    if (description < 20 || description > 500)
+      return res.status(422).json({
+        message: "Description must be between 20 and 500 characters.",
+      });
     const authenticatedUserId = req.authenticatedUser._id;
     if (!authenticatedUserId)
       return res.status(400).json({
@@ -207,12 +223,12 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.status(404).json({ message: "This user does not exist." });
 
     const updateInfo = {
-      title: req.body.title,
+      title: title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
-      location: req.body.location,
-      categories: req.body.categories.split(","),
-      description: req.body.description,
+      location: location,
+      categories: categories.split(","),
+      description: description,
       "eventImage.public_id": public_id,
       "eventImage.secure_url": secure_url,
     };
