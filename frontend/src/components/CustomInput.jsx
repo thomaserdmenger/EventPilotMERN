@@ -7,7 +7,7 @@ const StyledOutlinedInput = styled(OutlinedInput)({
   color: '#7254EE',
   '& .MuiOutlinedInput-notchedOutline': {
     borderColor: '#7254EE',
-    borderRadius: '15px',
+    borderRadius: '16px',
   },
   '&:hover .MuiOutlinedInput-notchedOutline': {
     borderColor: '#5D3EDE',

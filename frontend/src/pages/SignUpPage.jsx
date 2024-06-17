@@ -1,35 +1,71 @@
+import { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { UserContext } from '../context/UserContext'
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 import EmailIcon from '@mui/icons-material/Email'
-import LockIcon from '@mui/icons-material/Lock'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
-import { useState } from 'react'
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
 import PasswordIcon from '@mui/icons-material/Password'
 import LogoCanvas from '../components/LogoCanvas'
 
 const SignUpPage = () => {
+  const { setUser } = useContext(UserContext)
+  const [errorMessage, setErrorMessage] = useState(false)
+  const [successMessage, setSuccessMassage] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [firstname, setfirstname] = useState('')
+  const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
   const [username, setUsername] = useState('')
 
   const navigate = useNavigate()
 
-  const signup = e => {
+  const handleSignUp = async e => {
     e.preventDefault()
-    navigate('/verify')
+
+    setErrorMessage(false)
+    setSuccessMassage(false)
+
+    if (!firstname || !lastname || !username || !email || !password) {
+      return setErrorMessage(true)
+    }
+
+    const res = await fetch(`${backendUrl}/api/v1/users/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+      }),
+    })
+
+    const data = await res.json()
+    setUser(data.user)
+
+    setTimeout(() => {
+      navigate('/verify-email')
+    }, 1000)
+
+    setSuccessMassage(true)
+    setErrorMessage(false)
+    setFirstname('')
+    setLastname('')
+    setUsername('')
+    setEmail('')
+    setPassword('')
   }
 
   return (
     <div className="min-h-svh flex flex-col justify-between px-5 pb-12  pt-4">
-      <div>
+      <div className="flex flex-col">
         <LogoCanvas scale={0.3} />
-        <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+        <h1 className="text-center mb-6 text-purple-1 self-center font-roboto-bold text-xl border-b-2 border-green-1">
           Sign Up
         </h1>
         <form className="flex flex-col gap-6">
@@ -37,7 +73,7 @@ const SignUpPage = () => {
             type={'text'}
             label={'Firstname'}
             icon={<AccountCircleIcon sx={{ color: '#00ECAA' }} />}
-            onChange={e => setfirstname(e.target.value)}
+            onChange={e => setFirstname(e.target.value)}
             value={firstname}
           />
           <CustomInput
@@ -84,10 +120,10 @@ const SignUpPage = () => {
           borderRadius={'15px'}
           bgcolor={'#7254EE'}
           bgcolorHover={'#5D3EDE'}
-          padding={'15px'}
+          padding={'16px'}
           text={'Sign Up'}
           endIcon={<ArrowCircleRightIcon />}
-          onClick={signup}
+          onClick={handleSignUp}
         />
         <p className="text-sm text-green-1">
           Don’t have an account?{' '}
