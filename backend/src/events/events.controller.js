@@ -1,21 +1,6 @@
+import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
-
-export const getUpcomingEventsCtrl = async (_, res) => {
-  try {
-    const result = await Event.find({
-      startDate: {
-        $gte: Date.now(),
-      },
-    }).sort({ startDate: 1 });
-    res.json({ result });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .json({ message: error.message || "Could not find upcoming events." });
-  }
-};
 
 export const postAddEventCtrl = async (req, res) => {
   try {
@@ -79,7 +64,7 @@ export const postAddEventCtrl = async (req, res) => {
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
-
+    console.log(uploadResult);
     // finally create new Event ...
     const result = await Event.create({
       // userId: authenticatedUserId,
@@ -90,14 +75,34 @@ export const postAddEventCtrl = async (req, res) => {
       location,
       categories: categories.split(","),
       description,
-      eventImage: uploadResult.secure_url,
+      eventImage: {
+        public_id: uploadResult.public_id,
+        secure_url: uploadResult.secure_url,
+      },
     });
+    console.log(result);
     res.json({ result });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ message: error.message || "Could not post new event." });
+  }
+};
+
+export const getUpcomingEventsCtrl = async (_, res) => {
+  try {
+    const result = await Event.find({
+      startDate: {
+        $gte: Date.now(),
+      },
+    }).sort({ startDate: 1 });
+    res.json({ result });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not find upcoming events." });
   }
 };
 
@@ -114,5 +119,22 @@ export const getSingleEventCtrl = async (req, res) => {
     res
       .status(500)
       .json({ message: error.message || "Could not find this event." });
+  }
+};
+
+export const deleteEventCtrl = async (req, res) => {
+  try {
+    const eventId = req.params.eventId;
+
+    // mit Promise.all() alle Referenzen in Bookmarks, Registrations löschen -> Nachricht an User?
+    const deletedEvent = await Event.findByIdAndDelete(eventId);
+    // cloudinary
+    const deletedImg = await deleteImage(deletedEvent.eventImage.public_id);
+    res.json({ result });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: error.message || "Could not delete this event." });
   }
 };
