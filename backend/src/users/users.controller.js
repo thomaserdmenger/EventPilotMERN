@@ -6,6 +6,8 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { createAccessToken } from "../utils/createAccessToken.js";
 import { trusted } from "mongoose";
 import { Bookmark } from "../bookmarks/bookmarks.model.js";
+import { Participant } from "../eventRegistration/eventRegistration.model.js";
+import { Follower } from "../followers/followers.model.js";
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -42,6 +44,29 @@ export const registerUserCtrl = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not register user." });
+  }
+};
+
+export const resentEmailCtrl = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json("User not found. Please register.");
+    if (user.isVerified) return res.status(400).json("User is already verified.");
+
+    await sendEmail({
+      to: user.email,
+      subject: "Welcome to Event Pilot",
+      text: `Hi ${user.firstname} ${user.lastname},
+        Welcome to Event Pilot.
+        Please enter your 6 Digit Code to verify your Email-address: ${user.verificationCode}`,
+    });
+
+    res.json({ message: "Email successfully resent" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message || "Could not resend validation code." });
   }
 };
 
@@ -93,10 +118,10 @@ export const loginUserCtrl = async (req, res) => {
     res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
 
     const bookmarks = await Bookmark.find({ userId: user._id });
+    const registerdEvents = await Participant.find({ userId: user._id });
+    const followedUsers = await Follower.find({ userId: user._id });
 
-    // # Add Participants (Registered Events)
-
-    res.json({ user: userToView(user), bookmarks });
+    res.json({ user: userToView(user), bookmarks, registerdEvents, followedUsers });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not login user." });

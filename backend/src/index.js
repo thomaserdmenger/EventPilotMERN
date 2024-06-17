@@ -8,6 +8,8 @@ import cloudinary from "cloudinary";
 import { userRouter } from "./users/users.routes.js";
 import { eventRouter } from "./events/events.routes.js";
 import { bookmarkRouter } from "./bookmarks/bookmarks.routes.js";
+import { followerRouter } from "./followers/followers.routes.js";
+import { participantRouter } from "./eventRegistration/eventRegistration.routes.js";
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.use(morgan("dev"));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/bookmarks", bookmarkRouter);
+app.use("/api/v1/eventRegistration", participantRouter);
+app.use("/api/v1/followers", followerRouter);
 
 await mongoose.connect(process.env.MONGODB_URI, { dbName: "EventPilot" });
 const PORT = process.env.PORT || 9000;
