@@ -119,10 +119,10 @@ export const loginUserCtrl = async (req, res) => {
     res.cookie("accessToken", accessToken, { maxAge: 28 * 24 * 3600 * 1000, httpOnly: true });
 
     const bookmarks = await Bookmark.find({ userId: user._id });
-    const registerdEvents = await Participant.find({ userId: user._id });
+    const registeredEvents = await Participant.find({ userId: user._id });
     const followedUsers = await Follower.find({ userId: user._id });
 
-    res.json({ user: userToView(user), bookmarks, registerdEvents, followedUsers });
+    res.json({ user: userToView(user), bookmarks, registeredEvents, followedUsers });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message || "Could not login user." });
