@@ -3,7 +3,12 @@ import { Navigate } from 'react-router-dom'
 import { LoggedInContext } from '../context/LoggedInContext'
 
 const AuthRequired = ({ children }) => {
-  const { loggedIn } = useContext(LoggedInContext)
+  const { loggedIn, loading } = useContext(LoggedInContext)
+
+  if (loading) {
+    return null
+  }
+
   return loggedIn ? children : <Navigate to="/signin" />
 }
 

@@ -1,12 +1,53 @@
 import CustomInput from '../components/CustomInput'
 import CustomButton from '../components/CustomButton'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import { useNavigate } from 'react-router-dom'
 import LockIcon from '@mui/icons-material/Lock'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import LogoCanvas from '../components/LogoCanvas'
+import { backendUrl } from '../api/api'
+import { UserContext } from '../context/UserContext'
 
 const VerifyEmailPage = () => {
-  const [code, setCode] = useState('')
+  const [sixDigitCode, setSixDigitCode] = useState('')
+  const { user, setUser } = useContext(UserContext)
+  const [errorMessage, setErrorMessage] = useState(false)
+  const [successMessage, setSuccessMassage] = useState(false)
+  const navigate = useNavigate()
+
+  const handleVerify = async e => {
+    e.preventDefault()
+
+    setErrorMessage(false)
+    setSuccessMassage(false)
+
+    if (!sixDigitCode) {
+      return setErrorMessage(true)
+    }
+
+    const res = await fetch(`${backendUrl}/api/v1/users/verify-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: user.email,
+        sixDigitCode,
+      }),
+    })
+
+    const data = await res.json()
+
+    if (!data.user.isVerified) {
+      setSuccessMassage(false)
+      setErrorMessage(true)
+    }
+
+    setSuccessMassage(true)
+    setErrorMessage(false)
+
+    navigate('/signin')
+
+    setSixDigitCode('')
+  }
 
   return (
     <div className="min-h-svh flex flex-col justify-between px-5 pb-12  pt-4">
@@ -20,8 +61,8 @@ const VerifyEmailPage = () => {
             type="text"
             label="Code"
             icon={<LockIcon sx={{ color: '#00ECAA' }} />}
-            onChange={e => setCode(e.target.value)}
-            value={code}
+            onChange={e => setSixDigitCode(e.target.value)}
+            value={sixDigitCode}
           />
           <p className="text-sm text-green-1">
             Don’t have a code?{' '}
@@ -41,6 +82,7 @@ const VerifyEmailPage = () => {
           padding="15px"
           text="Verify"
           endIcon={<VerifiedUserIcon />}
+          onClick={handleVerify}
         />
       </div>
     </div>

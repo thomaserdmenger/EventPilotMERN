@@ -51,11 +51,10 @@ const SignUpPage = () => {
     })
 
     const data = await res.json()
+    // console.log({ data })
     setUser(data.user)
 
-    setTimeout(() => {
-      navigate('/verifyemail')
-    }, 1000)
+    navigate('/verifyemail')
 
     setSuccessMassage(true)
     setErrorMessage(false)
