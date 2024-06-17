@@ -1,5 +1,14 @@
+import { useNavigate } from "react-router-dom";
+import HeaderNav from "../components/HeaderNav";
+
 const UserProfilePage = () => {
-  return <h1>eingeloggter User Profile</h1>;
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <HeaderNav />
+    </>
+  );
 };
 
 export default UserProfilePage;
