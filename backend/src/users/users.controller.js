@@ -9,6 +9,9 @@ import { Bookmark } from "../bookmarks/bookmarks.model.js";
 import { Participant } from "../eventRegistration/eventRegistration.model.js";
 import { Follower } from "../followers/followers.model.js";
 import { Review } from "../reviews/reviews.model.js";
+import { deleteImage } from "../utils/deleteImage.js";
+import { uploadImage } from "../utils/uploadImage.js";
+
 
 export const registerUserCtrl = async (req, res) => {
   try {
@@ -44,7 +47,9 @@ export const registerUserCtrl = async (req, res) => {
     res.json({ user: userToView(registerdUser) });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.message || "Could not register user." });
+    res
+      .status(500)
+      .json({ message: error.message || "Could not register user." });
   }
 };
 
@@ -53,6 +58,7 @@ export const resentEmailCtrl = async (req, res) => {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
+
     if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
     if (user.isVerified) return res.status(400).json({ errorMessage: "User is already verified." });
 
@@ -68,7 +74,7 @@ export const resentEmailCtrl = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      errorMessage: error.message || "Could not resend validation code.",
+      message: error.message || "Could not resend validation code.",
     });
   }
 };
@@ -78,6 +84,7 @@ export const verifyUserEmailCtrl = async (req, res) => {
     const { email, verificationCode } = req.body;
 
     const user = await User.findOne({ email });
+
 
     if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
 
@@ -95,7 +102,9 @@ export const verifyUserEmailCtrl = async (req, res) => {
     res.json({ user: userToView(verifiedUser) });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ errorMessage: error.message || "Could not verify user email." });
+    res
+      .status(500)
+      .json({ message: error.message || "Could not verify user email." });
   }
 };
 
@@ -105,7 +114,7 @@ export const loginUserCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage: "User not found. Please register."});
 
     if (!user.isVerified)
       return res.status(400).json({
@@ -116,7 +125,7 @@ export const loginUserCtrl = async (req, res) => {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json("Incorrect password. Please try again.");
+      return res.status(400).json({errorMessage:"Incorrect password. Please try again."});
     }
 
     const accessToken = createAccessToken(user);
@@ -138,7 +147,7 @@ export const loginUserCtrl = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ errorMessage: error.message || "Could not login user." });
+    res.status(500).json({ message: error.message || "Could not login user." });
   }
 };
 
@@ -148,7 +157,9 @@ export const logoutUserCtrl = async (req, res) => {
     res.json({ message: "Logout successful!" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.message || "Could not logout user." });
+    res
+      .status(500)
+      .json({ message: error.message || "Could not logout user." });
   }
 };
 
@@ -157,7 +168,7 @@ export const showOneUserCtrl = async (req, res) => {
     const userId = req.params.userId;
 
     const user = await User.findById(userId);
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage:"User not found. Please register."});
 
     const receivedReviews = await Review.find({
       reviewedUserId: userId,
@@ -174,20 +185,31 @@ export const showOneUserCtrl = async (req, res) => {
 
 export const patchUserCtrl = async (req, res) => {
   try {
-    // req.body => zu ändernde Daten
+    const user = await User.findById(req.authenticatedUser._id);
+    if (!user) return res.status(400).json({errorMessage:"User not found. Please register."});
 
     const { firstname, lastname, username, bio, interests } = req.body;
-    console.log(req.body);
 
-    const user = await User.findById(req.authenticatedUser._id);
-    if (!user) return res.status(400).json("User not found. Please register.");
+    // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
+    // else: take the old event-image infos and save them anew
+    const profileImage = req.file ? req.file : null;
+    let public_id;
+    let secure_url;
+    if (profileImage) {
+      deleteImage(user.profileImage.public_id);
+      const uploadResult = await uploadImage(
+        profileImage.buffer,
+        "profileImages"
+      );
+      public_id = uploadResult.public_id;
+      secure_url = uploadResult.secure_url;
+    } else {
+      public_id = user.profileImage.public_id;
+      secure_url = user.profileImage.public_id;
+    }
 
-    const image = req.file;
-    // hier Aufruf von uploadImage(image.buffer) in Abhängigkeit davon, ob ein image existiert
-    const uploadResult = image ? await uploadProfileImage(image.buffer) : undefined;
-    // hier alle weiteren Funktionen, um den User zu speichern
-    // und uploadResult.secure_url als imageProfile im user speichern
 
+    // update authenticated user infos
     const updatedUser = await User.findByIdAndUpdate(
       req.authenticatedUser._id,
       {
@@ -195,7 +217,9 @@ export const patchUserCtrl = async (req, res) => {
         lastname,
         username,
         bio,
-        interests,
+        interests: interests.split(","),
+        "profileImage.public_id": public_id,
+        "profileImage.secure_url": secure_url,
       },
       { new: true }
     );
@@ -210,7 +234,7 @@ export const patchUserCtrl = async (req, res) => {
 export const deleteOneUserCtrl = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.authenticatedUser._id);
-    if (!user) return res.status(400).json("User not found. Please register.");
+    if (!user) return res.status(400).json({errorMessage: "User not found. Please register."});
 
     res.clearCookie("accessToken");
 

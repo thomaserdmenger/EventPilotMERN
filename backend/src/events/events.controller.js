@@ -27,35 +27,37 @@ export const postAddEventCtrl = async (req, res) => {
     )
       return res.status(422).json({
         // 422 Unprocessable Entity
-        message: "Please fill in all input fields and add an image.",
+        errorMessage: "Please fill in all input fields and add an image.",
       });
 
     if (startDateTimestamp > endDateTimestamp)
       return res.status(422).json({
-        message: "Enddate must be later than startdate.",
+        errorMessage: "Enddate must be later than startdate.",
       });
 
     if (startDateTimestamp < Date.now())
       return res.status(422).json({
-        message: "Startdate must be in the future.",
+        errorMessage: "Startdate must be in the future.",
       });
     if (title < 5 || title > 20)
       return res.status(422).json({
-        message: "Title must be between 5 and 20 characters.",
+        errorMessage: "Title must be between 5 and 20 characters.",
       });
     if (description < 20 || description > 500)
       return res.status(422).json({
-        message: "Description must be between 20 and 500 characters.",
+        errorMessage: "Description must be between 20 and 500 characters.",
       });
 
     if (!authenticatedUserId)
       return res.status(400).json({
-        message: "You are not authorized.",
+        errorMessage: "You are not authorized.",
       });
 
     const authenticatedUser = await User.findById(authenticatedUserId);
     if (!authenticatedUser)
-      return res.status(404).json({ message: "This user does not exist." });
+      return res
+        .status(404)
+        .json({ errorMessage: "This user does not exist." });
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
@@ -94,7 +96,7 @@ export const getUpcomingEventsCtrl = async (_, res) => {
 
     if (!upcomingEvents)
       return res.status(404).json({
-        message: "No upcoming events.",
+        errorMessage: "No upcoming events.",
       });
 
     res.json({ upcomingEvents });
@@ -118,7 +120,7 @@ export const getSingleEventCtrl = async (req, res) => {
 
     if (!event)
       return res.status(404).json({
-        message: `The event with the id ${eventId} does not exist.`,
+        errorMessage: `The event with the id ${eventId} does not exist.`,
       });
 
     res.json({ event, bookmarks, participants });
@@ -144,7 +146,7 @@ export const deleteEventCtrl = async (req, res) => {
 
     if (!deletedEvent)
       return res.status(404).json({
-        message: `The event with the id ${eventId} does not exist.`,
+        errorMessage: `The event with the id ${eventId} does not exist.`,
       });
 
     // delete event image from cloudinary
@@ -165,7 +167,7 @@ export const patchEditEventCtrl = async (req, res) => {
     const eventToEdit = await Event.findById(eventId);
     if (!eventToEdit)
       return res.json({
-        message: `Could not find event with the id ${eventId}`,
+        errorMessage: `Could not find event with the id ${eventId}`,
       });
 
     const { title, startDate, endDate, location, categories, description } =
@@ -197,29 +199,32 @@ export const patchEditEventCtrl = async (req, res) => {
     // Error Handling
     if (startDateTimestamp > endDateTimestamp)
       return res.status(422).json({
-        message: "Enddate must be later than startdate.",
+        errorMessage: "Enddate must be later than startdate.",
       });
     if (startDateTimestamp < Date.now())
       return res.status(422).json({
-        message: "Startdate must be in the future.",
+        errorMessage: "Startdate must be in the future.",
       });
     if (title < 5 || title > 20)
       return res.status(422).json({
-        message: "Title must be between 5 and 20 characters.",
+        errorMessage: "Title must be between 5 and 20 characters.",
       });
     if (description < 20 || description > 500)
       return res.status(422).json({
-        message: "Description must be between 20 and 500 characters.",
+        errorMessage: "Description must be between 20 and 500 characters.",
       });
     const authenticatedUserId = req.authenticatedUser._id;
     if (!authenticatedUserId)
       return res.status(400).json({
-        message: "You are not authorized.",
+        errorMessage: "You are not authorized.",
       });
     const authenticatedUser = await User.findById(authenticatedUserId);
     if (!authenticatedUser)
-      return res.status(404).json({ message: "This user does not exist." });
+      return res
+        .status(404)
+        .json({ errorMessage: "This user does not exist." });
 
+    // update event
     const updateInfo = {
       title: title,
       startDate: startDateTimestamp,

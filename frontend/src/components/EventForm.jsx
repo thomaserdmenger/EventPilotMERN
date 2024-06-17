@@ -65,7 +65,7 @@ const EventForm = ({ eventToEdit }) => {
     // }
     const data = await res.json();
 
-    if (!data.result) return setErrorMessage(data.message);
+    if (data.message) return setErrorMessage(data.message);
     setErrorMessage("");
   };
 
