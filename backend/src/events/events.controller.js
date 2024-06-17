@@ -1,3 +1,5 @@
+import { Bookmark } from "../bookmarks/bookmarks.model.js";
+import { Participant } from "../eventRegistration/eventRegistration.model.js";
 import { deleteImage } from "../utils/deleteImage.js";
 import { uploadImage } from "../utils/uploadImage.js";
 import { Event } from "./events.model.js";
@@ -66,7 +68,7 @@ export const postAddEventCtrl = async (req, res) => {
     const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
     console.log(uploadResult);
     // finally create new Event ...
-    const result = await Event.create({
+    const newEvent = await Event.create({
       // userId: authenticatedUserId,
       userId,
       title,
@@ -80,8 +82,7 @@ export const postAddEventCtrl = async (req, res) => {
         secure_url: uploadResult.secure_url,
       },
     });
-    console.log(result);
-    res.json({ result });
+    res.json({ newEvent });
   } catch (error) {
     console.log(error);
     res
@@ -92,12 +93,12 @@ export const postAddEventCtrl = async (req, res) => {
 
 export const getUpcomingEventsCtrl = async (_, res) => {
   try {
-    const result = await Event.find({
+    const upcomingEvents = await Event.find({
       startDate: {
         $gte: Date.now(),
       },
     }).sort({ startDate: 1 });
-    res.json({ result });
+    res.json({ upcomingEvents });
   } catch (error) {
     console.log(error);
     res
@@ -110,10 +111,13 @@ export const getSingleEventCtrl = async (req, res) => {
   try {
     const eventId = req.params.eventId;
 
-    const result = await Event.findById(eventId);
-    // # participants populaten
-    // # bookmarks auch?
-    res.json({ result });
+    const [event, bookmarks, participants] = await Promise.all([
+      Event.findById(eventId),
+      Bookmark.find({ eventId }),
+      Participant.find({ eventId }),
+    ]);
+
+    res.json({ event, bookmarks, participants });
   } catch (error) {
     console.log(error);
     res
