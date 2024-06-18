@@ -29,7 +29,7 @@ const UserProfilePage = () => {
   };
 
   return (
-    <>
+    <div className="min-h-svh">
       <HeaderNav />
       <section>
         <div className=" flex justify-center mb-[40px] mt-2">
@@ -82,22 +82,24 @@ const UserProfilePage = () => {
           </h2>
           <p className="text-grey-2 font-roboto-thin">{user?.user?.bio}</p>
         </article>
-        <article className="px-8 mb-9">
-          <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
-          <div className="flex gap-2 flex-wrap">
-            {user?.user?.interests?.sort().map((item, index) => {
-              return (
-                <p
-                  key={index}
-                  className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
-                  {item}
-                </p>
-              );
-            })}
-          </div>
-        </article>
+        {user?.user?.interests?.length > 0 && (
+          <article className="px-8 mb-9">
+            <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
+            <div className="flex gap-2 flex-wrap">
+              {user?.user?.interests?.sort().map((item, index) => {
+                return (
+                  <p
+                    key={index}
+                    className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
+                    {item}
+                  </p>
+                );
+              })}
+            </div>
+          </article>
+        )}
       </section>
-    </>
+    </div>
   );
 };
 
