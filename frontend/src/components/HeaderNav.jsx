@@ -8,8 +8,6 @@ const HeaderNav = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
-  console.log(user);
-
   return (
     <header className="relative flex justify-center pt-6">
       {/* Arrow Circle Left abhängig vom Pfad => ERGÄNZEN bzw. ANPASSEN */}

@@ -1,20 +1,22 @@
-import { useNavigate } from "react-router-dom";
 import HeaderNav from "../components/HeaderNav";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { backendUrl } from "../api/api";
+import { UserContext } from "../context/UserContext";
 
 const UserProfilePage = () => {
-  const [followedUsers, setFollowedUser] = useState(0);
-  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
+  const [followers, setFollowers] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${backendUrl}/api/v1/followers`, { credentials: "include" });
+      const res = await fetch(`${backendUrl}/api/v1/followers/followed`, {
+        credentials: "include",
+      });
       const data = await res.json();
-      // console.log({ data });
+      setFollowers(data?.followers?.length);
     };
 
-    // fetchData();
+    fetchData();
   }, []);
 
   return (
@@ -24,12 +26,12 @@ const UserProfilePage = () => {
         <p>UserImage</p>
         <div className="flex gap-6">
           <div>
-            <p>{followedUsers}</p>
+            <p>{user?.followedUsers?.length}</p>
             <p>Following</p>
           </div>
           <div>
-            <p>Zahl</p>
-            <p>Following</p>
+            <p>{followers}</p>
+            <p>Followers</p>
           </div>
         </div>
       </div>
