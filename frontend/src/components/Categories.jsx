@@ -3,7 +3,7 @@ import { categories } from "../constants/categories";
 const Categories = ({ categoriesArray, setCategoriesArray }) => {
   // check if clicked category is already part of array -> return boolean
   const checkCategoriesArray = (category) => {
-    return categoriesArray.some((item) => category === item);
+    return categoriesArray?.some((item) => category === item);
   };
 
   // depending on checked click: either add or delete category from array -> return updated array
@@ -33,8 +33,7 @@ const Categories = ({ categoriesArray, setCategoriesArray }) => {
                 : "text-[#9CA3AF] cursor-pointer"
             }
             key={singleCategory}
-            name={singleCategory}
-          >
+            name={singleCategory}>
             {singleCategory}
           </p>
         ))}

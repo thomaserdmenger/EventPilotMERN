@@ -20,8 +20,6 @@ const UserProfilePageEdit = () => {
   const [bio, setBio] = useState(user?.user?.bio || "About me");
   const [categoriesArray, setCategoriesArray] = useState(user?.user?.interests);
 
-  console.log(categoriesArray);
-
   const navigate = useNavigate();
 
   const handleSubmitEdit = async (e) => {
@@ -40,6 +38,7 @@ const UserProfilePageEdit = () => {
     const data = await res.json();
 
     setUser({ ...user, user: data.user });
+    localStorage.setItem("user", JSON.stringify({ ...user, user: data.user }));
 
     setTimeout(() => {
       navigate("/userprofile");
