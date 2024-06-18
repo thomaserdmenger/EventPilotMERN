@@ -8,7 +8,9 @@ const HostProfilePage = () => {
   const [host, setHost] = useState({});
   const [userFollows, setUserFollows] = useState(0);
   const [userFollowers, setUserFollowers] = useState(0);
-  // console.log(hostId);
+  const [toggleAbout, setToggleAbout] = useState(true);
+  const [toggleEvents, setToggleEvents] = useState(false);
+  const [toggleReviews, setToggleReviews] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +50,7 @@ const HostProfilePage = () => {
   return (
     <div className="min-h-svh">
       <HeaderNav />
-      <section>
+      <section className="px-8">
         <article className=" flex justify-center mb-[40px] mt-2">
           {host?.user?.profileImage?.public_id ? (
             <img
@@ -73,6 +75,44 @@ const HostProfilePage = () => {
           <div className="flex flex-col items-center text-center">
             <p>{userFollowers}</p>
             <p className="text-grey-2 font-roboto-thin text-[14px]">Followers</p>
+          </div>
+        </article>
+        <article className="flex justify-center gap-2 mb-9">
+          <p>FollowButton</p>
+          <p>RewiewButton</p>
+        </article>
+        <article>
+          <nav className="flex justify-between font-roboto-regular mb-4 uppercase">
+            <p
+              className={`${toggleAbout && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleAbout(true);
+                setToggleEvents(false);
+                setToggleReviews(false);
+              }}>
+              About
+            </p>
+            <p
+              className={`${toggleEvents && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleEvents(true);
+                setToggleAbout(false);
+                setToggleReviews(false);
+              }}>
+              Events
+            </p>
+            <p
+              className={`${toggleReviews && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleReviews(true);
+                setToggleAbout(false);
+                setToggleEvents(false);
+              }}>
+              Reviews
+            </p>
+          </nav>
+          <div>
+            {toggleAbout && <p className="font-roboto-thin break-all">{host?.user?.bio}</p>}
           </div>
         </article>
       </section>
