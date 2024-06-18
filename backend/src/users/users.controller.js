@@ -20,9 +20,7 @@ export const registerUserCtrl = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-      return res
-        .status(400)
-        .json({ errorMessage: "User with this email exists" });
+      return res.status(400).json({ errorMessage: "User with this email exists" });
     }
 
     const saltRounds = 10;
@@ -49,9 +47,7 @@ export const registerUserCtrl = async (req, res) => {
     res.json({ user: userToView(registerdUser) });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: error.message || "Could not register user." });
+    res.status(500).json({ message: error.message || "Could not register user." });
   }
 };
 
@@ -61,14 +57,8 @@ export const resentEmailCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user)
-      return res
-        .status(400)
-        .json({ errorMessage: "User not found. Please register." });
-    if (user.isVerified)
-      return res
-        .status(400)
-        .json({ errorMessage: "User is already verified." });
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
+    if (user.isVerified) return res.status(400).json({ errorMessage: "User is already verified." });
 
     await sendEmail({
       to: user.email,
@@ -93,18 +83,12 @@ export const verifyUserEmailCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user)
-      return res
-        .status(400)
-        .json({ errorMessage: "User not found. Please register." });
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
 
-    if (user.isVerified)
-      return res.status(400).json({ errorMessage: "E-Mail already verified." });
+    if (user.isVerified) return res.status(400).json({ errorMessage: "E-Mail already verified." });
 
     if (user.verificationCode !== verificationCode)
-      return res
-        .status(500)
-        .json({ errorMessage: "Wrong Verification Code. Try again." });
+      return res.status(500).json({ errorMessage: "Wrong Verification Code. Try again." });
 
     const verifiedUser = await User.findOneAndUpdate(
       { email },
@@ -115,9 +99,7 @@ export const verifyUserEmailCtrl = async (req, res) => {
     res.json({ user: userToView(verifiedUser) });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: error.message || "Could not verify user email." });
+    res.status(500).json({ message: error.message || "Could not verify user email." });
   }
 };
 
@@ -127,24 +109,18 @@ export const loginUserCtrl = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user)
-      return res
-        .status(400)
-        .json({ errorMessage: "User not found. Please register." });
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
 
     if (!user.isVerified)
       return res.status(400).json({
         user,
-        errorMessage:
-          "Please verify your Email address to login to your account.",
+        errorMessage: "Please verify your Email address to login to your account.",
       });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res
-        .status(400)
-        .json({ errorMessage: "Incorrect password. Please try again." });
+      return res.status(400).json({ errorMessage: "Incorrect password. Please try again." });
     }
 
     const accessToken = createAccessToken(user);
@@ -176,9 +152,7 @@ export const logoutUserCtrl = async (req, res) => {
     res.json({ message: "Logout successful!" });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: error.message || "Could not logout user." });
+    res.status(500).json({ message: error.message || "Could not logout user." });
   }
 };
 
@@ -187,10 +161,7 @@ export const showOneUserCtrl = async (req, res) => {
     const userId = req.params.userId;
 
     const user = await User.findById(userId);
-    if (!user)
-      return res
-        .status(400)
-        .json({ errorMessage: "User not found. Please register." });
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
 
     const receivedReviews = await Review.find({
       reviewedUserId: userId,
@@ -208,10 +179,7 @@ export const showOneUserCtrl = async (req, res) => {
 export const patchUserCtrl = async (req, res) => {
   try {
     const user = await User.findById(req.authenticatedUser._id);
-    if (!user)
-      return res
-        .status(400)
-        .json({ errorMessage: "User not found. Please register." });
+    if (!user) return res.status(400).json({ errorMessage: "User not found. Please register." });
 
     const { firstname, lastname, username, bio, interests } = req.body;
 
@@ -222,10 +190,7 @@ export const patchUserCtrl = async (req, res) => {
     let secure_url;
     if (profileImage) {
       deleteImage(user.profileImage.public_id);
-      const uploadResult = await uploadImage(
-        profileImage.buffer,
-        "profileImages"
-      );
+      const uploadResult = await uploadImage(profileImage.buffer, "profileImages");
       public_id = uploadResult.public_id;
       secure_url = uploadResult.secure_url;
     } else {
@@ -241,7 +206,7 @@ export const patchUserCtrl = async (req, res) => {
         lastname,
         username,
         bio,
-        interests: interests.split(","),
+        interests: interests?.split(","),
         "profileImage.public_id": public_id,
         "profileImage.secure_url": secure_url,
       },
@@ -279,9 +244,7 @@ export const deleteOneUserCtrl = async (req, res) => {
       });
 
     // delete cloudinary images of deleted events
-    foundEvents.map((singleEvent) =>
-      deleteImage(singleEvent.eventImage.public_id)
-    );
+    foundEvents.map((singleEvent) => deleteImage(singleEvent.eventImage.public_id));
 
     res.clearCookie("accessToken");
 

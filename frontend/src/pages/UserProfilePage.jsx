@@ -5,7 +5,6 @@ import { UserContext } from "../context/UserContext";
 import { FaRegEdit } from "react-icons/fa";
 import CustomButton from "../components/CustomButton";
 import { useNavigate } from "react-router-dom";
-import { categories } from "../constants/categories.js";
 
 const UserProfilePage = () => {
   const { user } = useContext(UserContext);
@@ -33,8 +32,20 @@ const UserProfilePage = () => {
     <>
       <HeaderNav />
       <section>
-        <div className=" flex justify-center mb-[40px] mt-6">
-          <p>UserImage</p>
+        <div className=" flex justify-center mb-[40px] mt-2">
+          {user?.user?.profileImage?.public_id ? (
+            <img
+              className="rounded-full max-h-40"
+              src={user?.user?.profileImage?.secure_url}
+              alt="User Image"
+            />
+          ) : (
+            <img
+              className="rounded-full max-h-40"
+              src="/images/avatar_default.png"
+              alt="User Image"
+            />
+          )}
         </div>
         <article className="flex gap-6 justify-center items-center mb-9">
           <div className="flex flex-col items-center text-center">
@@ -63,7 +74,12 @@ const UserProfilePage = () => {
           />
         </article>
         <article className="px-8 mb-9">
-          <h2 className="text-[18px] mb-[10px] font-roboto-medium">About me</h2>
+          <h2 className="text-[18px] mb-[10px] font-roboto-medium">
+            About{" "}
+            <span className="text-purple-1">
+              {user?.user?.firstname} {user?.user?.lastname}
+            </span>
+          </h2>
           <p className="text-grey-2 font-roboto-thin">{user?.user?.bio}</p>
         </article>
         <article className="px-8 mb-9">
@@ -71,7 +87,9 @@ const UserProfilePage = () => {
           <div className="flex gap-2 flex-wrap">
             {user?.user?.interests?.sort().map((item, index) => {
               return (
-                <p key={index} className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px]">
+                <p
+                  key={index}
+                  className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
                   {item}
                 </p>
               );
