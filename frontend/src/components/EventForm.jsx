@@ -4,10 +4,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useState } from "react";
 import { backendUrl } from "../api/api";
-import { categories } from "../constants/categories.js";
 import CustomInput from "./CustomInput.jsx";
 import CustomButton from "./CustomButton.jsx";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import Categories from "./Categories.jsx";
 
 const EventForm = ({ eventToEdit }) => {
   const [errorMessage, setErrorMessage] = useState();
@@ -26,24 +26,6 @@ const EventForm = ({ eventToEdit }) => {
       setDescription(eventToEdit.description);
     }
   }, [eventToEdit]);
-
-  // check if clicked category is already part of array -> return boolean
-  const checkCategoriesArray = (category) => {
-    return categoriesArray.some((item) => category === item);
-  };
-
-  // depending on checked click: either add or delete category from array -> return updated array
-  const handleCatArray = (category) => {
-    const isClicked = checkCategoriesArray(category);
-    if (isClicked) {
-      // wenn true: filtern und state neu setzen
-      const filteredArray = categoriesArray.filter((item) => item !== category);
-      return setCategoriesArray(filteredArray);
-    } else if (!isClicked) {
-      // wenn false: spread und speichern
-      return setCategoriesArray([...categoriesArray, category]);
-    }
-  };
 
   // add event fetch
   const addEvent = async (e) => {
@@ -125,30 +107,12 @@ const EventForm = ({ eventToEdit }) => {
             onChange={(e) => setLocation(e.target.value)}
           />
 
-          <div className="border border-[#7254EE] rounded-[16px] p-4 relative">
-            <h3 className="absolute top-[-10px] text-[#7254EE] text-[13px] bg-white px-1 ml-[-6px] font-roboto-thin">
-              Categories
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {categories?.map((singleCategory) => (
-                <p
-                  onClick={() => handleCatArray(singleCategory)}
-                  className={
-                    checkCategoriesArray(singleCategory)
-                      ? "text-[#7254EE]"
-                      : "text-[#9CA3AF]"
-                  }
-                  key={singleCategory}
-                  name={singleCategory}
-                >
-                  {singleCategory}
-                </p>
-              ))}
-            </div>
-          </div>
+          <Categories
+            categoriesArray={categoriesArray}
+            setCategoriesArray={setCategoriesArray}
+          />
 
           <textarea
-            className="border border-[#7254EE]"
             type="text"
             placeholder="Describe your event"
             name="description"

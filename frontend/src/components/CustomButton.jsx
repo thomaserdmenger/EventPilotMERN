@@ -30,7 +30,8 @@ const CustomButton = ({
         textTransform: "none",
         border: border,
         height: height,
-      }}>
+      }}
+    >
       {text}
     </Button>
   );
