@@ -1,7 +1,8 @@
-import { Button } from '@mui/material'
+import { Button } from "@mui/material";
 
 const CustomButton = ({
   bgcolor,
+  color,
   bgcolorHover,
   padding,
   borderRadius,
@@ -20,18 +21,19 @@ const CustomButton = ({
       onClick={onClick}
       sx={{
         bgcolor: bgcolor,
-        ':hover': { bgcolor: bgcolorHover },
+        color: color,
+        ":hover": { bgcolor: bgcolorHover },
         padding: padding,
         borderRadius: borderRadius,
         width: width,
         fontSize: fontSize,
-        textTransform: 'none',
+        textTransform: "none",
         border: border,
         height: height,
       }}>
       {text}
     </Button>
-  )
-}
+  );
+};
 
-export default CustomButton
+export default CustomButton;
