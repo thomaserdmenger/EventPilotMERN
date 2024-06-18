@@ -7,11 +7,7 @@ const SplashScreen = () => {
         <div className=" animate-bounce">
           <LogoCanvas scale={0.2} />
         </div>
-        <img
-          className="w-28"
-          src="../../public/svg/splashLoginLogo.svg"
-          alt="Logo"
-        />
+        <img className="w-28" src="/svg/splashLoginLogo.svg" alt="Logo" />
       </div>
     </>
   )
