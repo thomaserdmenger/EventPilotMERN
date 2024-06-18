@@ -117,7 +117,6 @@ export const getSingleEventCtrl = async (req, res) => {
         path: "userId",
         select: "_id username profileImage",
       }),
-      ,
       Bookmark.find({ eventId }),
       Participant.find({ eventId }).populate({
         path: "userId",

@@ -43,9 +43,7 @@ export const getFollowedUsers = async (req, res) => {
 export const postFollowUserCtrl = async (req, res) => {
   try {
     const userId = req.authenticatedUser._id;
-    console.log(userId);
     const { followedUserId } = req.body;
-    console.log(followedUserId);
 
     const user = await User.findById(userId);
     if (!user)
