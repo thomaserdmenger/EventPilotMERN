@@ -45,7 +45,7 @@ const UserProfilePage = () => {
             <p className="text-grey-2 font-roboto-thin text-[14px]">Followers</p>
           </div>
         </article>
-        <div className="flex justify-center">
+        <article className="flex justify-center mb-9">
           <CustomButton
             fontSize={"16px"}
             color={"#7254EE"}
@@ -59,7 +59,11 @@ const UserProfilePage = () => {
             endIcon={<FaRegEdit />}
             onClick={editProfile}
           />
-        </div>
+        </article>
+        <article className="px-8">
+          <h2 className="text-[18px] mb-[10px] font-roboto-medium">About me</h2>
+          <p className="text-grey-2 font-roboto-thin">{user?.user?.bio}</p>
+        </article>
       </div>
     </>
   );
