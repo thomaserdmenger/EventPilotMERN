@@ -8,9 +8,11 @@ import CustomInput from "./CustomInput.jsx";
 import CustomButton from "./CustomButton.jsx";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import Categories from "./Categories.jsx";
+import { useNavigate } from "react-router-dom";
 
 const EventForm = ({ eventToEdit }) => {
   const [errorMessage, setErrorMessage] = useState();
+  const navigate = useNavigate();
 
   // states and useEffect to fill input fields if it's an edit event form:
   const [title, setTitle] = useState("");
@@ -42,9 +44,10 @@ const EventForm = ({ eventToEdit }) => {
     });
 
     const data = await res.json();
-
+    console.log(data.newEvent);
     if (data.errorMessage) return setErrorMessage(data.errorMessage);
     setErrorMessage("");
+    navigate(`/events/${data.newEvent._id}`);
   };
 
   // edit event fetch
@@ -67,9 +70,8 @@ const EventForm = ({ eventToEdit }) => {
 
     if (data.message) return setErrorMessage(data.message);
     setErrorMessage("");
+    navigate(`/events/${eventToEdit._id}`);
   };
-
-  //# Weiterleitung wohin?
 
   return (
     <>
