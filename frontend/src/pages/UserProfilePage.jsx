@@ -29,7 +29,7 @@ const UserProfilePage = () => {
   };
 
   return (
-    <>
+    <div className="min-h-svh">
       <HeaderNav />
       <section>
         <div className=" flex justify-center mb-[40px] mt-2">
@@ -99,7 +99,7 @@ const UserProfilePage = () => {
           </article>
         )}
       </section>
-    </>
+    </div>
   );
 };
 
