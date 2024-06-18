@@ -1,51 +1,64 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from "@mui/icons-material/Lock";
-import { useContext, useState } from "react";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import LogoCanvas from "../components/LogoCanvas";
-import { UserContext } from "../context/UserContext";
-import { LoggedInContext } from "../context/LoggedInContext";
-import { backendUrl } from "../api/api";
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import CustomInput from '../components/CustomInput'
+import CustomButton from '../components/CustomButton'
+import EmailIcon from '@mui/icons-material/Email'
+import LockIcon from '@mui/icons-material/Lock'
+import { useContext, useState } from 'react'
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import LogoCanvas from '../components/LogoCanvas'
+import { UserContext } from '../context/UserContext'
+import { LoggedInContext } from '../context/LoggedInContext'
+import { backendUrl } from '../api/api'
 
 const SignInPage = () => {
-  const { user, setUser } = useContext(UserContext);
-  const { loggedIn, setLoggedIn } = useContext(LoggedInContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { user, setUser } = useContext(UserContext)
+  const { loggedIn, setLoggedIn } = useContext(LoggedInContext)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
+  const handleSignIn = async e => {
+    e.preventDefault()
 
-    console.log("signin ", user);
+    console.log('signin ', user)
 
     const res = await fetch(`${backendUrl}/api/v1/users/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({
         email,
         password,
       }),
-    });
+    })
 
-    const data = await res.json();
+    const data = await res.json()
 
-    setUser(data);
+    if (data?.errorMessage) {
+      return setErrorMessage(data.errorMessage)
+    }
 
-    setLoggedIn(true);
-    setEmail("");
-    setPassword("");
+    if (data?.message) {
+      setSuccessMessage(data.message)
+      setTimeout(() => {
+        setSuccessMessage('')
+      }, 3000)
+    }
 
-    localStorage.setItem("user", JSON.stringify(data));
-    localStorage.setItem("loggedIn", JSON.stringify(true));
+    setUser(data)
 
-    navigate("/");
-  };
+    setLoggedIn(true)
+    setEmail('')
+    setPassword('')
+
+    localStorage.setItem('user', JSON.stringify(data))
+    localStorage.setItem('loggedIn', JSON.stringify(true))
+
+    navigate('/')
+  }
 
   return (
     <div className="min-h-svh flex flex-col justify-between px-5 pb-12 pt-4">
@@ -58,17 +71,27 @@ const SignInPage = () => {
           <CustomInput
             type="text"
             label="Email"
-            icon={<EmailIcon sx={{ color: "#00ECAA" }} />}
-            onChange={(e) => setEmail(e.target.value)}
+            icon={<EmailIcon sx={{ color: '#00ECAA' }} />}
+            onChange={e => setEmail(e.target.value)}
             value={email}
           />
           <CustomInput
             type="password"
             label="Password"
-            icon={<LockIcon sx={{ color: "#00ECAA" }} />}
-            onChange={(e) => setPassword(e.target.value)}
+            icon={<LockIcon sx={{ color: '#00ECAA' }} />}
+            onChange={e => setPassword(e.target.value)}
             value={password}
           />
+          {errorMessage && (
+            <p className=" text-center font-roboto-thin text-red-500 text-sm">
+              {errorMessage}
+            </p>
+          )}
+          {successMessage && (
+            <p className=" text-center font-roboto-thin text-green-500 text-sm">
+              {successMessage}
+            </p>
+          )}
         </form>
       </div>
       <div className="flex flex-col gap-4 items-center pt-6">
@@ -84,7 +107,7 @@ const SignInPage = () => {
           onClick={handleSignIn}
         />
         <p className="text-sm text-green-1">
-          Don’t have an account?{" "}
+          Don’t have an account?{' '}
           <Link
             to="/signup"
             className="font-roboto-bold text-purple-2 hover:text-purple-1 underline underline-offset-4">
@@ -93,7 +116,7 @@ const SignInPage = () => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignInPage;
+export default SignInPage
