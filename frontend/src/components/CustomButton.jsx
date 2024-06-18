@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button } from '@mui/material'
 
 const CustomButton = ({
   bgcolor,
@@ -13,6 +13,8 @@ const CustomButton = ({
   onClick,
   border,
   height,
+  paddingX,
+  paddingY,
 }) => {
   return (
     <Button
@@ -22,18 +24,20 @@ const CustomButton = ({
       sx={{
         bgcolor: bgcolor,
         color: color,
-        ":hover": { bgcolor: bgcolorHover },
+        ':hover': { bgcolor: bgcolorHover },
         padding: padding,
         borderRadius: borderRadius,
         width: width,
         fontSize: fontSize,
-        textTransform: "none",
+        textTransform: 'none',
         border: border,
         height: height,
+        paddingX: paddingX,
+        paddingY: paddingY,
       }}>
       {text}
     </Button>
-  );
-};
+  )
+}
 
-export default CustomButton;
+export default CustomButton

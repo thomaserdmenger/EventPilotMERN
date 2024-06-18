@@ -5,19 +5,19 @@
 @layer base {
   @font-face {
     font-family: 'roboto-thin';
-    src: url(/public/font/Roboto-Thin.ttf);
+    src: url(/font/Roboto-Thin.ttf);
   }
   @font-face {
     font-family: 'roboto-medium';
-    src: url(/public/font/Roboto-Medium.ttf);
+    src: url(/font/Roboto-Medium.ttf);
   }
   @font-face {
     font-family: 'roboto-bold';
-    src: url(/public/font/Roboto-Bold.ttf);
+    src: url(/font/Roboto-Bold.ttf);
   }
   @font-face {
     font-family: 'roboto-regular';
-    src: url(/public/font/Roboto-Regular.ttf);
+    src: url(/font/Roboto-Regular.ttf);
   }
 }
 
