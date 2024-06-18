@@ -28,7 +28,7 @@ const App = () => {
   }, [])
 
   return (
-    <div className="max-w-[30rem] mx-auto relative font-roboto-medium bg-white ">
+    <div className="max-w-[30rem] mx-auto relative h-svh font-roboto-medium bg-white ">
       {splash ?
         <SplashScreen />
       : <LoggedInProvider>
