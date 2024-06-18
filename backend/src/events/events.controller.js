@@ -113,9 +113,16 @@ export const getSingleEventCtrl = async (req, res) => {
     const eventId = req.params.eventId;
 
     const [event, bookmarks, participants] = await Promise.all([
-      Event.findById(eventId),
+      Event.findById(eventId).populate({
+        path: "userId",
+        select: "_id username profileImage",
+      }),
+      ,
       Bookmark.find({ eventId }),
-      Participant.find({ eventId }),
+      Participant.find({ eventId }).populate({
+        path: "userId",
+        select: "_id username profileImage",
+      }),
     ]);
 
     if (!event)
@@ -185,7 +192,7 @@ export const patchEditEventCtrl = async (req, res) => {
       secure_url = uploadResult.secure_url;
     } else {
       public_id = eventToEdit.eventImage.public_id;
-      secure_url = eventToEdit.eventImage.public_id;
+      secure_url = eventToEdit.eventImage.secure_url;
     }
 
     // convert timestamps
