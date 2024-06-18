@@ -258,28 +258,30 @@ export const patchUserCtrl = async (req, res) => {
 export const deleteOneUserCtrl = async (req, res) => {
   try {
     const authenticatedUserId = req.authenticatedUser._id;
-    const [
-      deletedUser,
-      deletedEvents,
-      deletedReviews,
-      deletedBookmarks,
-      deletedParticipants,
-      deletedFollowing,
-    ] = await Promise.all([
+    const [deletedUser, foundEvents] = await Promise.all([
       User.findByIdAndDelete(authenticatedUserId),
-      Event.deleteMany({ userId: authenticatedUserId }), // # auch eventImage in cloudinary löschen
-      Review.deleteMany({ reviewedUserId: authenticatedUserId }),
-      Bookmark.deleteMany({ userId: authenticatedUserId }),
-      Participant.deleteMany({ userId: authenticatedUserId }),
+      Event.find({ userId: { $in: authenticatedUserId } }), // find events to delete their cloudinary images later
+      Event.deleteMany({
+        userId: { $in: authenticatedUserId },
+      }),
+      Review.deleteMany({ reviewedUserId: { $in: authenticatedUserId } }),
+      Bookmark.deleteMany({ userId: { $in: authenticatedUserId } }),
+      Participant.deleteMany({ userId: { $in: authenticatedUserId } }),
       Follower.deleteMany({
         userId: { $in: authenticatedUserId },
-        followedUserId: { $in: authenticatedUserId },
-      }), // # wird noch nicht gelöscht - Syntax anders?
+      }),
+      Follower.deleteMany({ followedUserId: { $in: authenticatedUserId } }),
     ]);
+
     if (!deletedUser)
       return res.status(400).json({
         errorMessage: `User with the email ${deletedUser.email} not found. Please register.`,
       });
+
+    // delete cloudinary images of deleted events
+    foundEvents.map((singleEvent) =>
+      deleteImage(singleEvent.eventImage.public_id)
+    );
 
     res.clearCookie("accessToken");
 
