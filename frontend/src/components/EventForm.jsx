@@ -44,7 +44,24 @@ const EventForm = ({ eventToEdit }) => {
   };
 
   // add event fetch
-  const addEvent = async (e) => {};
+  const addEvent = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.append("categories", categoriesArray);
+
+    const res = await fetch(`${backendUrl}/api/v1/events`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (data.message) return setErrorMessage(data.message);
+    setErrorMessage("");
+  };
 
   // edit event fetch
   const editEvent = async (e) => {
@@ -74,7 +91,6 @@ const EventForm = ({ eventToEdit }) => {
       <h1>Event Form</h1>
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <h2>edit event</h2>
         <form
           className="flex flex-col"
           onSubmit={eventToEdit ? editEvent : addEvent}
