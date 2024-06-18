@@ -1,10 +1,13 @@
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useEffect, useState } from "react";
 import { backendUrl } from "../api/api";
 import { categories } from "../constants/categories.js";
+import CustomInput from "./CustomInput.jsx";
+import CustomButton from "./CustomButton.jsx";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 
 const EventForm = ({ eventToEdit }) => {
   const [errorMessage, setErrorMessage] = useState();
@@ -14,7 +17,6 @@ const EventForm = ({ eventToEdit }) => {
   const [location, setLocation] = useState("");
   const [categoriesArray, setCategoriesArray] = useState([]);
   const [description, setDescription] = useState("");
-  //   const [eventImage, setEventImage] = useState("");
 
   useEffect(() => {
     if (eventToEdit) {
@@ -73,7 +75,6 @@ const EventForm = ({ eventToEdit }) => {
 
     const res = await fetch(`${backendUrl}/api/v1/events/${eventToEdit._id}`, {
       method: "PATCH",
-      //   headers: { "Content-Type": "multipart/form-data" },
       credentials: "include",
       body: formData,
     });
@@ -88,21 +89,21 @@ const EventForm = ({ eventToEdit }) => {
 
   return (
     <>
-      <h1>Event Form</h1>
-
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <form
-          className="flex flex-col"
+          className="flex flex-col gap-3"
           onSubmit={eventToEdit ? editEvent : addEvent}
         >
-          <input
+          <CustomInput
             type="text"
             placeholder="Title of your event"
             name="title"
+            label="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
 
+          {/* //# MUI Design Custom --> Icaro? */}
           <MobileDateTimePicker
             label="start date and time"
             name="startDate"
@@ -115,44 +116,58 @@ const EventForm = ({ eventToEdit }) => {
           />
 
           {/* //# Location mit externer API vorschlagen? */}
-          <input
+          <CustomInput
             type="text"
+            label="Location"
             placeholder="Location"
             name="location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
 
-          <h3>Categories</h3>
-          {categories?.map((singleCategory) => (
-            <p
-              onClick={() => handleCatArray(singleCategory)}
-              className={
-                checkCategoriesArray(singleCategory) ? "text-blue-500" : ""
-              }
-              key={singleCategory}
-              name={singleCategory}
-            >
-              {singleCategory}
-            </p>
-          ))}
+          <div className="border border-[#7254EE] rounded-[16px] p-4 relative">
+            <h3 className="absolute top-[-10px] text-[#7254EE] text-[13px] bg-white px-1 ml-[-6px] font-roboto-thin">
+              Categories
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {categories?.map((singleCategory) => (
+                <p
+                  onClick={() => handleCatArray(singleCategory)}
+                  className={
+                    checkCategoriesArray(singleCategory)
+                      ? "text-[#7254EE]"
+                      : "text-[#9CA3AF]"
+                  }
+                  key={singleCategory}
+                  name={singleCategory}
+                >
+                  {singleCategory}
+                </p>
+              ))}
+            </div>
+          </div>
 
           <textarea
+            className="border border-[#7254EE]"
             type="text"
-            placeholder="Description of your event"
+            placeholder="Describe your event"
             name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <input
-            type="file"
-            name="eventImage"
-            // onChange={(e) => setEventImage(e.target.files[0])}
+          <input type="file" name="eventImage" />
+          <CustomButton
+            fontSize="16px"
+            width="100%"
+            borderRadius="15px"
+            bgcolor="#7254EE"
+            bgcolorHover="#5D3EDE"
+            padding="16px"
+            text={eventToEdit ? "Edit your event" : "Add your event"}
+            endIcon={<ArrowCircleRightIcon />}
           />
-          <button type="submit">
-            {eventToEdit ? "Edit your event" : "Add your event"}
-          </button>
           {errorMessage && <p className=" text-red-800">{errorMessage}</p>}
+          {/* //# Weiterleitung wohin? */}
         </form>
       </LocalizationProvider>
     </>
