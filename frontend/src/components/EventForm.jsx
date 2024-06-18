@@ -43,7 +43,7 @@ const EventForm = ({ eventToEdit }) => {
 
     const data = await res.json();
 
-    if (data.message) return setErrorMessage(data.message);
+    if (data.errorMessage) return setErrorMessage(data.errorMessage);
     setErrorMessage("");
   };
 
@@ -69,6 +69,8 @@ const EventForm = ({ eventToEdit }) => {
     setErrorMessage("");
   };
 
+  //# Weiterleitung wohin?
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -85,7 +87,6 @@ const EventForm = ({ eventToEdit }) => {
             onChange={(e) => setTitle(e.target.value)}
           />
 
-          {/* //# MUI Design Custom --> Icaro? */}
           <MobileDateTimePicker
             label="start date and time"
             name="startDate"
@@ -119,8 +120,13 @@ const EventForm = ({ eventToEdit }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          {/* // --> folgt noch von Icaro */}
+
           <input type="file" name="eventImage" />
+          {/* // --> folgt noch von Icaro */}
+
           <CustomButton
+            type="submit"
             fontSize="16px"
             width="100%"
             borderRadius="15px"
@@ -130,8 +136,8 @@ const EventForm = ({ eventToEdit }) => {
             text={eventToEdit ? "Edit your event" : "Add your event"}
             endIcon={<ArrowCircleRightIcon />}
           />
+
           {errorMessage && <p className=" text-red-800">{errorMessage}</p>}
-          {/* //# Weiterleitung wohin? */}
         </form>
       </LocalizationProvider>
     </>
