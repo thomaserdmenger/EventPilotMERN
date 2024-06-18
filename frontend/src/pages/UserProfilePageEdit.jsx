@@ -18,7 +18,7 @@ const UserProfilePageEdit = () => {
   const [lastname, setLastname] = useState(user?.user?.lastname || "Lastname");
   const [username, setUsername] = useState(user?.user?.username || "Username");
   const [bio, setBio] = useState(user?.user?.bio || "About me");
-  const [categoriesArray, setCategoriesArray] = useState(user?.user.interests);
+  const [categoriesArray, setCategoriesArray] = useState(user?.user?.interests);
 
   console.log(categoriesArray);
 
@@ -27,11 +27,14 @@ const UserProfilePageEdit = () => {
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
 
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.append("interests", categoriesArray);
+
     const res = await fetch(`${backendUrl}/api/v1/users`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ firstname, lastname, username, bio, interests: categoriesArray }),
+      body: formData,
     });
 
     const data = await res.json();
@@ -58,13 +61,14 @@ const UserProfilePageEdit = () => {
             />
           )}
         </div>
-        <form className="flex flex-col gap-6 px-8">
+        <form className="flex flex-col gap-6 px-8" onSubmit={handleSubmitEdit}>
           <CustomInput
             type={"text"}
             label={"Firstname"}
             icon={<AccountCircleIcon sx={{ color: "#00ECAA" }} />}
             onChange={(e) => setFirstname(e.target.value)}
             value={firstname}
+            name="firstname"
           />
           <CustomInput
             type={"text"}
@@ -72,6 +76,7 @@ const UserProfilePageEdit = () => {
             icon={<AccountCircleIcon sx={{ color: "#00ECAA" }} />}
             onChange={(e) => setLastname(e.target.value)}
             value={lastname}
+            name="lastname"
           />
           <CustomInput
             type={"text"}
@@ -79,6 +84,7 @@ const UserProfilePageEdit = () => {
             icon={<AccountCircleOutlinedIcon sx={{ color: "#00ECAA" }} />}
             onChange={(e) => setUsername(e.target.value)}
             value={username}
+            name="username"
           />
 
           <TextField
@@ -88,10 +94,9 @@ const UserProfilePageEdit = () => {
             rows={6}
             onChange={(e) => setBio(e.target.value)}
             value={bio}
+            name="bio"
           />
           <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
-        </form>
-        <div className="px-8 mt-6">
           <CustomButton
             fontSize={"16px"}
             width={"100%"}
@@ -101,9 +106,9 @@ const UserProfilePageEdit = () => {
             padding={"16px"}
             text={"Submit Edit"}
             endIcon={<ArrowCircleRightIcon />}
-            onClick={handleSubmitEdit}
+            type="submit"
           />
-        </div>
+        </form>
         <div className="px-8 mt-4">
           <CustomButton
             fontSize={"16px"}
@@ -113,7 +118,6 @@ const UserProfilePageEdit = () => {
             bgcolorHover={"#5D3EDE"}
             padding={"16px"}
             text={"Delete User"}
-            // border={'1px solid #00ECAA'}
             endIcon={<DeleteIcon />}
             // onClick={handleDeleteUser}
           />
