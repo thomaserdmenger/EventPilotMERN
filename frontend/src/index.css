@@ -15,6 +15,10 @@
     font-family: 'roboto-bold';
     src: url(/public/font/Roboto-Bold.ttf);
   }
+  @font-face {
+    font-family: 'roboto-regular';
+    src: url(/public/font/Roboto-Regular.ttf);
+  }
 }
 
 * {
