@@ -11,19 +11,21 @@ const EventDetailPage = () => {
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState({});
   const [participants, setParticipants] = useState([]);
-  console.log(participants);
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/events/${eventId}`);
 
       const data = await res.json();
-      console.log(data);
       setEventDetails(data.event);
       setParticipants(data.participants);
     };
     fetchData();
   }, [eventId, user]);
+
+  const eventStartDate = new Date(eventDetails?.startDate);
+
+  console.log(eventStartDate.getDay());
 
   return (
     <main className="min-h-svh">
@@ -33,7 +35,7 @@ const EventDetailPage = () => {
         style={{
           "--image-url": `url(${eventDetails?.eventImage?.secure_url})`,
         }}
-        className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[200px] mb-10`}
+        className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10`}
       >
         <h1 className="">Event Details</h1>
       </article>
@@ -44,7 +46,7 @@ const EventDetailPage = () => {
             Be the first to register!
           </p>
         ) : (
-          <article className="flex gap-5 items-center justify-center rounded-md absolute top-[-57px] left-[7rem] max-w-[230px] bg-white py-[16px] px-[20px] shadow-md">
+          <article className="flex gap-5 items-center justify-center rounded-md absolute top-[-65px] left-[7rem] max-w-[230px] bg-white py-[16px] px-[20px] shadow-md">
             {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
             {participants?.map((singleParticipant) => (
               <img
@@ -66,12 +68,12 @@ const EventDetailPage = () => {
 
           <div className="mb-5 flex gap-3 items-center">
             <CalendarMonthIcon
-              fontSize="large"
+              style={{ fontSize: 45 }}
               htmlColor="#7254EE"
               className="bg-[#ECEBEB] p-1 rounded-md"
             />
             <div>
-              <p>{eventDetails?.startDate} Datum</p>
+              <p>{eventDetails?.startDate}</p>
               <p className="font-roboto-thin">
                 {eventDetails?.startDate} Wochentag, Zeit
               </p>
@@ -80,7 +82,7 @@ const EventDetailPage = () => {
 
           <div className="mb-7 flex gap-3 items-center">
             <LocationOnIcon
-              fontSize="large"
+              style={{ fontSize: 45 }}
               htmlColor="#7254EE"
               className="bg-[#ECEBEB] p-1 rounded-md"
             />
