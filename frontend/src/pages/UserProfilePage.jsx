@@ -15,7 +15,10 @@ const UserProfilePage = () => {
     // Get users, that follow the auth user
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/followers/followed`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({ userId: user?.user?._id }),
       });
       const data = await res.json();
       setFollowers(data?.followers?.length);
