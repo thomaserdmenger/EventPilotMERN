@@ -183,6 +183,8 @@ export const patchUserCtrl = async (req, res) => {
 
     const { firstname, lastname, username, bio, interests } = req.body;
 
+    console.log(req.body);
+
     // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
     // else: take the old event-image infos and save them anew
     const profileImage = req.file ? req.file : null;
@@ -195,7 +197,7 @@ export const patchUserCtrl = async (req, res) => {
       secure_url = uploadResult.secure_url;
     } else {
       public_id = user.profileImage.public_id;
-      secure_url = user.profileImage.public_id;
+      secure_url = user.profileImage.secure_url;
     }
 
     // update authenticated user infos
@@ -206,7 +208,8 @@ export const patchUserCtrl = async (req, res) => {
         lastname,
         username,
         bio,
-        interests: interests?.split(","),
+        // interests: interests?.split(","),
+        interests,
         "profileImage.public_id": public_id,
         "profileImage.secure_url": secure_url,
       },

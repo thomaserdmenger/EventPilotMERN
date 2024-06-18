@@ -10,6 +10,7 @@ import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../api/api";
+import Categories from "../components/Categories";
 
 const UserProfilePageEdit = () => {
   const { user, setUser } = useContext(UserContext);
@@ -17,6 +18,10 @@ const UserProfilePageEdit = () => {
   const [lastname, setLastname] = useState(user?.user?.lastname || "Lastname");
   const [username, setUsername] = useState(user?.user?.username || "Username");
   const [bio, setBio] = useState(user?.user?.bio || "About me");
+  const [categoriesArray, setCategoriesArray] = useState(user?.user.interests);
+
+  console.log(categoriesArray);
+
   const navigate = useNavigate();
 
   const handleSubmitEdit = async (e) => {
@@ -26,7 +31,7 @@ const UserProfilePageEdit = () => {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ firstname, lastname, username, bio }),
+      body: JSON.stringify({ firstname, lastname, username, bio, interests: categoriesArray }),
     });
 
     const data = await res.json();
@@ -84,7 +89,7 @@ const UserProfilePageEdit = () => {
             onChange={(e) => setBio(e.target.value)}
             value={bio}
           />
-          <div>Categories von Mia</div>
+          <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
         </form>
         <div className="px-8 mt-6">
           <CustomButton
