@@ -15,11 +15,14 @@ const CustomButton = ({
   height,
   paddingX,
   paddingY,
+  type,
+
 }) => {
   return (
     <Button
       variant="contained"
       endIcon={endIcon}
+      type={type}
       onClick={onClick}
       sx={{
         bgcolor: bgcolor,
@@ -35,6 +38,8 @@ const CustomButton = ({
         paddingX: paddingX,
         paddingY: paddingY,
       }}>
+      }}
+    >
       {text}
     </Button>
   )
