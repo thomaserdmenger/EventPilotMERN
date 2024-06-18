@@ -14,6 +14,8 @@ const FollowButton = ({ followedUserId }) => {
   const addFollower = async (e) => {
     e.preventDefault();
 
+    if (user?.user?._id === followedUserId) return;
+
     const res = await fetch(`${backendUrl}/api/v1/followers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
