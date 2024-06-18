@@ -26,6 +26,7 @@ const HeaderNav = () => {
             : user?.user?.firstname + " " + user?.user?.lastname}
         </p>
       )}
+      {pathname === "/hostprofile/:userId" && <p>Host Gobal fetchen</p>}
     </header>
   );
 };

@@ -15,7 +15,10 @@ const UserProfilePage = () => {
     // Get users, that follow the auth user
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/followers/followed`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
+        body: JSON.stringify({ userId: user?.user?._id }),
       });
       const data = await res.json();
       setFollowers(data?.followers?.length);
@@ -32,7 +35,7 @@ const UserProfilePage = () => {
     <div className="min-h-svh">
       <HeaderNav />
       <section>
-        <div className=" flex justify-center mb-[40px] mt-2">
+        <article className=" flex justify-center mb-[40px] mt-2">
           {user?.user?.profileImage?.public_id ? (
             <img
               className="rounded-full max-h-40"
@@ -46,7 +49,7 @@ const UserProfilePage = () => {
               alt="User Image"
             />
           )}
-        </div>
+        </article>
         <article className="flex gap-6 justify-center items-center mb-9">
           <div className="flex flex-col items-center text-center">
             <p>{user?.followedUsers?.length}</p>
@@ -80,10 +83,10 @@ const UserProfilePage = () => {
               {user?.user?.firstname} {user?.user?.lastname}
             </span>
           </h2>
-          <p className="text-grey-2 font-roboto-thin">{user?.user?.bio}</p>
+          <p className="text-grey-2 font-roboto-thin break-all">{user?.user?.bio}</p>
         </article>
         {user?.user?.interests?.length > 0 && (
-          <article className="px-8 mb-9">
+          <article className="px-8">
             <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
             <div className="flex gap-2 flex-wrap">
               {user?.user?.interests?.sort().map((item, index) => {
