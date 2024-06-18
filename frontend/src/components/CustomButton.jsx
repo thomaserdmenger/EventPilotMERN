@@ -16,6 +16,8 @@ const CustomButton = ({
   paddingX,
   paddingY,
   type,
+  minWidth,
+  minHeight,
 }) => {
   return (
     <Button
@@ -36,6 +38,8 @@ const CustomButton = ({
         height: height,
         paddingX: paddingX,
         paddingY: paddingY,
+        minWidth: minWidth,
+        minHeight: minHeight,
       }}>
       {text}
     </Button>
