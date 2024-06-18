@@ -16,7 +16,6 @@ const CustomButton = ({
   paddingX,
   paddingY,
   type,
-
 }) => {
   return (
     <Button
@@ -38,8 +37,6 @@ const CustomButton = ({
         paddingX: paddingX,
         paddingY: paddingY,
       }}>
-      }}
-    >
       {text}
     </Button>
   )
