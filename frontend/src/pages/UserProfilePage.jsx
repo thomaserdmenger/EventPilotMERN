@@ -32,7 +32,7 @@ const UserProfilePage = () => {
   return (
     <>
       <HeaderNav />
-      <div>
+      <section>
         <div className=" flex justify-center mb-[40px] mt-6">
           <p>UserImage</p>
         </div>
@@ -78,7 +78,7 @@ const UserProfilePage = () => {
             })}
           </div>
         </article>
-      </div>
+      </section>
     </>
   );
 };
