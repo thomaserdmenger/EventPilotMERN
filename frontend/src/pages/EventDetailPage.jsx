@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import FollowButton from "../components/FollowButton";
+import { UserContext } from "../context/UserContext";
 
 const EventDetailPage = () => {
+  const { user } = useContext(UserContext);
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState({});
   const [participants, setParticipants] = useState([]);
@@ -17,10 +19,7 @@ const EventDetailPage = () => {
       setParticipants(data.participants);
     };
     fetchData();
-  }, [eventId]);
-  console.log(eventDetails);
-  // console.log(participants);
-  console.log(eventDetails?.userId?._id);
+  }, [eventId, user]);
 
   return (
     <main className="min-h-svh">
@@ -53,33 +52,48 @@ const EventDetailPage = () => {
         )
       )}
 
-      <article className="px-5">
+      <article className="px-5 mb-10">
         <div className="mb-7">
           <h2 className="font-roboto-thin text-4xl mb-5">
             {eventDetails?.title}
           </h2>
         </div>
 
-        <div className="mb-7">
-          <h4>{eventDetails?.startDate}</h4>
+        <div className="mb-5">
+          <p>{eventDetails?.startDate} Datum</p>
+          <p className="font-roboto-thin">
+            {eventDetails?.startDate} Wochentag, Zeit
+          </p>
         </div>
 
         <div className="mb-7">
-          <h4>{eventDetails?.location}</h4>
+          <p>{eventDetails?.location} Verstaltungsort</p>
+          <p className="font-roboto-thin">
+            {eventDetails?.location} Stadt, Land
+          </p>
         </div>
 
-        <div className="flex gap-10">
-          <img
-            className="max-w-10 rounded-[10px] w-[48px] h-[48px] object-cover"
-            src={eventDetails?.userId?.profileImage?.secure_url}
-          />
+        <div className="flex gap-10 justify-between items-center">
+          <div className="flex gap-5 items-center">
+            <img
+              className="max-w-10 rounded-[10px] w-[48px] h-[48px] object-cover"
+              src={eventDetails?.userId?.profileImage?.secure_url}
+            />
 
-          <div className="mb-7">
-            <p> {eventDetails?.userId?.username}</p>
-            <p>Organizer</p>
+            <div className="">
+              <p> {eventDetails?.userId?.username}</p>
+              <p className="font-roboto-thin">Organizer</p>
+            </div>
           </div>
           <FollowButton followedUserId={eventDetails?.userId?._id} />
         </div>
+      </article>
+
+      <article className="px-5">
+        <h3>About the Event</h3>
+        <p className="text-[#120D26] font-roboto-thin">
+          {eventDetails?.description}
+        </p>
       </article>
     </main>
   );
