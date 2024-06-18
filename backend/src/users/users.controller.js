@@ -208,7 +208,7 @@ export const patchUserCtrl = async (req, res) => {
         lastname,
         username,
         bio,
-        interests: interests?.split(","),
+        interests: interests.length === 0 ? [] : interests?.split(","),
         // interests,
         "profileImage.public_id": public_id,
         "profileImage.secure_url": secure_url,

@@ -82,7 +82,7 @@ const UserProfilePage = () => {
           </h2>
           <p className="text-grey-2 font-roboto-thin">{user?.user?.bio}</p>
         </article>
-        {user?.user?.interests && (
+        {user?.user?.interests?.length > 0 && (
           <article className="px-8 mb-9">
             <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
             <div className="flex gap-2 flex-wrap">

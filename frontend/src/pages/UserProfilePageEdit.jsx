@@ -51,7 +51,11 @@ const UserProfilePageEdit = () => {
       <section>
         <div className=" flex justify-center mb-[40px] mt-2">
           {user?.user?.profileImage?.public_id ? (
-            <img src={user?.user?.profileImage?.secure_url} />
+            <img
+              src={user?.user?.profileImage?.secure_url}
+              className=" rounded-full max-h-40"
+              alt="User Image"
+            />
           ) : (
             <img
               className=" rounded-full max-h-40"
@@ -96,6 +100,7 @@ const UserProfilePageEdit = () => {
             name="bio"
           />
           <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
+          <input type="file" name="profileImage" />
           <CustomButton
             fontSize={"16px"}
             width={"100%"}
