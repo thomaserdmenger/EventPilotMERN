@@ -78,7 +78,7 @@ const UserProfilePageEdit = () => {
     <div className="min-h-svh">
       <HeaderNav />
       {!toggleDeletePopup && (
-        <section>
+        <section className="pb-8">
           <div className="flex justify-center mb-[40px] mt-2">
             {user?.user?.profileImage?.public_id ? (
               <img
