@@ -13,11 +13,13 @@ const CustomButton = ({
   onClick,
   border,
   height,
+  type,
 }) => {
   return (
     <Button
       variant="contained"
       endIcon={endIcon}
+      type={type}
       onClick={onClick}
       sx={{
         bgcolor: bgcolor,
@@ -30,7 +32,8 @@ const CustomButton = ({
         textTransform: "none",
         border: border,
         height: height,
-      }}>
+      }}
+    >
       {text}
     </Button>
   );
