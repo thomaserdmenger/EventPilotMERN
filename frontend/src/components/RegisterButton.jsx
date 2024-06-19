@@ -6,7 +6,7 @@ import { backendUrl } from "../api/api";
 
 const RegisterButton = ({ eventId }) => {
   const { user, setUser } = useContext(UserContext);
-
+  console.log(user);
   // check if event is already registered (filter for eventId and userId)
   const alreadyRegistered = user?.registeredEvents?.some(
     (obj) => obj.userId === user?.user?._id && obj.eventId === eventId
@@ -26,19 +26,13 @@ const RegisterButton = ({ eventId }) => {
     const data = await res.json();
     setUser({
       ...user,
-      registeredEvents: [
-        ...user.registeredEvents,
-        { userId: user.user._id, eventId },
-      ],
+      registeredEvents: [...user.registeredEvents, data.participations],
     });
     localStorage.setItem(
       "user",
       JSON.stringify({
         ...user,
-        registeredEvents: [
-          ...user.registeredEvents,
-          { userId: user.user._id, eventId },
-        ],
+        registeredEvents: [...user.registeredEvents, data.participations],
       })
     );
   };
@@ -55,9 +49,11 @@ const RegisterButton = ({ eventId }) => {
     });
 
     const data = await res.json();
+    console.log({ data });
     const updatedRegistrations = user.registeredEvents.filter(
       (obj) => obj.eventId !== eventId
     );
+
     setUser({
       ...user,
       registeredEvents: updatedRegistrations,
