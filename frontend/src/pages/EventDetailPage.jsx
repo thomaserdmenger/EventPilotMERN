@@ -1,16 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import FollowButton from "../components/FollowButton";
 import { UserContext } from "../context/UserContext";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
+import BookmarkButton from "../components/BookmarkButton";
 
 const EventDetailPage = () => {
   const { user } = useContext(UserContext);
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState({});
   const [participants, setParticipants] = useState([]);
+
+  const navigate = useNavigate();
 
   // fetch the event details
   useEffect(() => {
@@ -47,24 +51,34 @@ const EventDetailPage = () => {
   console.log(eventDetails);
   return (
     <main className="min-h-svh">
-      {/* back button einbauen */}
-      {/* //# hier oben noch bookmark einbauen */}
       <article
         style={{
           "--image-url": `url(${eventDetails?.eventImage?.secure_url})`,
         }}
-        className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10`}
-      ></article>
+        className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10 flex justify-between`}
+      >
+        {/* back button einbauen */}
+        <ArrowCircleDownIcon
+          sx={{
+            transform: "rotate(90deg)",
+            fontSize: "2rem",
+            color: "#5D3EDE",
+          }}
+          className="mt-2 ml-4 cursor-pointer"
+          onClick={() => navigate(-1)}
+        />
+        <BookmarkButton eventId={eventId} />
+      </article>
 
       <section className="pt-7 px-5 relative">
-        <article className="flex gap-5 items-center justify-center rounded-md absolute top-[-65px] left-[7rem] max-w-[230px] bg-white py-[16px] px-[20px] shadow-md">
+        <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md max-w-[230px] absolute mx-auto left-0 right-0 top-[-65px] text-center">
           {/* //# zur Registrierung weiterleiten? Direkt Funktion auflegen? */}
           {participants?.length === 0 ? (
             <p className="font-roboto-regular text-blue-1">
               Be the first to register!
             </p>
           ) : (
-            <div>
+            <div className="flex gap-5 items-center justify-center ">
               {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
               {participants?.map((singleParticipant) => (
                 <img
