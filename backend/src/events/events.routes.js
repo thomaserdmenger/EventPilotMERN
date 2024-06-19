@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   deleteEventCtrl,
   getSingleEventCtrl,
+  getTrendingEventsCtrl,
   getUpcomingEventsCtrl,
   patchEditEventCtrl,
   postAddEventCtrl,
@@ -12,7 +13,7 @@ import { doUserAuth } from "../middleware/doUserAuth.js";
 const upload = multer({ storage: multer.memoryStorage() });
 export const eventRouter = Router()
   .get("/upcoming", getUpcomingEventsCtrl)
-  .get("/trending")
+  .get("/trending", getTrendingEventsCtrl)
   .post("/", doUserAuth, upload.single("eventImage"), postAddEventCtrl)
   .get("/:eventId", getSingleEventCtrl)
   .patch(
