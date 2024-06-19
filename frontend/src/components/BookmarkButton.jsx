@@ -27,13 +27,13 @@ const BookmarkButton = ({ eventId }) => {
 
     setUser({
       ...user,
-      bookmarks: [...user.bookmarks, { userId: user.user._id, eventId }],
+      bookmarks: [...user.bookmarks, data.bookmarks],
     });
     localStorage.setItem(
       "user",
       JSON.stringify({
         ...user,
-        bookmarks: [...user.bookmarks, { userId: user.user._id, eventId }],
+        bookmarks: [...user.bookmarks, data.bookmarks],
       })
     );
   };
@@ -50,7 +50,9 @@ const BookmarkButton = ({ eventId }) => {
 
     const data = await res.json();
 
-    const updatedBookmarkIds = user.bookmarks.filter((obj) => obj.eventId !== eventId);
+    const updatedBookmarkIds = user.bookmarks.filter(
+      (obj) => obj.eventId !== eventId
+    );
     setUser({
       ...user,
       bookmarks: updatedBookmarkIds,
