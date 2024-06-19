@@ -11,7 +11,6 @@ const BookmarkButton = ({ eventId }) => {
   const eventIsBookmarked = user?.bookmarks?.some(
     (obj) => obj.userId === user?.user?._id && obj.eventId === eventId
   );
-  console.log(eventIsBookmarked);
 
   // if false: fetch to add bookmark
   const addBookmark = async (e) => {

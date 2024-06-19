@@ -10,7 +10,6 @@ const FollowButton = ({ followedUserId }) => {
     (obj) =>
       obj.userId === user?.user?._id && obj.followedUserId === followedUserId
   );
-  console.log(userIsFollowing);
 
   const addFollower = async (e) => {
     e.preventDefault();

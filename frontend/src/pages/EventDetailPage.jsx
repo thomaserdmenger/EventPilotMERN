@@ -48,7 +48,6 @@ const EventDetailPage = () => {
   };
   const startDate = changeDateFormat(eventDetails?.startDate);
   const endDate = changeDateFormat(eventDetails?.endDate);
-  console.log(eventDetails);
   return (
     <main className="min-h-svh">
       <article
