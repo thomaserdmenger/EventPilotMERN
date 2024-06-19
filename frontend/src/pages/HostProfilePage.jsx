@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import HeaderNav from "../components/HeaderNav";
+import EventCardSmall from "../components/EventCardSmall";
 
 const HostProfilePage = () => {
   const { userId } = useParams();
@@ -11,6 +12,8 @@ const HostProfilePage = () => {
   const [toggleAbout, setToggleAbout] = useState(true);
   const [toggleEvents, setToggleEvents] = useState(false);
   const [toggleReviews, setToggleReviews] = useState(false);
+
+  // console.log(host);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +51,7 @@ const HostProfilePage = () => {
   }, []);
 
   return (
-    <div className="min-h-svh">
+    <div className="min-h-svh pb-8">
       <HeaderNav />
       <section className="px-8">
         <article className=" flex justify-center mb-[40px] mt-2">
@@ -113,6 +116,10 @@ const HostProfilePage = () => {
           </nav>
           <div>
             {toggleAbout && <p className="font-roboto-thin break-all">{host?.user?.bio}</p>}
+            {toggleEvents &&
+              host?.createdEvents
+                ?.sort((a, b) => a.startDate - b.startDate)
+                .map((event) => <EventCardSmall key={event?._id} event={event} />)}
           </div>
         </article>
       </section>

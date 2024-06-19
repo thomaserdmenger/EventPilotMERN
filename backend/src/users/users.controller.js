@@ -167,7 +167,9 @@ export const showOneUserCtrl = async (req, res) => {
       reviewedUserId: userId,
     }).populate("reviews.userId", "username email");
 
-    res.json({ user: userToView(user), receivedReviews });
+    const createdEvents = await Event.find({ userId });
+
+    res.json({ user: userToView(user), receivedReviews, createdEvents });
   } catch (error) {
     console.log(error);
     res.status(500).json({
