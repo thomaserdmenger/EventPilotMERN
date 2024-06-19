@@ -110,18 +110,22 @@ export const getUpcomingEventsCtrl = async (_, res) => {
 
 export const getTrendingEventsCtrl = async (req, res) => {
   try {
+    // trending => (bookmarks per event + participants per event) / lifespan of event => for all events of the last week
     const recentEvents = await Event.find({
       createdAt: { $gte: Date.now() - 7 * 24 * 60 * 60 * 1000 },
     });
-    console.log(recentEvents);
 
-    async function countBookmarks(event) {
-      return Bookmark.find({ eventId: event._id }, { _id: 1 }).countDocuments();
-    }
     const bookmarksPerEvent = await Promise.all(
-      recentEvents.map((event) => countBookmarks(event))
+      recentEvents.map((event) =>
+        Bookmark.find({ eventId: event._id }, { _id: 1 }).countDocuments()
+      )
     );
-    console.log(bookmarksPerEvent);
+
+    const registrationsPerEvent = await Promise.all(
+      recentEvents.map((event) =>
+        Participant.find({ eventId: event._id }, { _id: 1 }).countDocuments()
+      )
+    );
 
     function getLifeSpanInHours(createdAt) {
       const ageMs = Date.now() - new Date(createdAt).getTime();
@@ -132,12 +136,11 @@ export const getTrendingEventsCtrl = async (req, res) => {
       .map((event, eventIndex) => ({
         ...event.toObject(),
         score:
-          bookmarksPerEvent[eventIndex] / getLifeSpanInHours(event.createdAt),
+          (bookmarksPerEvent[eventIndex] + registrationsPerEvent[eventIndex]) /
+          getLifeSpanInHours(event.createdAt),
       }))
       .sort((t1, t2) => t2.score - t1.score)
       .slice(0, 30);
-
-    console.log(trendingEvents);
 
     if (!trendingEvents)
       return res.status(404).json({
