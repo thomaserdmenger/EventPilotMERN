@@ -9,6 +9,7 @@ import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import BookmarkButton from "../components/BookmarkButton";
 import RegisterButton from "../components/RegisterButton";
 import ProfileImage from "../components/ProfileImage";
+import HeaderNav from "../components/HeaderNav";
 
 const EventDetailPage = () => {
   const { user } = useContext(UserContext);
@@ -42,7 +43,10 @@ const EventDetailPage = () => {
 
     // Tuesday, 6:00 PM - 11:00PM
     const weekday = date.toLocaleString("en-GB", { weekday: "long" });
-    const time = date.toLocaleString("en-GB", { timeStyle: "short" });
+    const time = date.toLocaleString("en-GB", {
+      timeStyle: "short",
+      hour12: "true",
+    });
 
     return {
       date: `${day} ${month}, ${year}`,
@@ -54,23 +58,17 @@ const EventDetailPage = () => {
 
   return (
     <main className="min-h-svh">
+      <HeaderNav
+        eventDetails={eventDetails}
+        pathname={`/events/${eventDetails?._id}`}
+      />
+
       <article
         style={{
           "--image-url": `url(${eventDetails?.eventImage?.secure_url})`,
         }}
-        className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10 flex justify-between`}
-      >
-        <ArrowCircleDownIcon
-          sx={{
-            transform: "rotate(90deg)",
-            fontSize: "2rem",
-            color: "#5D3EDE",
-          }}
-          className="mt-2 ml-4 cursor-pointer"
-          onClick={() => navigate(-1)}
-        />
-        <BookmarkButton eventId={eventId} />
-      </article>
+        className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10`}
+      ></article>
 
       <section className="pt-7 px-5 relative">
         <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md absolute left-0 right-0 top-[-65px] text-center mx-16">
@@ -145,7 +143,7 @@ const EventDetailPage = () => {
                   "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
                 }
                 src={eventDetails?.userId?.profileImage?.secure_url}
-                to={`/hostprofile/${eventDetails?.userId}`}
+                to={`/hostprofile/${eventDetails?.userId?._id}`}
               />
 
               <div className="">
