@@ -4,7 +4,8 @@ import { backendUrl } from "../api/api";
 import { UserContext } from "../context/UserContext";
 import { FaRegEdit } from "react-icons/fa";
 import CustomButton from "../components/CustomButton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import EventCardSmall from "../components/EventCardSmall";
 
 const UserProfilePage = () => {
   const { user } = useContext(UserContext);
@@ -13,6 +14,9 @@ const UserProfilePage = () => {
   const [toggleEvents, setToggleEvents] = useState(false);
   const [toggleBookmarks, setToggleBookmarks] = useState(false);
   const navigate = useNavigate();
+  const [usersEvents, setUsersEvents] = useState({});
+  const userId = user?.user?._id;
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +28,13 @@ const UserProfilePage = () => {
       });
       const data = await res.json();
       setFollowers(data?.followers?.length);
+
+      const usersEventsRes = await fetch(`${backendUrl}/api/v1/users/${userId}`, {
+        credentials: "include",
+      });
+
+      const userEventsData = await usersEventsRes.json();
+      setUsersEvents(userEventsData?.createdEvents);
     };
 
     fetchData();
@@ -31,7 +42,7 @@ const UserProfilePage = () => {
 
   return (
     <div className="min-h-svh pb-36">
-      <HeaderNav />
+      <HeaderNav pathname={pathname} user={user} />
       <section>
         <article className=" flex justify-center mb-[40px] mt-2">
           {user?.user?.profileImage?.public_id ? (
@@ -92,7 +103,7 @@ const UserProfilePage = () => {
                 setToggleAbout(false);
                 setToggleBookmarks(false);
               }}>
-              Events
+              My Events
             </p>
             <p
               className={`${toggleBookmarks && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
@@ -104,7 +115,6 @@ const UserProfilePage = () => {
               Bookmarks
             </p>
           </nav>
-
           <div>
             {toggleAbout && (
               <>
@@ -115,7 +125,9 @@ const UserProfilePage = () => {
                       {user?.user?.firstname} {user?.user?.lastname}
                     </span>
                   </h2>
-                  <p className="text-grey-2 font-roboto-thin break-all">{user?.user?.bio}</p>
+                  <p className="text-grey-2 font-roboto-thin break-words overflow-hidden">
+                    {user?.user?.bio}
+                  </p>
                 </article>
                 <article>
                   {user?.user?.interests?.length > 0 && (
@@ -137,8 +149,18 @@ const UserProfilePage = () => {
                 </article>
               </>
             )}
-
-            {}
+            {toggleEvents && (
+              <div className="px-8">
+                {usersEvents
+                  ?.sort((a, b) => a.startDate - b.startDate)
+                  .map((event) => (
+                    <EventCardSmall key={event?._id} event={event} />
+                  ))}
+              </div>
+            )}
+            {toggleEvents && usersEvents?.length === 0 && (
+              <p className="px-8 font-roboto-regular">No created events</p>
+            )}
           </div>
         </section>
       </section>

@@ -26,14 +26,14 @@ const HeaderNav = ({ pathname, user, host }) => {
       </div>
 
       {(pathname === "/userprofileedit" || pathname === "/userprofile") && (
-        <p className="text-[24px] px-4 text-center break-all">
+        <p className="text-[24px] px-4 text-center break-words overflow-hidden">
           {user?.user?.username
             ? user?.user?.username
             : user?.user?.firstname + " " + user?.user?.lastname}
         </p>
       )}
       {pathname === `/hostprofile/${host?.user?._id}` && (
-        <p className="text-[24px] px-4 text-center break-all">
+        <p className="text-[24px] px-4 text-center break-words overflow-hidden">
           {host?.user?.username
             ? host?.user?.username
             : host?.user?.firstname + " " + host?.user?.lastname}

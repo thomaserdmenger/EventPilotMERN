@@ -61,7 +61,9 @@ const EventCardSmall = ({ event }) => {
           />
           <div className="col-span-5 p-2 flex flex-col">
             <p className="text-[12px] text-blue-1">{formatDate(timestamp)}</p>
-            <h2 className="capitalize mb-3 text-[18px] break-all">{event?.title}</h2>
+            <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
+              {event?.title}
+            </h2>
             <div className="flex items-center ml-[-5px]">
               <LocationOnIcon style={{ width: "15px", color: "#848484", marginTop: "-1px" }} />
               <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">

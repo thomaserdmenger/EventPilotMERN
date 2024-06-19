@@ -114,7 +114,9 @@ const HostProfilePage = () => {
             </p>
           </nav>
           <div>
-            {toggleAbout && <p className="font-roboto-thin break-all">{host?.user?.bio}</p>}
+            {toggleAbout && (
+              <p className="font-roboto-thin break-words overflow-hidden">{host?.user?.bio}</p>
+            )}
             {toggleEvents &&
               host?.createdEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
