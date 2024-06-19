@@ -9,10 +9,12 @@ import { useNavigate } from "react-router-dom";
 const UserProfilePage = () => {
   const { user } = useContext(UserContext);
   const [followers, setFollowers] = useState(0);
+  const [toggleAbout, setToggleAbout] = useState(true);
+  const [toggleEvents, setToggleEvents] = useState(false);
+  const [toggleBookmarks, setToggleBookmarks] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get users, that follow the auth user
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/followers/followed`, {
         method: "POST",
@@ -27,12 +29,8 @@ const UserProfilePage = () => {
     fetchData();
   }, []);
 
-  const editProfile = () => {
-    navigate("/userprofileedit");
-  };
-
   return (
-    <div className="min-h-svh">
+    <div className="min-h-svh pb-36">
       <HeaderNav />
       <section>
         <article className=" flex justify-center mb-[40px] mt-2">
@@ -73,34 +71,76 @@ const UserProfilePage = () => {
             text={"Edit Profile"}
             border={"1px solid #7254EE"}
             endIcon={<FaRegEdit />}
-            onClick={editProfile}
+            onClick={() => navigate("/userprofileedit")}
           />
         </article>
-        <article className="px-8 mb-9">
-          <h2 className="text-[18px] mb-[10px] font-roboto-medium">
-            About{" "}
-            <span className="text-purple-1">
-              {user?.user?.firstname} {user?.user?.lastname}
-            </span>
-          </h2>
-          <p className="text-grey-2 font-roboto-thin break-all">{user?.user?.bio}</p>
-        </article>
-        {user?.user?.interests?.length > 0 && (
-          <article className="px-8">
-            <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
-            <div className="flex gap-2 flex-wrap">
-              {user?.user?.interests?.sort().map((item, index) => {
-                return (
-                  <p
-                    key={index}
-                    className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
-                    {item}
-                  </p>
-                );
-              })}
-            </div>
-          </article>
-        )}
+        <section>
+          <nav className="flex justify-between font-roboto-regular mb-4 uppercase px-8">
+            <p
+              className={`${toggleAbout && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleAbout(true);
+                setToggleEvents(false);
+                setToggleBookmarks(false);
+              }}>
+              About
+            </p>
+            <p
+              className={`${toggleEvents && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleEvents(true);
+                setToggleAbout(false);
+                setToggleBookmarks(false);
+              }}>
+              Events
+            </p>
+            <p
+              className={`${toggleBookmarks && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleBookmarks(true);
+                setToggleAbout(false);
+                setToggleEvents(false);
+              }}>
+              Bookmarks
+            </p>
+          </nav>
+
+          <div>
+            {toggleAbout && (
+              <>
+                <article className="px-8 mb-9">
+                  <h2 className="text-[18px] mb-[10px] font-roboto-medium">
+                    Hi, I am{" "}
+                    <span className="text-purple-1">
+                      {user?.user?.firstname} {user?.user?.lastname}
+                    </span>
+                  </h2>
+                  <p className="text-grey-2 font-roboto-thin break-all">{user?.user?.bio}</p>
+                </article>
+                <article>
+                  {user?.user?.interests?.length > 0 && (
+                    <article className="px-8">
+                      <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
+                      <div className="flex gap-2 flex-wrap">
+                        {user?.user?.interests?.sort().map((item, index) => {
+                          return (
+                            <p
+                              key={index}
+                              className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
+                              {item}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </article>
+                  )}
+                </article>
+              </>
+            )}
+
+            {}
+          </div>
+        </section>
       </section>
     </div>
   );
