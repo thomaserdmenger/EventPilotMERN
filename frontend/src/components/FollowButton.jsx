@@ -24,12 +24,14 @@ const FollowButton = ({ followedUserId }) => {
     });
 
     const data = await res.json();
+    console.log({ data });
+    console.log({ user });
 
     setUser({
       ...user,
       followedUsers: [
         ...user.followedUsers,
-        { userId: user.user._id, followedUserId },
+        { userId: data.userId, followedUserId: data.followedUserId },
       ],
     });
     localStorage.setItem(
@@ -38,7 +40,7 @@ const FollowButton = ({ followedUserId }) => {
         ...user,
         followedUsers: [
           ...user.followedUsers,
-          { userId: user.user._id, followedUserId },
+          { userId: data.userId, followedUserId: data.followedUserId },
         ],
       })
     );
