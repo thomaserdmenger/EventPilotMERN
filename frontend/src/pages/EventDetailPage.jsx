@@ -12,6 +12,7 @@ const EventDetailPage = () => {
   const [eventDetails, setEventDetails] = useState({});
   const [participants, setParticipants] = useState([]);
 
+  // fetch the event details
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/events/${eventId}`);
@@ -23,10 +24,27 @@ const EventDetailPage = () => {
     fetchData();
   }, [eventId, user]);
 
-  const eventStartDate = new Date(eventDetails?.startDate);
+  // convert timestamp to date format for event details
+  const changeDateFormat = (timestamp) => {
+    const date = new Date(timestamp);
 
-  console.log(eventStartDate.getDay());
+    // 18 July, 2023
+    const day = date.toLocaleString("en-GB", { day: "numeric" });
+    const month = date.toLocaleString("en-GB", { month: "long" });
+    const year = date.toLocaleString("en-GB", { year: "numeric" });
 
+    // Tuesday, 6:00 PM - 11:00PM
+    const weekday = date.toLocaleString("en-GB", { weekday: "long" });
+    const time = date.toLocaleString("en-GB", { timeStyle: "short" });
+
+    return {
+      date: `${day} ${month}, ${year}`,
+      time: `${weekday}, ${time}`,
+    };
+  };
+  const startDate = changeDateFormat(eventDetails?.startDate);
+  const endDate = changeDateFormat(eventDetails?.endDate);
+  console.log(eventDetails);
   return (
     <main className="min-h-svh">
       {/* back button einbauen */}
@@ -36,28 +54,29 @@ const EventDetailPage = () => {
           "--image-url": `url(${eventDetails?.eventImage?.secure_url})`,
         }}
         className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10`}
-      >
-        <h1 className="">Event Details</h1>
-      </article>
+      ></article>
 
       <section className="pt-7 px-5 relative">
-        {participants?.length === 0 ? (
-          <p className="font-roboto-regular text-[#668BE9]">
-            Be the first to register!
-          </p>
-        ) : (
-          <article className="flex gap-5 items-center justify-center rounded-md absolute top-[-65px] left-[7rem] max-w-[230px] bg-white py-[16px] px-[20px] shadow-md">
-            {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
-            {participants?.map((singleParticipant) => (
-              <img
-                key={singleParticipant._id}
-                className="max-w-10 rounded-full h-[34px] w-[34px] object-cover"
-                src={singleParticipant?.userId?.profileImage?.secure_url}
-              />
-            ))}
-            <p className="font-roboto-regular text-[#668BE9]">{`+${participants?.length} registered`}</p>
-          </article>
-        )}
+        <article className="flex gap-5 items-center justify-center rounded-md absolute top-[-65px] left-[7rem] max-w-[230px] bg-white py-[16px] px-[20px] shadow-md">
+          {/* //# zur Registrierung weiterleiten? Direkt Funktion auflegen? */}
+          {participants?.length === 0 ? (
+            <p className="font-roboto-regular text-blue-1">
+              Be the first to register!
+            </p>
+          ) : (
+            <div>
+              {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
+              {participants?.map((singleParticipant) => (
+                <img
+                  key={singleParticipant._id}
+                  className="max-w-10 rounded-full h-[34px] w-[34px] object-cover"
+                  src={singleParticipant?.userId?.profileImage?.secure_url}
+                />
+              ))}
+              <p className="font-roboto-regular text-blue-1">{`+${participants?.length} registered`}</p>
+            </div>
+          )}
+        </article>
 
         <article className="mb-10">
           <div className="mb-7">
@@ -73,9 +92,11 @@ const EventDetailPage = () => {
               className="bg-[#ECEBEB] p-1 rounded-md"
             />
             <div>
-              <p>{eventDetails?.startDate}</p>
+              <p>
+                {startDate.date} - {endDate.date}
+              </p>
               <p className="font-roboto-thin">
-                {eventDetails?.startDate} Wochentag, Zeit
+                {startDate.time} - {endDate.time}
               </p>
             </div>
           </div>
@@ -108,10 +129,23 @@ const EventDetailPage = () => {
                   {" "}
                   {eventDetails?.userId?.username}
                 </p>
-                <p className="font-roboto-thin">Organizer</p>
+                <p className="font-roboto-thin">
+                  {user?.user?._id === eventDetails?.userId?._id
+                    ? "You're the organizer"
+                    : "Organizer"}
+                </p>
               </div>
             </div>
-            <FollowButton followedUserId={eventDetails?.userId?._id} />
+            {user?.user?._id === eventDetails?.userId?._id ? (
+              <Link
+                to={`/events/edit/${eventDetails?._id}`}
+                className=" text-purple-1 font-roboto-thin border-purple-1 border-[1px] rounded-md py-2 px-4 hover:bg-green-1"
+              >
+                Edit event
+              </Link>
+            ) : (
+              <FollowButton followedUserId={eventDetails?.userId?._id} />
+            )}
           </div>
         </article>
 
