@@ -73,7 +73,7 @@ const EventDetailPage = () => {
       </article>
 
       <section className="pt-7 px-5 relative">
-        <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md max-w-[230px] absolute mx-auto left-0 right-0 top-[-65px] text-center">
+        <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md absolute left-0 right-0 top-[-65px] text-center mx-16">
           {participants?.length === 0 ? (
             <p className="font-roboto-regular text-blue-1 cursor-pointer">
               Be the first to register!
@@ -81,8 +81,7 @@ const EventDetailPage = () => {
           ) : (
             <div className="flex gap-5 items-center justify-center relative">
               <div className="flex [&>*:not(:nth-child(1))]:ml-[-10px]">
-                {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
-                {participants?.map((singleParticipant) => (
+                {participants?.slice(0, 3).map((singleParticipant) => (
                   <ProfileImage
                     key={singleParticipant?.userId?._id}
                     className={
@@ -93,7 +92,11 @@ const EventDetailPage = () => {
                   />
                 ))}
               </div>
-              <p className="font-roboto-regular text-blue-1">{`+${participants?.length} registered`}</p>
+              <p className="font-roboto-regular text-blue-1">
+                {participants?.length >= 99
+                  ? "+99 registered"
+                  : `${participants?.length} registered`}
+              </p>
             </div>
           )}
         </article>
