@@ -15,6 +15,8 @@ const HostProfilePage = () => {
   const [hostEvents, setHostEvents] = useState({});
   const { pathname } = useLocation();
 
+  // console.log(host?.receivedReviews);
+
   useEffect(() => {
     const fetchData = async () => {
       // Fetch Host Data (user information + reviews)
