@@ -7,6 +7,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import BookmarkButton from "../components/BookmarkButton";
+import CustomButton from "../components/CustomButton";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 
 const EventDetailPage = () => {
   const { user } = useContext(UserContext);
@@ -56,7 +58,6 @@ const EventDetailPage = () => {
         }}
         className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10 flex justify-between`}
       >
-        {/* back button einbauen */}
         <ArrowCircleDownIcon
           sx={{
             transform: "rotate(90deg)",
@@ -73,7 +74,7 @@ const EventDetailPage = () => {
         <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md max-w-[230px] absolute mx-auto left-0 right-0 top-[-65px] text-center">
           {/* //# zur Registrierung weiterleiten? Direkt Funktion auflegen? */}
           {participants?.length === 0 ? (
-            <p className="font-roboto-regular text-blue-1">
+            <p className="font-roboto-regular text-blue-1 cursor-pointer">
               Be the first to register!
             </p>
           ) : (
@@ -169,6 +170,20 @@ const EventDetailPage = () => {
           </p>
         </article>
       </section>
+
+      <div className="px-5">
+        <CustomButton
+          fontSize={"16px"}
+          width={"100%"}
+          borderRadius={"15px"}
+          bgcolor={"#7254EE"}
+          bgcolorHover={"#5D3EDE"}
+          padding={"16px"}
+          text={"Register"}
+          endIcon={<ArrowCircleRightIcon />}
+          type="submit"
+        />
+      </div>
     </main>
   );
 };
