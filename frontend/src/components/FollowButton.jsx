@@ -6,7 +6,7 @@ import { UserContext } from "../context/UserContext";
 const FollowButton = ({ followedUserId }) => {
   const { user, setUser } = useContext(UserContext);
 
-  const userIsFollowing = user?.followedUsers?.filter(
+  const userIsFollowing = user?.followedUsers?.some(
     (obj) =>
       obj.userId === user?.user?._id && obj.followedUserId === followedUserId
   );
@@ -74,7 +74,7 @@ const FollowButton = ({ followedUserId }) => {
 
   return (
     <>
-      {userIsFollowing?.length !== 0 ? (
+      {userIsFollowing ? (
         // unfollow Button
         <CustomButton
           fontSize="12px"
