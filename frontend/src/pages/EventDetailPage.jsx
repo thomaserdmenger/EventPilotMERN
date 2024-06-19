@@ -7,11 +7,12 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import BookmarkButton from "../components/BookmarkButton";
-import CustomButton from "../components/CustomButton";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import RegisterButton from "../components/RegisterButton";
+import ProfileImage from "../components/ProfileImage";
 
 const EventDetailPage = () => {
   const { user } = useContext(UserContext);
+
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState({});
   const [participants, setParticipants] = useState([]);
@@ -50,6 +51,7 @@ const EventDetailPage = () => {
   };
   const startDate = changeDateFormat(eventDetails?.startDate);
   const endDate = changeDateFormat(eventDetails?.endDate);
+
   return (
     <main className="min-h-svh">
       <article
@@ -71,23 +73,30 @@ const EventDetailPage = () => {
       </article>
 
       <section className="pt-7 px-5 relative">
-        <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md max-w-[230px] absolute mx-auto left-0 right-0 top-[-65px] text-center">
-          {/* //# zur Registrierung weiterleiten? Direkt Funktion auflegen? */}
+        <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md absolute left-0 right-0 top-[-65px] text-center mx-16">
           {participants?.length === 0 ? (
             <p className="font-roboto-regular text-blue-1 cursor-pointer">
               Be the first to register!
             </p>
           ) : (
-            <div className="flex gap-5 items-center justify-center ">
-              {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
-              {participants?.map((singleParticipant) => (
-                <img
-                  key={singleParticipant._id}
-                  className="max-w-10 rounded-full h-[34px] w-[34px] object-cover"
-                  src={singleParticipant?.userId?.profileImage?.secure_url}
-                />
-              ))}
-              <p className="font-roboto-regular text-blue-1">{`+${participants?.length} registered`}</p>
+            <div className="flex gap-5 items-center justify-center relative">
+              <div className="flex [&>*:not(:nth-child(1))]:ml-[-10px]">
+                {participants?.slice(0, 3).map((singleParticipant) => (
+                  <ProfileImage
+                    key={singleParticipant?.userId?._id}
+                    className={
+                      "max-w-10 rounded-full h-[34px] w-[34px] object-cover overflow-hidden "
+                    }
+                    src={singleParticipant?.userId?.profileImage?.secure_url}
+                    to={`/hostprofile/${singleParticipant?.userId?._id}`}
+                  />
+                ))}
+              </div>
+              <p className="font-roboto-regular text-blue-1">
+                {participants?.length >= 99
+                  ? "+99 registered"
+                  : `${participants?.length} registered`}
+              </p>
             </div>
           )}
         </article>
@@ -131,16 +140,16 @@ const EventDetailPage = () => {
 
           <div className="flex gap-10 justify-between items-center">
             <div className="flex gap-5 items-center">
-              <Link to={`/hostprofile/${eventDetails?.userId}`}>
-                <img
-                  className="max-w-10 rounded-[10px] w-[48px] h-[48px] object-cover"
-                  src={eventDetails?.userId?.profileImage?.secure_url}
-                />
-              </Link>
+              <ProfileImage
+                className={
+                  "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
+                }
+                src={eventDetails?.userId?.profileImage?.secure_url}
+                to={`/hostprofile/${eventDetails?.userId}`}
+              />
 
               <div className="">
                 <p className="font-roboto-regular">
-                  {" "}
                   {eventDetails?.userId?.username}
                 </p>
                 <p className="font-roboto-thin">
@@ -171,18 +180,8 @@ const EventDetailPage = () => {
         </article>
       </section>
 
-      <div className="px-5">
-        <CustomButton
-          fontSize={"16px"}
-          width={"100%"}
-          borderRadius={"15px"}
-          bgcolor={"#7254EE"}
-          bgcolorHover={"#5D3EDE"}
-          padding={"16px"}
-          text={"Register"}
-          endIcon={<ArrowCircleRightIcon />}
-          type="submit"
-        />
+      <div className="px-5 fixed bottom-4 w-full">
+        <RegisterButton eventId={eventId} />
       </div>
     </main>
   );

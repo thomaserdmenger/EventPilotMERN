@@ -9,6 +9,7 @@ import CustomButton from "./CustomButton.jsx";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import Categories from "./Categories.jsx";
 import { useNavigate } from "react-router-dom";
+import CustomTextArea from "../components/CustomTextArea";
 
 const EventForm = ({ eventToEdit }) => {
   const [errorMessage, setErrorMessage] = useState();
@@ -115,15 +116,13 @@ const EventForm = ({ eventToEdit }) => {
             setCategoriesArray={setCategoriesArray}
           />
 
-          <textarea
-            type="text"
+          <CustomTextArea
             placeholder="Describe your event"
             name="description"
-            value={description}
+            label={"Description"}
             onChange={(e) => setDescription(e.target.value)}
+            value={description}
           />
-          {/* // --> folgt noch von Icaro */}
-
           <input type="file" name="eventImage" />
           {/* // --> folgt noch von Icaro */}
 
