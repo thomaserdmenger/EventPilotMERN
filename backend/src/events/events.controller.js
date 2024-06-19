@@ -108,6 +108,54 @@ export const getUpcomingEventsCtrl = async (_, res) => {
   }
 };
 
+export const getTrendingEventsCtrl = async (req, res) => {
+  try {
+    // trending => (bookmarks per event + participants per event) / lifespan of event => for all events of the last week
+    const recentEvents = await Event.find({
+      createdAt: { $gte: Date.now() - 7 * 24 * 60 * 60 * 1000 },
+    });
+
+    const bookmarksPerEvent = await Promise.all(
+      recentEvents.map((event) =>
+        Bookmark.find({ eventId: event._id }, { _id: 1 }).countDocuments()
+      )
+    );
+
+    const registrationsPerEvent = await Promise.all(
+      recentEvents.map((event) =>
+        Participant.find({ eventId: event._id }, { _id: 1 }).countDocuments()
+      )
+    );
+
+    function getLifeSpanInHours(createdAt) {
+      const ageMs = Date.now() - new Date(createdAt).getTime();
+      return ageMs / 1000 / 60 / 60;
+    }
+
+    const trendingEvents = recentEvents
+      .map((event, eventIndex) => ({
+        ...event.toObject(),
+        score:
+          (bookmarksPerEvent[eventIndex] + registrationsPerEvent[eventIndex]) /
+          getLifeSpanInHours(event.createdAt),
+      }))
+      .sort((t1, t2) => t2.score - t1.score)
+      .slice(0, 30);
+
+    if (!trendingEvents)
+      return res.status(404).json({
+        errorMessage: "No trending events yet.",
+      });
+
+    res.json({ trendingEvents });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Could not find any trending events.",
+    });
+  }
+};
+
 export const getSingleEventCtrl = async (req, res) => {
   try {
     const eventId = req.params.eventId;
