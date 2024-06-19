@@ -7,11 +7,12 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 import BookmarkButton from "../components/BookmarkButton";
-import CustomButton from "../components/CustomButton";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import RegisterButton from "../components/RegisterButton";
+import ProfileImage from "../components/ProfileImage";
 
 const EventDetailPage = () => {
   const { user } = useContext(UserContext);
+
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState({});
   const [participants, setParticipants] = useState([]);
@@ -50,6 +51,7 @@ const EventDetailPage = () => {
   };
   const startDate = changeDateFormat(eventDetails?.startDate);
   const endDate = changeDateFormat(eventDetails?.endDate);
+
   return (
     <main className="min-h-svh">
       <article
@@ -81,9 +83,11 @@ const EventDetailPage = () => {
             <div className="flex gap-5 items-center justify-center ">
               {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
               {participants?.map((singleParticipant) => (
-                <img
+                <ProfileImage
                   key={singleParticipant._id}
-                  className="max-w-10 rounded-full h-[34px] w-[34px] object-cover"
+                  className={
+                    "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
+                  }
                   src={singleParticipant?.userId?.profileImage?.secure_url}
                 />
               ))}
@@ -132,15 +136,16 @@ const EventDetailPage = () => {
           <div className="flex gap-10 justify-between items-center">
             <div className="flex gap-5 items-center">
               <Link to={`/hostprofile/${eventDetails?.userId}`}>
-                <img
-                  className="max-w-10 rounded-[10px] w-[48px] h-[48px] object-cover"
+                <ProfileImage
+                  className={
+                    "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
+                  }
                   src={eventDetails?.userId?.profileImage?.secure_url}
                 />
               </Link>
 
               <div className="">
                 <p className="font-roboto-regular">
-                  {" "}
                   {eventDetails?.userId?.username}
                 </p>
                 <p className="font-roboto-thin">
@@ -171,18 +176,9 @@ const EventDetailPage = () => {
         </article>
       </section>
 
-      <div className="px-5">
-        <CustomButton
-          fontSize={"16px"}
-          width={"100%"}
-          borderRadius={"15px"}
-          bgcolor={"#7254EE"}
-          bgcolorHover={"#5D3EDE"}
-          padding={"16px"}
-          text={"Register"}
-          endIcon={<ArrowCircleRightIcon />}
-          type="submit"
-        />
+      {/* //# conditional davon, ob user bereits registriert ist */}
+      <div className="px-5 fixed bottom-4 w-full">
+        <RegisterButton eventId={eventId} />
       </div>
     </main>
   );
