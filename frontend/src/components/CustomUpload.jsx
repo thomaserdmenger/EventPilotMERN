@@ -77,7 +77,7 @@ const CustomUpload = ({ name }) => {
         onChange={handleFileChange}
       />
       {fileName && (
-        <p className="ml-4 text-green-1 font-roboto-thin">
+        <p className="ml-4 text-green-1 text-sm font-roboto-thin">
           Image uploaded successfully!
         </p>
       )}
