@@ -12,6 +12,7 @@ const HostProfilePage = () => {
   const [toggleAbout, setToggleAbout] = useState(true);
   const [toggleEvents, setToggleEvents] = useState(false);
   const [toggleReviews, setToggleReviews] = useState(false);
+  const [hostEvents, setHostEvents] = useState({});
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -45,6 +46,13 @@ const HostProfilePage = () => {
 
       const userFollowersData = await resUserFollowers.json();
       setUserFollowers(userFollowersData?.followers?.length);
+
+      const hostEventsRes = await fetch(`${backendUrl}/api/v1/users/${userId}`, {
+        credentials: "include",
+      });
+
+      const hostEventsData = await hostEventsRes.json();
+      setHostEvents(hostEventsData?.createdEvents);
     };
     fetchData();
   }, []);
@@ -118,7 +126,7 @@ const HostProfilePage = () => {
               <p className="font-roboto-thin break-words overflow-hidden">{host?.user?.bio}</p>
             )}
             {toggleEvents &&
-              host?.createdEvents
+              hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
                 .map((event) => <EventCardSmall key={event?._id} event={event} />)}
           </div>
