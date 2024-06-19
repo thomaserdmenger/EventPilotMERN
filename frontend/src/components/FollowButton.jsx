@@ -24,8 +24,6 @@ const FollowButton = ({ followedUserId }) => {
     });
 
     const data = await res.json();
-    console.log({ data });
-    console.log({ user });
 
     setUser({
       ...user,
