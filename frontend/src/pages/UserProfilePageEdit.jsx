@@ -13,6 +13,7 @@ import { backendUrl } from "../api/api";
 import Categories from "../components/Categories";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { LoggedInContext } from "../context/LoggedInContext";
+import CustomTextArea from "../components/CustomTextArea";
 
 const UserProfilePageEdit = () => {
   const { user, setUser } = useContext(UserContext);
@@ -24,8 +25,8 @@ const UserProfilePageEdit = () => {
   const [categoriesArray, setCategoriesArray] = useState(user?.user?.interests);
   const [toggleDeletePopup, setToggleDeletePopup] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const navigate = useNavigate();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
@@ -119,15 +120,11 @@ const UserProfilePageEdit = () => {
               value={username}
               name="username"
             />
-
-            <TextField
-              id="outlined-multiline-static"
-              // label="Multiline"
-              multiline
-              rows={6}
-              onChange={(e) => setBio(e.target.value)}
+            <CustomTextArea
+              label="About me"
               value={bio}
               name="bio"
+              onChange={(e) => setBio(e.target.value)}
             />
             <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
             <input type="file" name="profileImage" />

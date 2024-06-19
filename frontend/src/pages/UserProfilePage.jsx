@@ -4,15 +4,21 @@ import { backendUrl } from "../api/api";
 import { UserContext } from "../context/UserContext";
 import { FaRegEdit } from "react-icons/fa";
 import CustomButton from "../components/CustomButton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import EventCardSmall from "../components/EventCardSmall";
 
 const UserProfilePage = () => {
   const { user } = useContext(UserContext);
   const [followers, setFollowers] = useState(0);
+  const [toggleAbout, setToggleAbout] = useState(true);
+  const [toggleEvents, setToggleEvents] = useState(false);
+  const [toggleBookmarks, setToggleBookmarks] = useState(false);
   const navigate = useNavigate();
+  const [usersEvents, setUsersEvents] = useState({});
+  const userId = user?.user?._id;
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    // Get users, that follow the auth user
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/followers/followed`, {
         method: "POST",
@@ -22,18 +28,21 @@ const UserProfilePage = () => {
       });
       const data = await res.json();
       setFollowers(data?.followers?.length);
+
+      const usersEventsRes = await fetch(`${backendUrl}/api/v1/users/${userId}`, {
+        credentials: "include",
+      });
+
+      const userEventsData = await usersEventsRes.json();
+      setUsersEvents(userEventsData?.createdEvents);
     };
 
     fetchData();
   }, []);
 
-  const editProfile = () => {
-    navigate("/userprofileedit");
-  };
-
   return (
-    <div className="min-h-svh">
-      <HeaderNav />
+    <div className="min-h-svh pb-36">
+      <HeaderNav pathname={pathname} user={user} />
       <section>
         <article className=" flex justify-center mb-[40px] mt-2">
           {user?.user?.profileImage?.public_id ? (
@@ -73,34 +82,87 @@ const UserProfilePage = () => {
             text={"Edit Profile"}
             border={"1px solid #7254EE"}
             endIcon={<FaRegEdit />}
-            onClick={editProfile}
+            onClick={() => navigate("/userprofileedit")}
           />
         </article>
-        <article className="px-8 mb-9">
-          <h2 className="text-[18px] mb-[10px] font-roboto-medium">
-            About{" "}
-            <span className="text-purple-1">
-              {user?.user?.firstname} {user?.user?.lastname}
-            </span>
-          </h2>
-          <p className="text-grey-2 font-roboto-thin break-all">{user?.user?.bio}</p>
-        </article>
-        {user?.user?.interests?.length > 0 && (
-          <article className="px-8">
-            <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
-            <div className="flex gap-2 flex-wrap">
-              {user?.user?.interests?.sort().map((item, index) => {
-                return (
-                  <p
-                    key={index}
-                    className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
-                    {item}
+        <section>
+          <nav className="flex justify-between font-roboto-regular mb-4 uppercase px-8">
+            <p
+              className={`${toggleAbout && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleAbout(true);
+                setToggleEvents(false);
+                setToggleBookmarks(false);
+              }}>
+              About
+            </p>
+            <p
+              className={`${toggleEvents && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleEvents(true);
+                setToggleAbout(false);
+                setToggleBookmarks(false);
+              }}>
+              My Events
+            </p>
+            <p
+              className={`${toggleBookmarks && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              onClick={() => {
+                setToggleBookmarks(true);
+                setToggleAbout(false);
+                setToggleEvents(false);
+              }}>
+              Bookmarks
+            </p>
+          </nav>
+          <div>
+            {toggleAbout && (
+              <>
+                <article className="px-8 mb-9">
+                  <h2 className="text-[18px] mb-[10px] font-roboto-medium">
+                    Hi, I am{" "}
+                    <span className="text-purple-1">
+                      {user?.user?.firstname} {user?.user?.lastname}
+                    </span>
+                  </h2>
+                  <p className="text-grey-2 font-roboto-thin break-words overflow-hidden">
+                    {user?.user?.bio}
                   </p>
-                );
-              })}
-            </div>
-          </article>
-        )}
+                </article>
+                <article>
+                  {user?.user?.interests?.length > 0 && (
+                    <article className="px-8">
+                      <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
+                      <div className="flex gap-2 flex-wrap">
+                        {user?.user?.interests?.sort().map((item, index) => {
+                          return (
+                            <p
+                              key={index}
+                              className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-regular">
+                              {item}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </article>
+                  )}
+                </article>
+              </>
+            )}
+            {toggleEvents && (
+              <div className="px-8">
+                {usersEvents
+                  ?.sort((a, b) => a.startDate - b.startDate)
+                  .map((event) => (
+                    <EventCardSmall key={event?._id} event={event} />
+                  ))}
+              </div>
+            )}
+            {toggleEvents && usersEvents?.length === 0 && (
+              <p className="px-8 font-roboto-regular">No created events</p>
+            )}
+          </div>
+        </section>
       </section>
     </div>
   );
