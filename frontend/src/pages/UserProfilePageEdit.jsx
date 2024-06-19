@@ -8,7 +8,7 @@ import { UserContext } from "../context/UserContext";
 import CustomButton from "../components/CustomButton";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import Categories from "../components/Categories";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -24,8 +24,8 @@ const UserProfilePageEdit = () => {
   const [categoriesArray, setCategoriesArray] = useState(user?.user?.interests);
   const [toggleDeletePopup, setToggleDeletePopup] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
@@ -76,7 +76,7 @@ const UserProfilePageEdit = () => {
 
   return (
     <div className="min-h-svh">
-      <HeaderNav />
+      <HeaderNav pathname={pathname} user={user} />
       {!toggleDeletePopup && (
         <section className="pb-8">
           <div className="flex justify-center mb-[40px] mt-2">

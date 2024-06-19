@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
+import EventCardSmall from "../components/EventCardSmall";
 import HeaderNav from "../components/HeaderNav";
 
 const HostProfilePage = () => {
@@ -11,6 +12,7 @@ const HostProfilePage = () => {
   const [toggleAbout, setToggleAbout] = useState(true);
   const [toggleEvents, setToggleEvents] = useState(false);
   const [toggleReviews, setToggleReviews] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,8 +50,8 @@ const HostProfilePage = () => {
   }, []);
 
   return (
-    <div className="min-h-svh">
-      <HeaderNav />
+    <div className="min-h-svh pb-8">
+      <HeaderNav pathname={pathname} host={host} />
       <section className="px-8">
         <article className=" flex justify-center mb-[40px] mt-2">
           {host?.user?.profileImage?.public_id ? (
@@ -113,6 +115,10 @@ const HostProfilePage = () => {
           </nav>
           <div>
             {toggleAbout && <p className="font-roboto-thin break-all">{host?.user?.bio}</p>}
+            {toggleEvents &&
+              host?.createdEvents
+                ?.sort((a, b) => a.startDate - b.startDate)
+                .map((event) => <EventCardSmall key={event?._id} event={event} />)}
           </div>
         </article>
       </section>
