@@ -1,8 +1,10 @@
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Link } from "react-router-dom";
+import BookmarkButton from "./BookmarkButton";
 
-const EventCardSmall = ({ event }) => {
-  const timestamp = event?.startDate;
+const EventCardSmall = ({ event, bookmark }) => {
+  const eventTimestamp = event?.startDate;
+  const bookmarkEventTimestamp = bookmark?.eventId?.startDate;
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -51,29 +53,64 @@ const EventCardSmall = ({ event }) => {
   };
 
   return (
-    <Link to={`/events/${event?._id}`}>
-      <article>
-        <div className="grid grid-cols-7 gap-2 mb-2 rounded-md overflow-hidden p-2 shadow">
-          <img
-            className="col-span-2 rounded-md w-full h-full object-cover"
-            src={event?.eventImage?.secure_url}
-            alt="Event Image"
-          />
-          <div className="col-span-5 p-2 flex flex-col">
-            <p className="text-[12px] text-blue-1">{formatDate(timestamp)}</p>
-            <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
-              {event?.title}
-            </h2>
-            <div className="flex items-center ml-[-5px]">
-              <LocationOnIcon style={{ width: "15px", color: "#848484", marginTop: "-1px" }} />
-              <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">
-                {event?.location}
-              </p>
+    <>
+      {event && (
+        <Link to={`/events/${event?._id}`}>
+          <article>
+            <div className="grid grid-cols-7 gap-2 mb-2 rounded-[15px] overflow-hidden p-2 shadow">
+              <img
+                className="col-span-2 rounded-[15px] w-full h-full object-cover"
+                src={event?.eventImage?.secure_url}
+                alt="Event Image"
+              />
+              <div className="col-span-5 p-2 flex flex-col relative">
+                <p className="text-[12px] text-purple-4">{formatDate(eventTimestamp)}</p>
+                <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
+                  {event?.title}
+                </h2>
+                <div className="flex items-center ml-[-5px]">
+                  <LocationOnIcon style={{ width: "15px", color: "#848484", marginTop: "-1px" }} />
+                  <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">
+                    {event?.location}
+                  </p>
+                </div>
+                <div className="absolute top-0 right-0">
+                  <BookmarkButton eventId={event?._id} />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </article>
-    </Link>
+          </article>
+        </Link>
+      )}
+      {bookmark && (
+        <Link to={`/events/${bookmark?.eventId?._id}`}>
+          <article>
+            <div className="grid grid-cols-7 gap-2 mb-2 rounded-[15px] overflow-hidden p-2 shadow">
+              <img
+                className="col-span-2 rounded-[15px] w-full h-full object-cover"
+                src={bookmark?.eventId?.eventImage?.secure_url}
+                alt="Event Image"
+              />
+              <div className="col-span-5 p-2 flex flex-col relative">
+                <p className="text-[12px] text-purple-4">{formatDate(bookmarkEventTimestamp)}</p>
+                <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
+                  {bookmark?.eventId?.title}
+                </h2>
+                <div className="flex items-center ml-[-5px]">
+                  <LocationOnIcon style={{ width: "15px", color: "#848484", marginTop: "-1px" }} />
+                  <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">
+                    {bookmark?.eventId?.location}
+                  </p>
+                </div>
+                <div className="absolute top-0 right-0">
+                  <BookmarkButton eventId={bookmark?.eventId?._id} />
+                </div>
+              </div>
+            </div>
+          </article>
+        </Link>
+      )}
+    </>
   );
 };
 
