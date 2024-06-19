@@ -74,23 +74,25 @@ const EventDetailPage = () => {
 
       <section className="pt-7 px-5 relative">
         <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md max-w-[230px] absolute mx-auto left-0 right-0 top-[-65px] text-center">
-          {/* //# zur Registrierung weiterleiten? Direkt Funktion auflegen? */}
           {participants?.length === 0 ? (
             <p className="font-roboto-regular text-blue-1 cursor-pointer">
               Be the first to register!
             </p>
           ) : (
-            <div className="flex gap-5 items-center justify-center ">
-              {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
-              {participants?.map((singleParticipant) => (
-                <ProfileImage
-                  key={singleParticipant._id}
-                  className={
-                    "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
-                  }
-                  src={singleParticipant?.userId?.profileImage?.secure_url}
-                />
-              ))}
+            <div className="flex gap-5 items-center justify-center relative">
+              <div className="flex [&>*:not(:nth-child(1))]:ml-[-10px]">
+                {/* //# noch splitten nach 3 Personen für Anzeige vom Image */}
+                {participants?.map((singleParticipant) => (
+                  <ProfileImage
+                    key={singleParticipant?.userId?._id}
+                    className={
+                      "max-w-10 rounded-full h-[34px] w-[34px] object-cover overflow-hidden "
+                    }
+                    src={singleParticipant?.userId?.profileImage?.secure_url}
+                    to={`/hostprofile/${singleParticipant?.userId?._id}`}
+                  />
+                ))}
+              </div>
               <p className="font-roboto-regular text-blue-1">{`+${participants?.length} registered`}</p>
             </div>
           )}
@@ -135,14 +137,13 @@ const EventDetailPage = () => {
 
           <div className="flex gap-10 justify-between items-center">
             <div className="flex gap-5 items-center">
-              <Link to={`/hostprofile/${eventDetails?.userId}`}>
-                <ProfileImage
-                  className={
-                    "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
-                  }
-                  src={eventDetails?.userId?.profileImage?.secure_url}
-                />
-              </Link>
+              <ProfileImage
+                className={
+                  "max-w-10 rounded-full h-[34px] w-[34px] object-cover"
+                }
+                src={eventDetails?.userId?.profileImage?.secure_url}
+                to={`/hostprofile/${eventDetails?.userId}`}
+              />
 
               <div className="">
                 <p className="font-roboto-regular">
@@ -176,7 +177,6 @@ const EventDetailPage = () => {
         </article>
       </section>
 
-      {/* //# conditional davon, ob user bereits registriert ist */}
       <div className="px-5 fixed bottom-4 w-full">
         <RegisterButton eventId={eventId} />
       </div>
