@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
-import HeaderNav from "../components/HeaderNav";
 import EventCardSmall from "../components/EventCardSmall";
+import HeaderNav from "../components/HeaderNav";
 
 const HostProfilePage = () => {
   const { userId } = useParams();
@@ -12,8 +12,7 @@ const HostProfilePage = () => {
   const [toggleAbout, setToggleAbout] = useState(true);
   const [toggleEvents, setToggleEvents] = useState(false);
   const [toggleReviews, setToggleReviews] = useState(false);
-
-  // console.log(host);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +51,7 @@ const HostProfilePage = () => {
 
   return (
     <div className="min-h-svh pb-8">
-      <HeaderNav />
+      <HeaderNav pathname={pathname} host={host} />
       <section className="px-8">
         <article className=" flex justify-center mb-[40px] mt-2">
           {host?.user?.profileImage?.public_id ? (

@@ -1,12 +1,8 @@
-import React, { useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
-import { UserContext } from "../context/UserContext";
 
-const HeaderNav = () => {
-  const { pathname } = useLocation();
+const HeaderNav = ({ pathname, user, host }) => {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
 
   return (
     <header className="relative flex justify-center pt-6">
@@ -26,7 +22,7 @@ const HeaderNav = () => {
             : user?.user?.firstname + " " + user?.user?.lastname}
         </p>
       )}
-      {pathname === "/hostprofile/:userId" && <p>Host Gobal fetchen</p>}
+      {pathname === `/hostprofile/${host?.user?._id}` && <p>Host Gobal fetchen</p>}
     </header>
   );
 };
