@@ -43,13 +43,11 @@ const UserProfilePage = () => {
 
       const userBookmarksData = await userBookmarksRes.json();
 
-      // console.log(userBookmarksData);
-
       setUsersBookmarks(userBookmarksData?.bookmarks);
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-svh pb-36">

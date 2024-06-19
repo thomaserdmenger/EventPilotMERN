@@ -1,5 +1,6 @@
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { Link } from "react-router-dom";
+import BookmarkButton from "./BookmarkButton";
 
 const EventCardSmall = ({ event, bookmark }) => {
   const eventTimestamp = event?.startDate;
@@ -51,8 +52,6 @@ const EventCardSmall = ({ event, bookmark }) => {
     return `${day}${ordinalSuffix(day)} ${month}-${dayOfWeek}-${hours}:${minutes} ${ampm}`;
   };
 
-  console.log(bookmark);
-
   return (
     <>
       {event && (
@@ -64,7 +63,7 @@ const EventCardSmall = ({ event, bookmark }) => {
                 src={event?.eventImage?.secure_url}
                 alt="Event Image"
               />
-              <div className="col-span-5 p-2 flex flex-col">
+              <div className="col-span-5 p-2 flex flex-col relative">
                 <p className="text-[12px] text-blue-1">{formatDate(eventTimestamp)}</p>
                 <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
                   {event?.title}
@@ -74,6 +73,9 @@ const EventCardSmall = ({ event, bookmark }) => {
                   <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">
                     {event?.location}
                   </p>
+                </div>
+                <div className="absolute top-0 right-0">
+                  <BookmarkButton eventId={event?._id} />
                 </div>
               </div>
             </div>
@@ -89,7 +91,7 @@ const EventCardSmall = ({ event, bookmark }) => {
                 src={bookmark?.eventId?.eventImage?.secure_url}
                 alt="Event Image"
               />
-              <div className="col-span-5 p-2 flex flex-col">
+              <div className="col-span-5 p-2 flex flex-col relative">
                 <p className="text-[12px] text-blue-1">{formatDate(bookmarkEventTimestamp)}</p>
                 <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
                   {bookmark?.eventId?.title}
@@ -99,6 +101,9 @@ const EventCardSmall = ({ event, bookmark }) => {
                   <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">
                     {bookmark?.eventId?.location}
                   </p>
+                </div>
+                <div className="absolute top-0 right-0">
+                  <BookmarkButton eventId={bookmark?.eventId?._id} />
                 </div>
               </div>
             </div>
