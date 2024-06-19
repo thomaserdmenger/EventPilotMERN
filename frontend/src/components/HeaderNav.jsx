@@ -47,7 +47,7 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
       )}
 
       {pathname === `/events/${eventDetails?._id}` && (
-        <div className="flex justify-between w-full absolute top-5 px-5">
+        <div className="flex justify-between w-full absolute top-6 px-4">
           <ArrowCircleDownIcon
             sx={{
               transform: "rotate(90deg)",
