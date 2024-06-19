@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import CustomTextArea from '../components/CustomTextArea'
+import CustomUpload from '../components/CustomUpload'
 
 const ExplorePage = () => {
   const [text, setText] = useState('')
@@ -8,11 +8,7 @@ const ExplorePage = () => {
     <div className="h-svh">
       <div className="pb-[4.375rem]">
         <h1>Explore</h1>
-        <CustomTextArea
-          label={'Test Label'}
-          onChange={e => setText(e.target.value)}
-          value={text}
-        />
+        <CustomUpload />
       </div>
     </div>
   )

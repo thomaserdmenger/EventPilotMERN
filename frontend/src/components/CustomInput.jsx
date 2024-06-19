@@ -23,7 +23,15 @@ const StyledInputLabel = styled(InputLabel)({
   },
 })
 
-const CustomInput = ({ label, type, icon, value, onChange, name }) => {
+const CustomInput = ({
+  label,
+  type,
+  icon,
+  value,
+  onChange,
+  name,
+  disable,
+}) => {
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => setShowPassword(prev => !prev)
   const handleMouseDownPassword = event => {
@@ -34,6 +42,7 @@ const CustomInput = ({ label, type, icon, value, onChange, name }) => {
     <FormControl variant="outlined">
       <StyledInputLabel htmlFor={label}>{label}</StyledInputLabel>
       <StyledOutlinedInput
+        disabled={disable}
         onChange={onChange}
         value={value}
         id={label}
