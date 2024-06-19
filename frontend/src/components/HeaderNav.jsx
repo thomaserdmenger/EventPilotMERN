@@ -7,10 +7,7 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
 
   return (
     <header
-      className={`relative flex justify-center items-center ${
-        eventDetails ? "py-0" : "py-6"
-      }`}
-    >
+      className={`relative flex justify-center items-center ${eventDetails ? "py-0" : "py-6"}`}>
       {/* Arrow Circle Left abhängig vom Pfad => ERGÄNZEN bzw. ANPASSEN */}
       <div className="absolute top-6 left-4 cursor-pointer">
         {pathname === "/userprofileedit" && (
@@ -22,7 +19,8 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
       </div>
 
       <div className="absolute top-6 left-4 cursor-pointer">
-        {pathname === `/hostprofile/${host?.user?._id}` && (
+        {(pathname === `/hostprofile/${host?.user?._id}` ||
+          pathname === `/hostprofile/rate/${host?.user?._id}`) && (
           <ArrowCircleDownIcon
             sx={{ transform: "rotate(90deg)", fontSize: "2rem" }}
             onClick={() => navigate(-1)}
@@ -38,7 +36,8 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
         </p>
       )}
 
-      {pathname === `/hostprofile/${host?.user?._id}` && (
+      {(pathname === `/hostprofile/${host?.user?._id}` ||
+        pathname === `/hostprofile/rate/${host?.user?._id}`) && (
         <p className="text-[24px] px-4 text-center break-words overflow-hidden">
           {host?.user?.username
             ? host?.user?.username

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import EventCardSmall from "../components/EventCardSmall";
 import HeaderNav from "../components/HeaderNav";
+import ReviewCard from "../components/ReviewCard";
 
 const HostProfilePage = () => {
   const { userId } = useParams();
@@ -14,8 +15,7 @@ const HostProfilePage = () => {
   const [toggleReviews, setToggleReviews] = useState(false);
   const [hostEvents, setHostEvents] = useState({});
   const { pathname } = useLocation();
-
-  console.log(host?.receivedReviews);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,7 +91,12 @@ const HostProfilePage = () => {
         </article>
         <article className="flex justify-center gap-2 mb-9">
           <p>FollowButton</p>
-          <p>RewiewButton</p>
+          <p
+            onClick={() => {
+              navigate(`/hostprofile/rate/${userId}`);
+            }}>
+            RewiewButton
+          </p>
         </article>
         <article>
           <nav className="flex justify-between font-roboto-regular mb-4 uppercase">
@@ -131,7 +136,10 @@ const HostProfilePage = () => {
               hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
                 .map((event) => <EventCardSmall key={event?._id} event={event} />)}
-            {toggleReviews && ""}
+            {toggleReviews &&
+              host?.receivedReviews?.map((review) => {
+                return <ReviewCard key={review._id} review={review} />;
+              })}
           </div>
         </article>
       </section>
