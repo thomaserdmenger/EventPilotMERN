@@ -15,7 +15,7 @@ const HostProfilePage = () => {
   const [hostEvents, setHostEvents] = useState({});
   const { pathname } = useLocation();
 
-  // console.log(host?.receivedReviews);
+  console.log(host?.receivedReviews);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -131,6 +131,7 @@ const HostProfilePage = () => {
               hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
                 .map((event) => <EventCardSmall key={event?._id} event={event} />)}
+            {toggleReviews && ""}
           </div>
         </article>
       </section>
