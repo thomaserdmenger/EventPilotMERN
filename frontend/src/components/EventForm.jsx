@@ -1,93 +1,96 @@
 // import dayjs from "dayjs";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useEffect, useState } from "react";
-import { backendUrl } from "../api/api";
-import CustomInput from "./CustomInput.jsx";
-import CustomButton from "./CustomButton.jsx";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import Categories from "./Categories.jsx";
-import { useNavigate } from "react-router-dom";
-import CustomTextArea from "../components/CustomTextArea";
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { useEffect, useState } from 'react'
+import { backendUrl } from '../api/api'
+import CustomInput from './CustomInput.jsx'
+import CustomButton from './CustomButton.jsx'
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight'
+import Categories from './Categories.jsx'
+import { useNavigate } from 'react-router-dom'
+import CustomTextArea from '../components/CustomTextArea'
+import CustomUpload from './CustomUpload.jsx'
 
 const EventForm = ({ eventToEdit }) => {
-  const [errorMessage, setErrorMessage] = useState();
-  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState()
+  const navigate = useNavigate()
 
   // states and useEffect to fill input fields if it's an edit event form:
-  const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
-  const [categoriesArray, setCategoriesArray] = useState([]);
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState('')
+  const [location, setLocation] = useState('')
+  const [categoriesArray, setCategoriesArray] = useState([])
+  const [description, setDescription] = useState('')
 
   useEffect(() => {
     if (eventToEdit) {
-      setTitle(eventToEdit.title);
-      setLocation(eventToEdit.location);
-      setCategoriesArray(eventToEdit.categories);
-      setDescription(eventToEdit.description);
+      setTitle(eventToEdit.title)
+      setLocation(eventToEdit.location)
+      setCategoriesArray(eventToEdit.categories)
+      setDescription(eventToEdit.description)
     }
-  }, [eventToEdit]);
+  }, [eventToEdit])
 
   // add event fetch
-  const addEvent = async (e) => {
-    e.preventDefault();
+  const addEvent = async e => {
+    e.preventDefault()
 
-    const form = e.target;
-    const formData = new FormData(form);
-    formData.append("categories", categoriesArray);
+    const form = e.target
+    const formData = new FormData(form)
+    formData.append('categories', categoriesArray)
 
     const res = await fetch(`${backendUrl}/api/v1/events`, {
-      method: "POST",
-      credentials: "include",
+      method: 'POST',
+      credentials: 'include',
       body: formData,
-    });
+    })
 
-    const data = await res.json();
-    console.log(data.newEvent);
-    if (data.errorMessage) return setErrorMessage(data.errorMessage);
-    setErrorMessage("");
-    navigate(`/events/${data.newEvent._id}`);
-  };
+    const data = await res.json()
+    console.log(data.newEvent)
+    if (data.errorMessage) return setErrorMessage(data.errorMessage)
+    setErrorMessage('')
+    navigate(`/events/${data.newEvent._id}`)
+  }
 
   // edit event fetch
-  const editEvent = async (e) => {
-    e.preventDefault();
+  const editEvent = async e => {
+    e.preventDefault()
 
-    const form = e.target;
-    const formData = new FormData(form);
-    formData.append("categories", categoriesArray);
+    const form = e.target
+    const formData = new FormData(form)
+    formData.append('categories', categoriesArray)
 
-    const res = await fetch(`${backendUrl}/api/v1/events/${eventToEdit._id}`, {
-      method: "PATCH",
-      credentials: "include",
-      body: formData,
-    });
+    const res = await fetch(
+      `${backendUrl}/api/v1/events/${eventToEdit._id}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        body: formData,
+      },
+    )
     // for (const value of formData.entries()) {
     //   console.log(value);
     // }
-    const data = await res.json();
+    const data = await res.json()
 
-    if (data.message) return setErrorMessage(data.message);
-    setErrorMessage("");
-    navigate(`/events/${eventToEdit._id}`);
-  };
+    if (data.message) return setErrorMessage(data.message)
+    setErrorMessage('')
+    navigate(`/events/${eventToEdit._id}`)
+  }
 
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <form
           className="flex flex-col gap-3"
-          onSubmit={eventToEdit ? editEvent : addEvent}
-        >
+          onSubmit={eventToEdit ? editEvent : addEvent}>
           <CustomInput
             type="text"
             placeholder="Title of your event"
             name="title"
             label="Title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={e => setTitle(e.target.value)}
           />
 
           <MobileDateTimePicker
@@ -108,7 +111,7 @@ const EventForm = ({ eventToEdit }) => {
             placeholder="Location"
             name="location"
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={e => setLocation(e.target.value)}
           />
 
           <Categories
@@ -119,11 +122,14 @@ const EventForm = ({ eventToEdit }) => {
           <CustomTextArea
             placeholder="Describe your event"
             name="description"
-            label={"Description"}
-            onChange={(e) => setDescription(e.target.value)}
+            label={'Description'}
+            onChange={e => setDescription(e.target.value)}
             value={description}
           />
-          <input type="file" name="eventImage" />
+          {/* <input type="file" name="eventImage" /> */}
+
+          <CustomUpload name={'eventImage'} />
+
           {/* // --> folgt noch von Icaro */}
 
           <CustomButton
@@ -134,7 +140,7 @@ const EventForm = ({ eventToEdit }) => {
             bgcolor="#7254EE"
             bgcolorHover="#5D3EDE"
             padding="16px"
-            text={eventToEdit ? "Edit your event" : "Add your event"}
+            text={eventToEdit ? 'Edit your event' : 'Add your event'}
             endIcon={<ArrowCircleRightIcon />}
           />
 
@@ -142,7 +148,7 @@ const EventForm = ({ eventToEdit }) => {
         </form>
       </LocalizationProvider>
     </>
-  );
-};
+  )
+}
 
-export default EventForm;
+export default EventForm
