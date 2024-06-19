@@ -1,4 +1,5 @@
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Link } from "react-router-dom";
 
 const EventCardSmall = ({ event }) => {
   const timestamp = event?.startDate;
@@ -50,23 +51,27 @@ const EventCardSmall = ({ event }) => {
   };
 
   return (
-    <article>
-      <div className="grid grid-cols-7 gap-2 mb-2 rounded-md overflow-hidden p-2 shadow">
-        <img
-          className="col-span-2 rounded-md w-full h-full object-cover"
-          src={event?.eventImage?.secure_url}
-          alt="Event Image"
-        />
-        <div className="col-span-5 p-2 flex flex-col">
-          <p className="text-[12px] text-blue-1">{formatDate(timestamp)}</p>
-          <h2 className="capitalize mb-3 text-[18px] break-all">{event?.title}</h2>
-          <div className="flex items-center ml-[-5px]">
-            <LocationOnIcon style={{ width: "15px", color: "#848484", marginTop: "-1px" }} />
-            <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">{event?.location}</p>
+    <Link to={`/events/${event?._id}`}>
+      <article>
+        <div className="grid grid-cols-7 gap-2 mb-2 rounded-md overflow-hidden p-2 shadow">
+          <img
+            className="col-span-2 rounded-md w-full h-full object-cover"
+            src={event?.eventImage?.secure_url}
+            alt="Event Image"
+          />
+          <div className="col-span-5 p-2 flex flex-col">
+            <p className="text-[12px] text-blue-1">{formatDate(timestamp)}</p>
+            <h2 className="capitalize mb-3 text-[18px] break-all">{event?.title}</h2>
+            <div className="flex items-center ml-[-5px]">
+              <LocationOnIcon style={{ width: "15px", color: "#848484", marginTop: "-1px" }} />
+              <p className="text-grey-1 font-roboto-thin capitalize text-[13px]">
+                {event?.location}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 };
 
