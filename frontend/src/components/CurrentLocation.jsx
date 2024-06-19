@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const CurrentLocation = () => {
   const [city, setCity] = useState("");
-  const [query, setQuery] = useState("");
 
   // get lat/long and search in Google Api:
   if (navigator.geolocation) {
@@ -34,18 +33,10 @@ const CurrentLocation = () => {
       .catch((error) => console.log(error));
   }
 
-  //######
-  useEffect(() => {}, []);
-
   return (
     <div className="bg-purple-1 flex flex-col items-center py-2">
       <p className="font-roboto-thin text-white">Current Location</p>
       <p className="text-white">{city}</p>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
     </div>
   );
 };
