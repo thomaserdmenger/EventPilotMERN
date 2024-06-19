@@ -73,7 +73,7 @@ const BookmarkButton = ({ eventId }) => {
             color: "#00ECAA",
           }}
           onClick={deleteBookmark}
-          className="mt-2 mr-4 bg-[#ECEBEB] p-1 rounded-md cursor-pointer"
+          className="mt-2 mr-4 bg-purple-4 p-1 rounded-md cursor-pointer"
         />
       ) : (
         <BookmarkBorderIcon
@@ -82,7 +82,7 @@ const BookmarkButton = ({ eventId }) => {
             color: "#00ECAA",
           }}
           onClick={addBookmark}
-          className="mt-2 mr-4 bg-[#ECEBEB] p-1 rounded-md cursor-pointer"
+          className="mt-2 mr-4 bg-purple-4 p-1 rounded-md cursor-pointer"
         />
       )}
     </>

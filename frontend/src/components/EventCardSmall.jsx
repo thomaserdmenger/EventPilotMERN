@@ -57,14 +57,14 @@ const EventCardSmall = ({ event, bookmark }) => {
       {event && (
         <Link to={`/events/${event?._id}`}>
           <article>
-            <div className="grid grid-cols-7 gap-2 mb-2 rounded-md overflow-hidden p-2 shadow">
+            <div className="grid grid-cols-7 gap-2 mb-2 rounded-[15px] overflow-hidden p-2 shadow">
               <img
-                className="col-span-2 rounded-md w-full h-full object-cover"
+                className="col-span-2 rounded-[15px] w-full h-full object-cover"
                 src={event?.eventImage?.secure_url}
                 alt="Event Image"
               />
               <div className="col-span-5 p-2 flex flex-col relative">
-                <p className="text-[12px] text-blue-1">{formatDate(eventTimestamp)}</p>
+                <p className="text-[12px] text-purple-4">{formatDate(eventTimestamp)}</p>
                 <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
                   {event?.title}
                 </h2>
@@ -85,14 +85,14 @@ const EventCardSmall = ({ event, bookmark }) => {
       {bookmark && (
         <Link to={`/events/${bookmark?.eventId?._id}`}>
           <article>
-            <div className="grid grid-cols-7 gap-2 mb-2 rounded-md overflow-hidden p-2 shadow">
+            <div className="grid grid-cols-7 gap-2 mb-2 rounded-[15px] overflow-hidden p-2 shadow">
               <img
-                className="col-span-2 rounded-md w-full h-full object-cover"
+                className="col-span-2 rounded-[15px] w-full h-full object-cover"
                 src={bookmark?.eventId?.eventImage?.secure_url}
                 alt="Event Image"
               />
               <div className="col-span-5 p-2 flex flex-col relative">
-                <p className="text-[12px] text-blue-1">{formatDate(bookmarkEventTimestamp)}</p>
+                <p className="text-[12px] text-purple-4">{formatDate(bookmarkEventTimestamp)}</p>
                 <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
                   {bookmark?.eventId?.title}
                 </h2>
