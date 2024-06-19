@@ -9,7 +9,7 @@ export const getUserBookmarksCtrl = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(400).json("User not found. Please register.");
 
-    const bookmarks = await Bookmark.find({ userId });
+    const bookmarks = await Bookmark.find({ userId }).populate("eventId");
     res.json({ userId, bookmarks });
   } catch (error) {
     console.log(error);

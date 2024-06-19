@@ -14,7 +14,8 @@ const UserProfilePage = () => {
   const [toggleEvents, setToggleEvents] = useState(false);
   const [toggleBookmarks, setToggleBookmarks] = useState(false);
   const navigate = useNavigate();
-  const [usersEvents, setUsersEvents] = useState({});
+  const [usersEvents, setUsersEvents] = useState([]);
+  const [usersBookmarks, setUsersBookmarks] = useState([]);
   const userId = user?.user?._id;
   const { pathname } = useLocation();
 
@@ -35,6 +36,16 @@ const UserProfilePage = () => {
 
       const userEventsData = await usersEventsRes.json();
       setUsersEvents(userEventsData?.createdEvents);
+
+      const userBookmarksRes = await fetch(`${backendUrl}/api/v1/bookmarks`, {
+        credentials: "include",
+      });
+
+      const userBookmarksData = await userBookmarksRes.json();
+
+      // console.log(userBookmarksData);
+
+      setUsersBookmarks(userBookmarksData?.bookmarks);
     };
 
     fetchData();
@@ -160,6 +171,18 @@ const UserProfilePage = () => {
             )}
             {toggleEvents && usersEvents?.length === 0 && (
               <p className="px-8 font-roboto-regular">No created events</p>
+            )}
+            {toggleBookmarks && (
+              <div className="px-8">
+                {usersBookmarks
+                  ?.sort((a, b) => a.eventId?.startDate - b.eventId?.startDate)
+                  .map((bookmark) => (
+                    <EventCardSmall key={bookmark?._id} bookmark={bookmark} />
+                  ))}
+              </div>
+            )}
+            {toggleBookmarks && usersBookmarks?.length === 0 && (
+              <p className="px-8 font-roboto-regular">No bookmarked events</p>
             )}
           </div>
         </section>
