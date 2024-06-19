@@ -127,7 +127,7 @@ const UserProfilePage = () => {
           <div>
             {toggleAbout && (
               <>
-                <article className="px-8 mb-9">
+                <article className="px-8 mb-4">
                   <h2 className="text-[18px] mb-[10px] font-roboto-medium">
                     Hi, I am{" "}
                     <span className="text-purple-1">
