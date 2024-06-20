@@ -1,15 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import RatingStars from "../components/RatingStars";
 import HeaderNav from "../components/HeaderNav";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
-import { UserContext } from "../context/UserContext";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import CustomButton from "../components/CustomButton";
+import CustomTextArea from "../components/CustomTextArea";
 
 const ReviewHostPage = ({}) => {
   const [host, setHost] = useState({});
-  // const { user } = useContext(UserContext);
   const [userFollows, setUserFollows] = useState(0);
   const [userFollowers, setUserFollowers] = useState(0);
   const [rating, setRating] = useState(3);
@@ -17,6 +16,7 @@ const ReviewHostPage = ({}) => {
   const { userId } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState(false);
 
   // console.log(text);
   // console.log(typeof rating);
@@ -71,31 +71,32 @@ const ReviewHostPage = ({}) => {
 
     const reviewData = await resReview.json();
 
-    // Message, dass erfolgreich geriviewed
+    setSuccessMessage(true);
 
     setTimeout(() => {
+      setSuccessMessage(false);
       navigate(`/hostprofile/${host?.user?._id}`);
     }, 1000);
 
-    // Verhindern, dass man sich selbst bewertet => mit error Message aus Backend abgleichen
-    // setText("");
+    // # Verhindern, dass man sich selbst bewertet => mit error Message aus Backend abgleichen
+    setText("");
   };
 
   return (
     <div>
       <HeaderNav pathname={pathname} host={host} />
       <section className="px-8">
-        <div className="flex">
+        <div className="flex gap-4 justify-between px-2">
           <article className=" flex justify-center mb-[40px] mt-2">
             {host?.user?.profileImage?.public_id ? (
               <img
-                className="rounded-full max-h-40"
+                className="rounded-full max-h-24"
                 src={host?.user?.profileImage?.secure_url}
                 alt="User Image"
               />
             ) : (
               <img
-                className="rounded-full max-h-40"
+                className="rounded-full max-h-24"
                 src="/images/avatar_default.png"
                 alt="User Image"
               />
@@ -113,20 +114,24 @@ const ReviewHostPage = ({}) => {
             </div>
           </article>
         </div>
-        <RatingStars
-          rating={rating}
-          setRating={setRating}
-          name="read-only"
-          readOnlyBolean={false}
-        />
-        <textarea
-          className="border-blue-1 border w-full"
-          name="rating"
-          id="rating"
-          placeholder="Your review"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={10}></textarea>
+        <div className="flex justify-center mb-12">
+          <RatingStars
+            rating={rating}
+            setRating={setRating}
+            name="read-only"
+            readOnlyBolean={false}
+            fontSize={"3.5rem"}
+          />
+        </div>
+        <div className="mb-8">
+          <CustomTextArea
+            label="Review Host"
+            value={text}
+            rows={8}
+            multiline
+            onChange={(e) => setText(e.target.value)}
+          />
+        </div>
         <CustomButton
           fontSize={"16px"}
           width={"100%"}
@@ -139,6 +144,9 @@ const ReviewHostPage = ({}) => {
           type="submit"
           onClick={handleSubmit}
         />
+        {successMessage && (
+          <p className="text-green-1 text-center mt-4">Review successfully submitted</p>
+        )}
       </section>
     </div>
   );

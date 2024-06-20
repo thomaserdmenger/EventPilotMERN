@@ -1,7 +1,7 @@
 import Rating from "@mui/material/Rating";
 import Box from "@mui/material/Box";
 
-const RatingStars = ({ rating, setRating, name, readOnlyBolean }) => {
+const RatingStars = ({ rating, setRating, name, readOnlyBolean, fontSize }) => {
   return (
     <Box
       sx={{
@@ -10,10 +10,10 @@ const RatingStars = ({ rating, setRating, name, readOnlyBolean }) => {
         },
         "& .MuiRating-iconFilled": {
           color: "#00ECAA",
-          fontSize: "1.3rem",
+          fontSize: `${fontSize}`,
         },
         "& .MuiRating-iconEmpty .MuiSvgIcon-root": {
-          fontSize: "1.3rem",
+          fontSize: `${fontSize}`,
         },
       }}>
       <Rating

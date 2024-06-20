@@ -57,6 +57,7 @@ const ReviewCard = ({ review }) => {
           </div>
           <div>
             <RatingStars
+              fontSize={"1.3rem"}
               rating={rating}
               setRating={setRating}
               name="read-only"
