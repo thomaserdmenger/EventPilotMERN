@@ -26,8 +26,6 @@ const EventForm = ({ eventToEdit }) => {
   const [categoriesArray, setCategoriesArray] = useState([]);
   const [description, setDescription] = useState("");
 
-  const authUser = eventToEdit?.userId?._id === user?.user?._id;
-
   useEffect(() => {
     if (eventToEdit) {
       setTitle(eventToEdit.title);
@@ -116,80 +114,74 @@ const EventForm = ({ eventToEdit }) => {
 
   return (
     <>
-      {eventToEdit && authUser ? (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <form
-            className="flex flex-col gap-5 mb-5"
-            onSubmit={eventToEdit ? editEvent : addEvent}
-          >
-            <CustomInput
-              type="text"
-              placeholder="Title of your event"
-              name="title"
-              label="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <form
+          className="flex flex-col gap-5 mb-5"
+          onSubmit={eventToEdit ? editEvent : addEvent}
+        >
+          <CustomInput
+            type="text"
+            placeholder="Title of your event"
+            name="title"
+            label="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
-            <CustomUpload name={"eventImage"} />
+          <CustomUpload name={"eventImage"} />
 
-            <SearchLocation location={location} setLocation={setLocation} />
+          <SearchLocation location={location} setLocation={setLocation} />
 
-            <Categories
-              categoriesArray={categoriesArray}
-              setCategoriesArray={setCategoriesArray}
-            />
+          <Categories
+            categoriesArray={categoriesArray}
+            setCategoriesArray={setCategoriesArray}
+          />
 
-            <CustomTextArea
-              placeholder="Describe your event"
-              name="description"
-              label={"Description"}
-              onChange={(e) => setDescription(e.target.value)}
-              value={description}
-              row={4}
-            />
+          <CustomTextArea
+            placeholder="Describe your event"
+            name="description"
+            label={"Description"}
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
+            row={4}
+          />
 
-            <div className="flex items-center justify-between gap-2">
-              <CustomMobileDateTimePicker label="From" name="startDate" />
-              <div className="w-6 bg-green-1 h-1 rounded-full"></div>
-              <CustomMobileDateTimePicker label="To" name="endDate" />
-            </div>
+          <div className="flex items-center justify-between gap-2">
+            <CustomMobileDateTimePicker label="From" name="startDate" />
+            <div className="w-6 bg-green-1 h-1 rounded-full"></div>
+            <CustomMobileDateTimePicker label="To" name="endDate" />
+          </div>
 
-            {errorMessage && (
-              <p className=" text-red-500 text-center">{errorMessage}</p>
-            )}
-
-            <CustomButton
-              type="submit"
-              fontSize="16px"
-              width="100%"
-              borderRadius="15px"
-              bgcolor="#7254EE"
-              bgcolorHover="#5D3EDE"
-              padding="16px"
-              text={eventToEdit ? "Edit your event" : "Add your event"}
-              endIcon={<ArrowCircleRightIcon />}
-            />
-          </form>
-          {eventToEdit && (
-            <CustomButton
-              type="button"
-              fontSize="16px"
-              width="100%"
-              borderRadius="15px"
-              bgcolor="#7254EE"
-              bgcolorHover="#5D3EDE"
-              padding="16px"
-              text="Delete your event"
-              endIcon={<ArrowCircleRightIcon />}
-            />
+          {errorMessage && (
+            <p className=" text-red-500 text-center">{errorMessage}</p>
           )}
-        </LocalizationProvider>
-      ) : (
-        <p className="text-red-500 text-center">
-          You are not authorized to edit this event.
-        </p>
-      )}
+
+          <CustomButton
+            type="submit"
+            fontSize="16px"
+            width="100%"
+            borderRadius="15px"
+            bgcolor="#7254EE"
+            bgcolorHover="#5D3EDE"
+            padding="16px"
+            text={eventToEdit ? "Edit your event" : "Add your event"}
+            endIcon={<ArrowCircleRightIcon />}
+          />
+        </form>
+        {eventToEdit && (
+          <CustomButton
+            type="button"
+            fontSize="16px"
+            width="100%"
+            borderRadius="15px"
+            bgcolor="#7254EE"
+            bgcolorHover="#5D3EDE"
+            padding="16px"
+            text="Delete your event"
+            endIcon={<ArrowCircleRightIcon />}
+          />
+        )}
+      </LocalizationProvider>
     </>
   );
 };
