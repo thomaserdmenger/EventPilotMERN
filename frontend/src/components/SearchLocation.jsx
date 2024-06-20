@@ -1,11 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 
-// * Idee
-// mit input nach Vorschlägen suchen
-// beim Klick auf Vorschlag: diesen im Input feld anzeigen
-// beim Absenden des Formulars: Infos für den Ort speichern und ans Backend senden
-// dort differenziert abspeichern
-
 // https://www.youtube.com/watch?v=LnF79PMKHUs
 // https://github.com/delowardev/google-places-autocomplete
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
@@ -31,6 +25,8 @@ function loadAsyncScript(src) {
 const extractAddress = (place) => {
   const address = {
     name: place.name,
+    street: "",
+    streetNumber: "",
     city: "",
     state: "",
     zip: "",
@@ -84,7 +80,7 @@ const SearchLocation = () => {
     if (window.google) {
       return Promise.resolve();
     }
-    const src = `${mapApiJs}?key=${apiKey}&libraries=places&v=weekly`;
+    const src = `${mapApiJs}?key=${apiKey}&libraries=places&v=weekly&language=en`;
     return loadAsyncScript(src);
   };
 
@@ -116,24 +112,27 @@ const SearchLocation = () => {
 
   return (
     <>
-      <h1>search location input</h1>
-      <input
-        ref={searchInput}
-        type="text"
-        placeholder="Search location...."
-        className="border-2"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      {/* <button onClick={findMyLocation}>search</button> */}
-      <div>
-        {Object.keys(address).length > 0 && (
-          <p>
-            {address?.name}, {address?.street} {address?.streetNumber},{" "}
-            {address?.zip} {address?.city}, {address?.country}
-          </p>
-        )}
+      <div className="">
+        <input
+          className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 min-w-72"
+          ref={searchInput}
+          type="text"
+          placeholder="Search location...."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        {/* <button onClick={findMyLocation}>search</button> */}
+
+        <div>
+          {Object.keys(address).length > 0 && (
+            <p className="text-purple-1 font-roboto-regular ">
+              {address?.name}, {address?.street} {address?.streetNumber},{" "}
+              {address?.zip} {address?.city}, {address?.country}
+            </p>
+          )}
+        </div>
       </div>
+      {/* Styling with Tailwind -> Predictions in eigenen Hook auslagern? https://sebastiandedeyne.com/writing-a-custom-react-hook-google-places-autocomplete */}
     </>
   );
 };
