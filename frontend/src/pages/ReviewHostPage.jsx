@@ -7,6 +7,7 @@ import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import CustomButton from "../components/CustomButton";
 import CustomTextArea from "../components/CustomTextArea";
 import { UserContext } from "../context/UserContext";
+import TextLengthCounter from "../components/TextLengthCounter";
 
 const ReviewHostPage = ({}) => {
   const [host, setHost] = useState({});
@@ -21,6 +22,7 @@ const ReviewHostPage = ({}) => {
   const [errorMessageToggle, setErrorMessageToggle] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { user } = useContext(UserContext);
+  const [maxTextLength, setMaxTextLength] = useState(140);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,7 +72,15 @@ const ReviewHostPage = ({}) => {
   };
 
   const handleSubmit = async () => {
-    if (!text || !rating) return; // Message einfügen
+    if (!text || !rating) {
+      setErrorMessage(`Make a review and write a text.`);
+      return;
+    }
+
+    if (text.length > maxTextLength) {
+      setErrorMessage(`Text exceeds the maximum length of ${maxTextLength} characters.`);
+      return;
+    }
 
     if (isUserAlreadyReviewed(host)) {
       setErrorMessage("User is already Reviewed");
@@ -107,8 +117,6 @@ const ReviewHostPage = ({}) => {
       setErrorMessageToggle(false);
       navigate(`/hostprofile/${host?.user?._id}`);
     }, 1000);
-
-    // # Verhindern, dass man sich selbst bewertet => mit error Message aus Backend abgleichen
 
     setText("");
   };
@@ -154,7 +162,7 @@ const ReviewHostPage = ({}) => {
             fontSize={"3.5rem"}
           />
         </div>
-        <div className="mb-8">
+        <div className="mb-8 relative">
           <CustomTextArea
             label="Review Host"
             value={text}
@@ -163,7 +171,14 @@ const ReviewHostPage = ({}) => {
             onChange={(e) => setText(e.target.value)}
             row={10}
           />
+          <TextLengthCounter
+            textLength={text?.length}
+            maxTextLength={maxTextLength}
+            bottom={2}
+            right={2}
+          />
         </div>
+
         <CustomButton
           fontSize={"16px"}
           width={"100%"}
