@@ -49,7 +49,7 @@ const EventCardLarge = ({ event, bookmark }) => {
           <div className="absolute top-0 left-2">
             <BookmarkButton eventId={event?._id} />
           </div>
-          <div className="absolute bottom-2 font-roboto-bold right-2 bg-purple-4 bg-opacity-80 rounded-md text-green-1 px-3 py-1 text-center">
+          <div className="absolute bottom-2 font-roboto-bold right-2 bg-purple-4 bg-opacity-80 rounded-md text-white px-3 py-1 text-center">
             <p>{startDate.day}</p>
             <p className="uppercase font-roboto-regular text-[0.750rem]">
               {endDate.month}

@@ -34,30 +34,39 @@ const HostProfilePage = () => {
       setHost(hostData);
 
       // Fetch Users which this user follows
-      const resUserFollows = await fetch(`${backendUrl}/api/v1/followers/following`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ userId }),
-      });
+      const resUserFollows = await fetch(
+        `${backendUrl}/api/v1/followers/following`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ userId }),
+        }
+      );
 
       const userFollowsData = await resUserFollows.json();
       setUserFollows(userFollowsData?.followedUsers?.length);
 
       // Fetch Users which follow this user
-      const resUserFollowers = await fetch(`${backendUrl}/api/v1/followers/followed`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ userId }),
-      });
+      const resUserFollowers = await fetch(
+        `${backendUrl}/api/v1/followers/followed`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ userId }),
+        }
+      );
 
       const userFollowersData = await resUserFollowers.json();
       setUserFollowers(userFollowersData?.followers?.length);
 
-      const hostEventsRes = await fetch(`${backendUrl}/api/v1/users/${userId}`, {
-        credentials: "include",
-      });
+      const hostEventsRes = await fetch(
+        `${backendUrl}/api/v1/users/${userId}`,
+        {
+          credentials: "include",
+        }
+      );
 
       const hostEventsData = await hostEventsRes.json();
       setHostEvents(hostEventsData?.createdEvents);
@@ -99,18 +108,27 @@ const HostProfilePage = () => {
         <article className="flex gap-6 justify-center items-center mb-9">
           <div className="flex flex-col items-center text-center">
             <p>{userFollows}</p>
-            <p className="text-grey-2 font-roboto-thin text-[14px]">Following</p>
+            <p className="text-grey-2 font-roboto-thin text-[14px]">
+              Following
+            </p>
           </div>
           <div className="border-[0.5px] min-h-8"></div>
           <div className="flex flex-col items-center text-center">
             <p>{userFollowers}</p>
-            <p className="text-grey-2 font-roboto-thin text-[14px]">Followers</p>
+            <p className="text-grey-2 font-roboto-thin text-[14px]">
+              Followers
+            </p>
           </div>
         </article>
         <article className="flex justify-center gap-2 mb-9">
           {!istHostAlsoAuthUser(host) && (
-            <div className="w-[40%]" onClick={() => setToggleFollow(!toggleFollow)}>
-              <FollowButton followedUserId={!istHostAlsoAuthUser(host) && userId} />
+            <div
+              className="w-[40%]"
+              onClick={() => setToggleFollow(!toggleFollow)}
+            >
+              <FollowButton
+                followedUserId={!istHostAlsoAuthUser(host) && userId}
+              />
             </div>
           )}
 
@@ -124,10 +142,14 @@ const HostProfilePage = () => {
               bgcolorHover={"#ffffff"}
               padding={"14px"}
               text={isUserAlreadyReviewed(host) ? "Reviewed" : "Review"}
-              border={`1px solid ${isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}`}
+              border={`1px solid ${
+                isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"
+              }`}
               endIcon={<StarBorderIcon />}
               onClick={() =>
-                isUserAlreadyReviewed(host) ? null : navigate(`/hostprofile/rate/${userId}`)
+                isUserAlreadyReviewed(host)
+                  ? null
+                  : navigate(`/hostprofile/rate/${userId}`)
               }
             />
           )}
@@ -135,47 +157,62 @@ const HostProfilePage = () => {
         <article>
           <nav className="flex justify-between font-roboto-regular mb-4 uppercase">
             <p
-              className={`${toggleAbout && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              className={`${
+                toggleAbout && "text-purple-1 border-b-2 border-purple-1"
+              } pb-1`}
               onClick={() => {
                 setToggleAbout(true);
                 setToggleEvents(false);
                 setToggleReviews(false);
-              }}>
+              }}
+            >
               About
             </p>
             <p
-              className={`${toggleEvents && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              className={`${
+                toggleEvents && "text-purple-1 border-b-2 border-purple-1"
+              } pb-1`}
               onClick={() => {
                 setToggleEvents(true);
                 setToggleAbout(false);
                 setToggleReviews(false);
-              }}>
+              }}
+            >
               Events
             </p>
             <p
-              className={`${toggleReviews && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              className={`${
+                toggleReviews && "text-purple-1 border-b-2 border-purple-1"
+              } pb-1`}
               onClick={() => {
                 setToggleReviews(true);
                 setToggleAbout(false);
                 setToggleEvents(false);
-              }}>
+              }}
+            >
               Reviews
             </p>
           </nav>
           <div>
             {toggleAbout && (
-              <p className="font-roboto-thin break-words overflow-hidden">{host?.user?.bio}</p>
+              <p className="font-roboto-thin break-words overflow-hidden">
+                {host?.user?.bio}
+              </p>
             )}
             {toggleEvents &&
               hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
-                ?.map((event) => <EventCardSmall key={event?._id} event={event} />)}
+                ?.map((event) => (
+                  <EventCardSmall key={event?._id} event={event} />
+                ))}
             {toggleEvents && hostEvents?.length === 0 && (
               <p className="font-roboto-regular">No created events</p>
             )}
             {toggleReviews &&
               host?.receivedReviews
-                ?.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+                ?.sort(
+                  (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
+                )
                 ?.map((review) => {
                   return <ReviewCard key={review._id} review={review} />;
                 })}

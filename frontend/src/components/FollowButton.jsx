@@ -7,7 +7,8 @@ const FollowButton = ({ followedUserId }) => {
   const { user, setUser } = useContext(UserContext);
 
   const userIsFollowing = user?.followedUsers?.some(
-    (obj) => obj.userId === user?.user?._id && obj.followedUserId === followedUserId
+    (obj) =>
+      obj.userId === user?.user?._id && obj.followedUserId === followedUserId
   );
 
   const addFollower = async (e) => {
@@ -91,13 +92,20 @@ const FollowButton = ({ followedUserId }) => {
                 width="16"
                 height="17"
                 viewBox="0 0 16 17"
-                fill="none">
+                fill="none"
+              >
                 <path
                   d="M1 17V14C1 12.3431 2.34315 11 4 11H12C13.6569 11 15 12.3431 15 14V17"
                   stroke="#00ECAA"
                   strokeWidth="1.5"
                 />
-                <circle cx="8" cy="4" r="3.25" stroke="#00ECAA" strokeWidth="1.5" />
+                <circle
+                  cx="8"
+                  cy="4"
+                  r="3.25"
+                  stroke="#00ECAA"
+                  strokeWidth="1.5"
+                />
               </svg>
               Following
             </p>
@@ -123,7 +131,8 @@ const FollowButton = ({ followedUserId }) => {
                 width="23"
                 height="23"
                 viewBox="0 0 23 23"
-                fill="none">
+                fill="none"
+              >
                 <path
                   d="M2 20V17C2 15.3431 3.34315 14 5 14H13C14.6569 14 16 15.3431 16 17V20"
                   stroke="#5D3EDE"
@@ -143,7 +152,13 @@ const FollowButton = ({ followedUserId }) => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-                <circle cx="9" cy="7" r="3.25" stroke="#5D3EDE" strokeWidth="1.5" />
+                <circle
+                  cx="9"
+                  cy="7"
+                  r="3.25"
+                  stroke="#5D3EDE"
+                  strokeWidth="1.5"
+                />
               </svg>
               Follow
             </p>

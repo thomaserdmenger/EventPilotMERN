@@ -71,7 +71,7 @@ const EventDetailPage = () => {
       ></article>
 
       <section className="pt-7 px-5 relative pb-28">
-        <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md absolute left-0 right-0 top-[-65px] text-center mx-16">
+        <article className="rounded-[15px]   bg-white py-[16px] px-[20px] shadow-md absolute left-0 right-0 top-[-65px] text-center mx-16">
           {participants?.length === 0 ? (
             <p className="font-roboto-regular text-blue-1 cursor-pointer">
               Be the first to register!
@@ -106,11 +106,11 @@ const EventDetailPage = () => {
             </h2>
           </div>
 
-          <div className="mb-5 flex gap-3 items-center">
+          <div className="mb-5 flex gap-3 items-center ml-[-6px]">
             <CalendarMonthIcon
               style={{ fontSize: 45 }}
               htmlColor="#7254EE"
-              className="bg-[#ECEBEB] p-1 rounded-md"
+              className=" p-1 rounded-md"
             />
             <div>
               <p>
@@ -122,11 +122,11 @@ const EventDetailPage = () => {
             </div>
           </div>
 
-          <div className="mb-7 flex gap-3 items-center">
+          <div className="mb-7 flex gap-3 items-center ml-[-6px]">
             <LocationOnIcon
               style={{ fontSize: 45 }}
               htmlColor="#7254EE"
-              className="bg-[#ECEBEB] p-1 rounded-md"
+              className=" p-1 rounded-md"
             />
             <div>
               <p>{eventDetails?.location?.name}</p>
@@ -161,12 +161,14 @@ const EventDetailPage = () => {
             {user?.user?._id === eventDetails?.userId?._id ? (
               <Link
                 to={`/events/edit/${eventDetails?._id}`}
-                className=" text-purple-1 font-roboto-thin border-purple-1 border-[1px] rounded-md py-2 px-4 hover:bg-green-1"
+                className=" text-purple-1 font-roboto-thin border-purple-1 border-[1px] rounded-md py-2 px-4 "
               >
                 Edit event
               </Link>
             ) : (
-              <FollowButton followedUserId={eventDetails?.userId?._id} />
+              <div>
+                <FollowButton followedUserId={eventDetails?.userId?._id} />
+              </div>
             )}
           </div>
         </article>
@@ -179,7 +181,7 @@ const EventDetailPage = () => {
         </article>
       </section>
 
-      <div className="px-5 fixed bottom-4 w-full">
+      <div className="px-5 fixed bottom-4 max-w-[30rem] w-full">
         <RegisterButton eventId={eventId} />
       </div>
     </main>

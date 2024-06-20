@@ -131,7 +131,7 @@ const SearchLocation = ({ location, setLocation }) => {
         </div>
 
         {Object.keys(address).length > 0 && (
-          <div className=" bg-purple-1 w-fit px-4 rounded-[16px] py-2 mt-3 mb-2">
+          <div className=" bg-purple-1 px-4 rounded-[16px] py-2 mt-3 mb-2 flex flex-col items-center justify-center bg-opacity-80 text-[14px]">
             <p className="text-white font-roboto-regular">{address?.name}</p>
             <p className="text-white font-roboto-regular">
               {address?.street} {address?.streetNumber}
