@@ -1,4 +1,3 @@
-// import dayjs from "dayjs";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -128,17 +127,9 @@ const EventForm = ({ eventToEdit }) => {
           <SearchLocation location={location} setLocation={setLocation} />
 
           <div className="flex items-center justify-between gap-2">
-            <CustomMobileDateTimePicker
-              label="From"
-              name="startDate"
-              // defaultValue={dayjs(new Date(eventToEdit?.startDate))} //# noch default einbauen
-            />
+            <CustomMobileDateTimePicker label="From" name="startDate" />
             <div className="w-6 bg-green-1 h-1 rounded-full"></div>
-            <CustomMobileDateTimePicker
-              label="To"
-              name="endDate"
-              // defaultValue={dayjs(eventToEdit?.endDate)} //# noch default einbauen
-            />
+            <CustomMobileDateTimePicker label="To" name="endDate" />
           </div>
 
           <Categories
@@ -156,6 +147,9 @@ const EventForm = ({ eventToEdit }) => {
           />
 
           <CustomUpload name={"eventImage"} />
+          {errorMessage && (
+            <p className=" text-red-500 text-center">{errorMessage}</p>
+          )}
 
           <CustomButton
             type="submit"
@@ -168,8 +162,6 @@ const EventForm = ({ eventToEdit }) => {
             text={eventToEdit ? "Edit your event" : "Add your event"}
             endIcon={<ArrowCircleRightIcon />}
           />
-
-          {errorMessage && <p className=" text-red-800">{errorMessage}</p>}
         </form>
       </LocalizationProvider>
     </>
