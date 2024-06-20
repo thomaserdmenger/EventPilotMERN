@@ -13,6 +13,7 @@ import Categories from "../components/Categories";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { LoggedInContext } from "../context/LoggedInContext";
 import CustomTextArea from "../components/CustomTextArea";
+import CustomUpload from "../components/CustomUpload";
 
 const UserProfilePageEdit = () => {
   const { user, setUser } = useContext(UserContext);
@@ -127,7 +128,11 @@ const UserProfilePageEdit = () => {
               row={4}
             />
             <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
-            <input type="file" name="profileImage" />
+
+            {/* <input type="file" name="profileImage" /> */}
+
+            <CustomUpload name="profileImage" />
+
             <CustomButton
               fontSize={"16px"}
               width={"100%"}
