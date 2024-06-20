@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
+// # im Elternelement einen state mit leerem Objekt erstellen, hier als Props übergeben und dann mit den einzelnen Daten befüllen, damit sie als append zur formData mit ans Backend geschickt werden können
+
 // https://www.youtube.com/watch?v=LnF79PMKHUs
 // https://github.com/delowardev/google-places-autocomplete
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 const mapApiJs = "https://maps.googleapis.com/maps/api/js";
 const geocodeJson = "https://maps.googleapis.com/maps/api/geocode/json";
-// # noch reverse geocoding, ab min 12:00
 
 // load google map api js
 function loadAsyncScript(src) {
@@ -113,26 +114,33 @@ const SearchLocation = () => {
   return (
     <>
       <div className="">
-        <input
-          className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 min-w-72"
-          ref={searchInput}
-          type="text"
-          placeholder="Search location...."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        {/* <button onClick={findMyLocation}>search</button> */}
-
-        <div>
-          {Object.keys(address).length > 0 && (
-            <p className="text-purple-1 font-roboto-regular ">
-              {address?.name}, {address?.street} {address?.streetNumber},{" "}
-              {address?.zip} {address?.city}, {address?.country}
-            </p>
-          )}
+        <div className="relative">
+          <h3 className="absolute top-[-10px] left-4 text-[#7254EE] text-[13px] bg-white px-1 ml-[-7px] font-roboto-regular">
+            Location
+          </h3>
+          <input
+            name="location2"
+            className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 w-full"
+            ref={searchInput}
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
+
+        {Object.keys(address).length > 0 && (
+          <div className=" bg-purple-1 w-fit px-4 rounded-[16px] py-2 mb-2">
+            <p className="text-white font-roboto-regular">{address?.name}</p>
+            <p className="text-white font-roboto-regular">
+              {address?.street} {address?.streetNumber}
+            </p>
+            <p className="text-white font-roboto-regular">
+              {address?.zip} {address?.city}
+            </p>
+            <p className="text-white font-roboto-regular">{address?.country}</p>
+          </div>
+        )}
       </div>
-      {/* Styling with Tailwind -> Predictions in eigenen Hook auslagern? https://sebastiandedeyne.com/writing-a-custom-react-hook-google-places-autocomplete */}
     </>
   );
 };
