@@ -34,7 +34,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const CustomTextArea = ({ label, onChange, value, name }) => {
+const CustomTextArea = ({ label, onChange, value, name, row }) => {
   return (
     <>
       <StyledTextField
@@ -42,7 +42,7 @@ const CustomTextArea = ({ label, onChange, value, name }) => {
         value={value}
         id={label}
         multiline
-        rows={4}
+        rows={row}
         label={label}
         name={name}
         InputLabelProps={{ shrink: true }}

@@ -161,6 +161,7 @@ const ReviewHostPage = ({}) => {
             rows={8}
             multiline
             onChange={(e) => setText(e.target.value)}
+            row={10}
           />
         </div>
         <CustomButton

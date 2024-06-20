@@ -124,6 +124,7 @@ const UserProfilePageEdit = () => {
               value={bio}
               name="bio"
               onChange={(e) => setBio(e.target.value)}
+              row={4}
             />
             <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
             <input type="file" name="profileImage" />
