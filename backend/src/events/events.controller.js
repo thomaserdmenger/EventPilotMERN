@@ -8,10 +8,11 @@ import { User } from "../users/users.model.js";
 export const postAddEventCtrl = async (req, res) => {
   try {
     const authenticatedUserId = req.authenticatedUser._id;
-    const { title, startDate, endDate, location, categories, description } =
+    const { title, startDate, endDate, locationObj, categories, description } =
       req.body;
     const eventImage = req.file;
 
+    const location = JSON.parse(locationObj);
     const startDateTimestamp = new Date(startDate).getTime();
     const endDateTimestamp = new Date(endDate).getTime();
 
@@ -217,15 +218,29 @@ export const deleteEventCtrl = async (req, res) => {
 
 export const patchEditEventCtrl = async (req, res) => {
   try {
+    const authenticatedUserId = req.authenticatedUser._id;
     const eventId = req.params.eventId;
+
     const eventToEdit = await Event.findById(eventId);
+
+    // check if event exists
     if (!eventToEdit)
       return res.json({
         errorMessage: `Could not find event with the id ${eventId}`,
       });
 
-    const { title, startDate, endDate, location, categories, description } =
+    // check if user is allowed to change the event
+    if (authenticatedUserId.toString() !== eventToEdit.userId.toString())
+      return res.status(401).json({
+        errorMessage: "You are not authorized to edit this event.",
+      });
+
+    // get formData content
+    const { title, startDate, endDate, locationObj, categories, description } =
       req.body;
+
+    // parse location JSON string
+    const location = JSON.parse(locationObj);
 
     // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
     // else: take the old event-image infos and save them anew
@@ -267,7 +282,7 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.status(422).json({
         errorMessage: "Description must be between 20 and 500 characters.",
       });
-    const authenticatedUserId = req.authenticatedUser._id;
+
     if (!authenticatedUserId)
       return res.status(400).json({
         errorMessage: "You are not authorized.",
@@ -283,7 +298,7 @@ export const patchEditEventCtrl = async (req, res) => {
       title: title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
-      location: location,
+      location: location ? location : eventToEdit.location,
       categories: categories.split(","),
       description: description,
       "eventImage.public_id": public_id,

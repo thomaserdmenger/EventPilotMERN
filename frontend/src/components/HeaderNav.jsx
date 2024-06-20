@@ -7,7 +7,10 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
 
   return (
     <header
-      className={`relative flex justify-center items-center ${eventDetails ? "py-0" : "py-6"}`}>
+      className={`relative flex justify-center items-center ${
+        eventDetails ? "py-0" : "py-6"
+      }`}
+    >
       {/* Arrow Circle Left abhängig vom Pfad => ERGÄNZEN bzw. ANPASSEN */}
       <div className="absolute top-6 left-4 cursor-pointer">
         {pathname === "/userprofileedit" && (
@@ -58,6 +61,38 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
             onClick={() => navigate(-1)}
           />
           <BookmarkButton eventId={eventDetails?._id} />
+        </div>
+      )}
+
+      {pathname === `/events/add` && (
+        <div className="flex gap-20 w-full absolute top-6 px-4">
+          <ArrowCircleDownIcon
+            sx={{
+              transform: "rotate(90deg)",
+              fontSize: "2rem",
+            }}
+            className="cursor-pointer rounded-2xl"
+            onClick={() => navigate(-1)}
+          />
+          <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+            Add <span className="text-green-1">Event</span>
+          </h1>
+        </div>
+      )}
+
+      {pathname === `/events/edit/${eventDetails?._id}` && (
+        <div className="flex gap-20 w-full absolute top-6 px-4">
+          <ArrowCircleDownIcon
+            sx={{
+              transform: "rotate(90deg)",
+              fontSize: "2rem",
+            }}
+            className="cursor-pointer rounded-2xl"
+            onClick={() => navigate(-1)}
+          />
+          <h1 className="text-center mb-6 text-purple-1 font-roboto-bold text-xl">
+            Edit <span className="text-green-1">Event</span>
+          </h1>
         </div>
       )}
     </header>
