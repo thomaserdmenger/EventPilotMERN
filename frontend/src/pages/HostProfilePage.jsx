@@ -163,12 +163,18 @@ const HostProfilePage = () => {
               hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
                 ?.map((event) => <EventCardSmall key={event?._id} event={event} />)}
+            {toggleEvents && hostEvents?.length === 0 && (
+              <p className="font-roboto-regular">No created events</p>
+            )}
             {toggleReviews &&
               host?.receivedReviews
                 ?.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
                 ?.map((review) => {
                   return <ReviewCard key={review._id} review={review} />;
                 })}
+            {toggleReviews && host?.receivedReviews?.length === 0 && (
+              <p className="font-roboto-regular">No reviews</p>
+            )}
           </div>
         </article>
       </section>
