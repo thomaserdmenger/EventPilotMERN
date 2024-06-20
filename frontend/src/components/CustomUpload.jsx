@@ -57,7 +57,7 @@ const CustomUpload = ({ name }) => {
       <div className="flex flex-col">
         <label
           htmlFor="button"
-          className="text-[0.75rem] text-center w-[5.4rem] font-roboto-regular bg-white text-purple-2 z-10 ml-[0.4rem] mb-[-0.5625rem] mt-[-0.4625remrem] ">
+          className="text-[0.75rem] text-center w-[5.4rem] font-roboto-regular bg-white text-purple-2 z-10 ml-[0.4rem] mb-[-0.5625rem] mt-[-0.4rem] ">
           Upload Image
         </label>
         <StyledIconButton
