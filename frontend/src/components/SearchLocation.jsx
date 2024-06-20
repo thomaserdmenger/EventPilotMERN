@@ -127,10 +127,12 @@ const SearchLocation = () => {
       />
       {/* <button onClick={findMyLocation}>search</button> */}
       <div>
-        <p>
-          {address?.name}, {address?.street} {address?.streetNumber},{" "}
-          {address?.zip} {address?.city}, {address?.country}
-        </p>
+        {Object.keys(address).length > 0 && (
+          <p>
+            {address?.name}, {address?.street} {address?.streetNumber},{" "}
+            {address?.zip} {address?.city}, {address?.country}
+          </p>
+        )}
       </div>
     </>
   );
