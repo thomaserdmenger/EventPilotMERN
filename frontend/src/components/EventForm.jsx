@@ -11,6 +11,7 @@ import Categories from './Categories.jsx'
 import { useNavigate } from 'react-router-dom'
 import CustomTextArea from '../components/CustomTextArea'
 import CustomUpload from './CustomUpload.jsx'
+import { styled } from '@mui/material'
 
 const EventForm = ({ eventToEdit }) => {
   const [errorMessage, setErrorMessage] = useState()
@@ -77,12 +78,40 @@ const EventForm = ({ eventToEdit }) => {
     setErrorMessage('')
     navigate(`/events/${eventToEdit._id}`)
   }
+  const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
+    ({ theme }) => ({
+      '& .MuiInputBase-root': {
+        borderRadius: '15px',
+        color: '#7254EE', // Default text color
+      },
+      '& .MuiInputLabel-root': {
+        color: '#7254EE', // Default label color
+      },
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+          borderRadius: '15px',
+          borderColor: '#7254EE', // Default border color
+        },
+        '&:hover fieldset': {
+          borderColor: '#7254EE', // Border color on hover
+        },
+        '&.Mui-focused': {
+          '& fieldset': {
+            borderColor: '#00ECAA', // Border color when focused
+          },
+          '& .MuiInputLabel-root': {
+            color: '#00ECAA !important', // Label color when focused
+          },
+        },
+      },
+    }),
+  )
 
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <form
-          className="flex flex-col gap-3"
+          className="flex flex-col gap-5"
           onSubmit={eventToEdit ? editEvent : addEvent}>
           <CustomInput
             type="text"
@@ -92,18 +121,19 @@ const EventForm = ({ eventToEdit }) => {
             value={title}
             onChange={e => setTitle(e.target.value)}
           />
-
-          <MobileDateTimePicker
-            label="start date and time"
-            name="startDate"
-            // defaultValue={dayjs(new Date(eventToEdit?.startDate))} //# noch default einbauen
-          />
-          <MobileDateTimePicker
-            label="end date and time"
-            name="endDate"
-            // defaultValue={dayjs(eventToEdit?.endDate)} //# noch default einbauen
-          />
-
+          <div className="flex items-center justify-between gap-2">
+            <CustomMobileDateTimePicker
+              label="From"
+              name="startDate"
+              // defaultValue={dayjs(new Date(eventToEdit?.startDate))} //# noch default einbauen
+            />
+            <div className="w-6 bg-green-1 h-1 rounded-full"></div>
+            <CustomMobileDateTimePicker
+              label="To"
+              name="endDate"
+              // defaultValue={dayjs(eventToEdit?.endDate)} //# noch default einbauen
+            />
+          </div>
           {/* //# Location mit externer API vorschlagen? */}
           <CustomInput
             type="text"
