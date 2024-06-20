@@ -7,6 +7,7 @@ import ReviewCard from "../components/ReviewCard";
 import CustomButton from "../components/CustomButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { UserContext } from "../context/UserContext";
+import FollowButton from "../components/FollowButton";
 
 const HostProfilePage = () => {
   const [host, setHost] = useState({});
@@ -20,6 +21,7 @@ const HostProfilePage = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  const [toggleFollow, setToggleFollow] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +63,7 @@ const HostProfilePage = () => {
       setHostEvents(hostEventsData?.createdEvents);
     };
     fetchData();
-  }, []);
+  }, [toggleFollow]);
 
   const isUserAlreadyReviewed = (host) => {
     return host?.receivedReviews?.some(
@@ -106,7 +108,9 @@ const HostProfilePage = () => {
           </div>
         </article>
         <article className="flex justify-center gap-2 mb-9">
-          <p>FollowButton</p>
+          <div className="w-[40%]" onClick={() => setToggleFollow(!toggleFollow)}>
+            <FollowButton followedUserId={userId} />
+          </div>
           {!istHostAlsoAuthUser(host) && (
             <CustomButton
               fontSize={"16px"}
