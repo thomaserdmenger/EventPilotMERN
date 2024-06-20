@@ -131,13 +131,9 @@ const EventForm = ({ eventToEdit }) => {
               onChange={(e) => setTitle(e.target.value)}
             />
 
-            <SearchLocation location={location} setLocation={setLocation} />
+            <CustomUpload name={"eventImage"} />
 
-            <div className="flex items-center justify-between gap-2">
-              <CustomMobileDateTimePicker label="From" name="startDate" />
-              <div className="w-6 bg-green-1 h-1 rounded-full"></div>
-              <CustomMobileDateTimePicker label="To" name="endDate" />
-            </div>
+            <SearchLocation location={location} setLocation={setLocation} />
 
             <Categories
               categoriesArray={categoriesArray}
@@ -153,7 +149,12 @@ const EventForm = ({ eventToEdit }) => {
               row={4}
             />
 
-            <CustomUpload name={"eventImage"} />
+            <div className="flex items-center justify-between gap-2">
+              <CustomMobileDateTimePicker label="From" name="startDate" />
+              <div className="w-6 bg-green-1 h-1 rounded-full"></div>
+              <CustomMobileDateTimePicker label="To" name="endDate" />
+            </div>
+
             {errorMessage && (
               <p className=" text-red-500 text-center">{errorMessage}</p>
             )}
