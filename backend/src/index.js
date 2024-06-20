@@ -21,7 +21,13 @@ cloudinary.v2.config({
   secure: true,
 });
 
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));

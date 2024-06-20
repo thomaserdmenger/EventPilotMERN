@@ -1,2 +1,1 @@
-export const backendUrl =
-  import.meta.env.VITE_BACKEND_URL || 'http://localhost:9000'
+export const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
