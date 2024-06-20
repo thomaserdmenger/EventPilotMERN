@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import EventCardSmall from "../components/EventCardSmall";
@@ -6,6 +6,7 @@ import HeaderNav from "../components/HeaderNav";
 import ReviewCard from "../components/ReviewCard";
 import CustomButton from "../components/CustomButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
+import { UserContext } from "../context/UserContext";
 
 const HostProfilePage = () => {
   const [host, setHost] = useState({});
@@ -18,6 +19,7 @@ const HostProfilePage = () => {
   const [hostEvents, setHostEvents] = useState({});
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,8 +64,12 @@ const HostProfilePage = () => {
   }, []);
 
   const isUserAlreadyReviewed = (host) => {
-    return host?.receivedReviews?.some((review) => review?.reviews?.userId?._id);
+    return host?.receivedReviews?.some(
+      (review) => review?.reviews?.userId?._id === user?.user?._id
+    );
   };
+
+  console.log(isUserAlreadyReviewed(host));
 
   // Abfrage Booleon, ob Bewertung schon erfolgt (dito auch auf Rating Seite)
   // console.log(host?.receivedReviews?.some((review) => review?.reviews?.userId?._id));
