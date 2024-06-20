@@ -4,10 +4,12 @@ import { backendUrl } from "../api/api";
 import EventCardSmall from "../components/EventCardSmall";
 import HeaderNav from "../components/HeaderNav";
 import ReviewCard from "../components/ReviewCard";
+import CustomButton from "../components/CustomButton";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 const HostProfilePage = () => {
-  const { userId } = useParams();
   const [host, setHost] = useState({});
+  const { userId } = useParams();
   const [userFollows, setUserFollows] = useState(0);
   const [userFollowers, setUserFollowers] = useState(0);
   const [toggleAbout, setToggleAbout] = useState(true);
@@ -59,6 +61,14 @@ const HostProfilePage = () => {
     fetchData();
   }, []);
 
+  const isUserAlreadyReviewed = (host) => {
+    return host?.receivedReviews?.some((review) => review?.reviews?.userId?._id);
+  };
+
+  // Abfrage Booleon, ob Bewertung schon erfolgt (dito auch auf Rating Seite)
+  // console.log(host?.receivedReviews?.some((review) => review?.reviews?.userId?._id));
+  // console.log(host?.receivedReviews);
+
   return (
     <div className="min-h-svh pb-8">
       <HeaderNav pathname={pathname} host={host} />
@@ -91,12 +101,21 @@ const HostProfilePage = () => {
         </article>
         <article className="flex justify-center gap-2 mb-9">
           <p>FollowButton</p>
-          <p
-            onClick={() => {
-              navigate(`/hostprofile/rate/${userId}`);
-            }}>
-            RewiewButton
-          </p>
+          <CustomButton
+            fontSize={"16px"}
+            color={isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}
+            width={"40%"}
+            borderRadius={"15px"}
+            bgcolor={"#ffffff"}
+            bgcolorHover={"#ffffff"}
+            padding={"14px"}
+            text={isUserAlreadyReviewed(host) ? "Reviewed" : "Review"}
+            border={`1px solid ${isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}`}
+            endIcon={<StarBorderIcon />}
+            onClick={() =>
+              isUserAlreadyReviewed(host) ? null : navigate(`/hostprofile/rate/${userId}`)
+            }
+          />
         </article>
         <article>
           <nav className="flex justify-between font-roboto-regular mb-4 uppercase">

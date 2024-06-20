@@ -1,22 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import RatingStars from "../components/RatingStars";
 import HeaderNav from "../components/HeaderNav";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { backendUrl } from "../api/api";
 import { UserContext } from "../context/UserContext";
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import CustomButton from "../components/CustomButton";
 
 const ReviewHostPage = ({}) => {
   const [host, setHost] = useState({});
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
   const [userFollows, setUserFollows] = useState(0);
   const [userFollowers, setUserFollowers] = useState(0);
   const [rating, setRating] = useState(3);
   const [text, setText] = useState("");
   const { userId } = useParams();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  console.log(text);
-  console.log(rating);
+  // console.log(text);
+  // console.log(typeof rating);
   // Ich brauche Id der Person, die reviewed wird
   //  Id des Auth
 
@@ -54,6 +57,29 @@ const ReviewHostPage = ({}) => {
     };
     fetchData();
   }, []);
+
+  const handleSubmit = async () => {
+    if (!text || !rating) return; // Message einfügen
+
+    // Post Review
+    const resReview = await fetch(`${backendUrl}/api/v1/reviews`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ reviewedUserId: host?.user?._id, stars: rating, text }),
+    });
+
+    const reviewData = await resReview.json();
+
+    // Message, dass erfolgreich geriviewed
+
+    setTimeout(() => {
+      navigate(`/hostprofile/${host?.user?._id}`);
+    }, 1000);
+
+    // Verhindern, dass man sich selbst bewertet => mit error Message aus Backend abgleichen
+    // setText("");
+  };
 
   return (
     <div>
@@ -101,6 +127,18 @@ const ReviewHostPage = ({}) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={10}></textarea>
+        <CustomButton
+          fontSize={"16px"}
+          width={"100%"}
+          borderRadius={"15px"}
+          bgcolor={"#7254EE"}
+          bgcolorHover={"#5D3EDE"}
+          padding={"16px"}
+          text={"Submit Edit"}
+          endIcon={<ArrowCircleRightIcon />}
+          type="submit"
+          onClick={handleSubmit}
+        />
       </section>
     </div>
   );

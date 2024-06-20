@@ -18,7 +18,7 @@ const RatingStars = ({ rating, setRating, name, readOnlyBolean }) => {
       }}>
       <Rating
         name={name}
-        onChange={(e) => setRating(e.target.value)}
+        onChange={(e) => setRating(Number(e.target.value))}
         value={rating}
         readOnly={readOnlyBolean}
       />
