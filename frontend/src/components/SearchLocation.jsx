@@ -83,7 +83,7 @@ const SearchLocation = ({ location, setLocation }) => {
     if (window.google) {
       return Promise.resolve();
     }
-    const src = `${mapApiJs}?key=${apiKey}&libraries=places&v=weekly&language=en`;
+    const src = `${mapApiJs}?key=${apiKey}&libraries=places&v=weekly`;
     return loadAsyncScript(src);
   };
 

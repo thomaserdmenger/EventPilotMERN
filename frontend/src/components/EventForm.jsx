@@ -1,7 +1,7 @@
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { backendUrl } from "../api/api";
 import CustomInput from "./CustomInput.jsx";
 import CustomButton from "./CustomButton.jsx";
@@ -12,8 +12,11 @@ import CustomTextArea from "../components/CustomTextArea";
 import CustomUpload from "./CustomUpload.jsx";
 import { styled } from "@mui/material";
 import SearchLocation from "./SearchLocation.jsx";
+import { UserContext } from "../context/UserContext.jsx";
 
 const EventForm = ({ eventToEdit }) => {
+  const { user } = useContext(UserContext);
+
   const [errorMessage, setErrorMessage] = useState();
   const navigate = useNavigate();
 
@@ -22,6 +25,8 @@ const EventForm = ({ eventToEdit }) => {
   const [location, setLocation] = useState({});
   const [categoriesArray, setCategoriesArray] = useState([]);
   const [description, setDescription] = useState("");
+
+  const authUser = eventToEdit?.userId?._id === user?.user?._id;
 
   useEffect(() => {
     if (eventToEdit) {
@@ -72,8 +77,9 @@ const EventForm = ({ eventToEdit }) => {
     //   console.log(value);
     // }
     const data = await res.json();
+    console.log(data);
 
-    if (data.message) return setErrorMessage(data.message);
+    if (data.errorMessage) return setErrorMessage(data.errorMessage);
     setErrorMessage("");
     navigate(`/events/${eventToEdit._id}`);
   };
@@ -110,60 +116,66 @@ const EventForm = ({ eventToEdit }) => {
 
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={eventToEdit ? editEvent : addEvent}
-        >
-          <CustomInput
-            type="text"
-            placeholder="Title of your event"
-            name="title"
-            label="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+      {eventToEdit && authUser ? (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <form
+            className="flex flex-col gap-5"
+            onSubmit={eventToEdit ? editEvent : addEvent}
+          >
+            <CustomInput
+              type="text"
+              placeholder="Title of your event"
+              name="title"
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
 
-          <SearchLocation location={location} setLocation={setLocation} />
+            <SearchLocation location={location} setLocation={setLocation} />
 
-          <div className="flex items-center justify-between gap-2">
-            <CustomMobileDateTimePicker label="From" name="startDate" />
-            <div className="w-6 bg-green-1 h-1 rounded-full"></div>
-            <CustomMobileDateTimePicker label="To" name="endDate" />
-          </div>
+            <div className="flex items-center justify-between gap-2">
+              <CustomMobileDateTimePicker label="From" name="startDate" />
+              <div className="w-6 bg-green-1 h-1 rounded-full"></div>
+              <CustomMobileDateTimePicker label="To" name="endDate" />
+            </div>
 
-          <Categories
-            categoriesArray={categoriesArray}
-            setCategoriesArray={setCategoriesArray}
-          />
+            <Categories
+              categoriesArray={categoriesArray}
+              setCategoriesArray={setCategoriesArray}
+            />
 
-          <CustomTextArea
-            placeholder="Describe your event"
-            name="description"
-            label={"Description"}
-            onChange={(e) => setDescription(e.target.value)}
-            value={description}
-            row={4}
-          />
+            <CustomTextArea
+              placeholder="Describe your event"
+              name="description"
+              label={"Description"}
+              onChange={(e) => setDescription(e.target.value)}
+              value={description}
+              row={4}
+            />
 
-          <CustomUpload name={"eventImage"} />
-          {errorMessage && (
-            <p className=" text-red-500 text-center">{errorMessage}</p>
-          )}
+            <CustomUpload name={"eventImage"} />
+            {errorMessage && (
+              <p className=" text-red-500 text-center">{errorMessage}</p>
+            )}
 
-          <CustomButton
-            type="submit"
-            fontSize="16px"
-            width="100%"
-            borderRadius="15px"
-            bgcolor="#7254EE"
-            bgcolorHover="#5D3EDE"
-            padding="16px"
-            text={eventToEdit ? "Edit your event" : "Add your event"}
-            endIcon={<ArrowCircleRightIcon />}
-          />
-        </form>
-      </LocalizationProvider>
+            <CustomButton
+              type="submit"
+              fontSize="16px"
+              width="100%"
+              borderRadius="15px"
+              bgcolor="#7254EE"
+              bgcolorHover="#5D3EDE"
+              padding="16px"
+              text={eventToEdit ? "Edit your event" : "Add your event"}
+              endIcon={<ArrowCircleRightIcon />}
+            />
+          </form>
+        </LocalizationProvider>
+      ) : (
+        <p className="text-red-500 text-center">
+          You are not authorized to edit this event.
+        </p>
+      )}
     </>
   );
 };

@@ -218,13 +218,24 @@ export const deleteEventCtrl = async (req, res) => {
 
 export const patchEditEventCtrl = async (req, res) => {
   try {
+    const authenticatedUserId = req.authenticatedUser._id;
     const eventId = req.params.eventId;
+
     const eventToEdit = await Event.findById(eventId);
+
+    // check if event exists
     if (!eventToEdit)
       return res.json({
         errorMessage: `Could not find event with the id ${eventId}`,
       });
 
+    // check if user is allowed to change the event
+    if (authenticatedUserId.toString() !== eventToEdit.userId.toString())
+      return res.status(401).json({
+        errorMessage: "You are not authorized to edit this event.",
+      });
+
+    // get formData content
     const { title, startDate, endDate, locationObj, categories, description } =
       req.body;
 
@@ -271,7 +282,7 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.status(422).json({
         errorMessage: "Description must be between 20 and 500 characters.",
       });
-    const authenticatedUserId = req.authenticatedUser._id;
+
     if (!authenticatedUserId)
       return res.status(400).json({
         errorMessage: "You are not authorized.",
