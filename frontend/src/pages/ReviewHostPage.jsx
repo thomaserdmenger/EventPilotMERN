@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import RatingStars from "../components/RatingStars";
 import HeaderNav from "../components/HeaderNav";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { backendUrl } from "../api/api";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import CustomButton from "../components/CustomButton";
 import CustomTextArea from "../components/CustomTextArea";
+import { UserContext } from "../context/UserContext";
 
 const ReviewHostPage = ({}) => {
   const [host, setHost] = useState({});
@@ -16,12 +17,10 @@ const ReviewHostPage = ({}) => {
   const { userId } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const [successMessage, setSuccessMessage] = useState(false);
-
-  // console.log(text);
-  // console.log(typeof rating);
-  // Ich brauche Id der Person, die reviewed wird
-  //  Id des Auth
+  const [successMessageToggle, setSuccessMessageToggle] = useState(false);
+  const [errorMessageToggle, setErrorMessageToggle] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,8 +57,32 @@ const ReviewHostPage = ({}) => {
     fetchData();
   }, []);
 
+  const isUserAlreadyReviewed = (host) => {
+    return host?.receivedReviews?.some(
+      (review) => review?.reviews?.userId?._id === user?.user?._id
+    );
+  };
+
+  const istHostAlsoAuthUser = (host) => {
+    const hostId = host?.user?._id;
+    const authId = user?.user?._id;
+    return hostId === authId;
+  };
+
   const handleSubmit = async () => {
     if (!text || !rating) return; // Message einfügen
+
+    if (isUserAlreadyReviewed(host)) {
+      setErrorMessage("User is already Reviewed");
+      setText("");
+      return;
+    }
+
+    if (istHostAlsoAuthUser(host)) {
+      setErrorMessage("You can not review yourself");
+      setText("");
+      return;
+    }
 
     // Post Review
     const resReview = await fetch(`${backendUrl}/api/v1/reviews`, {
@@ -71,14 +94,22 @@ const ReviewHostPage = ({}) => {
 
     const reviewData = await resReview.json();
 
-    setSuccessMessage(true);
+    if (reviewData?.errorMessage) {
+      setErrorMessage(reviewData?.errorMessage);
+      setErrorMessageToggle(true);
+      return;
+    }
+
+    setSuccessMessageToggle(true);
 
     setTimeout(() => {
-      setSuccessMessage(false);
+      setSuccessMessageToggle(false);
+      setErrorMessageToggle(false);
       navigate(`/hostprofile/${host?.user?._id}`);
     }, 1000);
 
     // # Verhindern, dass man sich selbst bewertet => mit error Message aus Backend abgleichen
+
     setText("");
   };
 
@@ -144,9 +175,10 @@ const ReviewHostPage = ({}) => {
           type="submit"
           onClick={handleSubmit}
         />
-        {successMessage && (
+        {successMessageToggle && (
           <p className="text-green-1 text-center mt-4">Review successfully submitted</p>
         )}
+        {setErrorMessageToggle && <p className="text-red-400 text-center mt-4">{errorMessage}</p>}
       </section>
     </div>
   );

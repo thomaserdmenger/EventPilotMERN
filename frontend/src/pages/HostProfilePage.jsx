@@ -69,11 +69,11 @@ const HostProfilePage = () => {
     );
   };
 
-  console.log(isUserAlreadyReviewed(host));
-
-  // Abfrage Booleon, ob Bewertung schon erfolgt (dito auch auf Rating Seite)
-  // console.log(host?.receivedReviews?.some((review) => review?.reviews?.userId?._id));
-  // console.log(host?.receivedReviews);
+  const istHostAlsoAuthUser = (host) => {
+    const hostId = host?.user?._id;
+    const authId = user?.user?._id;
+    return hostId === authId;
+  };
 
   return (
     <div className="min-h-svh pb-8">
@@ -107,21 +107,23 @@ const HostProfilePage = () => {
         </article>
         <article className="flex justify-center gap-2 mb-9">
           <p>FollowButton</p>
-          <CustomButton
-            fontSize={"16px"}
-            color={isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}
-            width={"40%"}
-            borderRadius={"15px"}
-            bgcolor={"#ffffff"}
-            bgcolorHover={"#ffffff"}
-            padding={"14px"}
-            text={isUserAlreadyReviewed(host) ? "Reviewed" : "Review"}
-            border={`1px solid ${isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}`}
-            endIcon={<StarBorderIcon />}
-            onClick={() =>
-              isUserAlreadyReviewed(host) ? null : navigate(`/hostprofile/rate/${userId}`)
-            }
-          />
+          {!istHostAlsoAuthUser(host) && (
+            <CustomButton
+              fontSize={"16px"}
+              color={isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}
+              width={"40%"}
+              borderRadius={"15px"}
+              bgcolor={"#ffffff"}
+              bgcolorHover={"#ffffff"}
+              padding={"14px"}
+              text={isUserAlreadyReviewed(host) ? "Reviewed" : "Review"}
+              border={`1px solid ${isUserAlreadyReviewed(host) ? "#00ECAA" : "#7254EE"}`}
+              endIcon={<StarBorderIcon />}
+              onClick={() =>
+                isUserAlreadyReviewed(host) ? null : navigate(`/hostprofile/rate/${userId}`)
+              }
+            />
+          )}
         </article>
         <article>
           <nav className="flex justify-between font-roboto-regular mb-4 uppercase">
@@ -160,11 +162,13 @@ const HostProfilePage = () => {
             {toggleEvents &&
               hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
-                .map((event) => <EventCardSmall key={event?._id} event={event} />)}
+                ?.map((event) => <EventCardSmall key={event?._id} event={event} />)}
             {toggleReviews &&
-              host?.receivedReviews?.map((review) => {
-                return <ReviewCard key={review._id} review={review} />;
-              })}
+              host?.receivedReviews
+                ?.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+                ?.map((review) => {
+                  return <ReviewCard key={review._id} review={review} />;
+                })}
           </div>
         </article>
       </section>
