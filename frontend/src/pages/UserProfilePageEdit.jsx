@@ -14,11 +14,14 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { LoggedInContext } from "../context/LoggedInContext";
 import CustomTextArea from "../components/CustomTextArea";
 import CustomUpload from "../components/CustomUpload";
+import DeleteButton from "../components/DeleteButton";
 
 const UserProfilePageEdit = () => {
   const { user, setUser } = useContext(UserContext);
   const { setLoggedIn } = useContext(LoggedInContext);
-  const [firstname, setFirstname] = useState(user?.user?.firstname || "Firstname");
+  const [firstname, setFirstname] = useState(
+    user?.user?.firstname || "Firstname"
+  );
   const [lastname, setLastname] = useState(user?.user?.lastname || "Lastname");
   const [username, setUsername] = useState(user?.user?.username || "Username");
   const [bio, setBio] = useState(user?.user?.bio || "About me");
@@ -51,30 +54,6 @@ const UserProfilePageEdit = () => {
     }, 10);
   };
 
-  const handleDeleteUser = async () => {
-    setToggleDeletePopup(true);
-
-    const res = await fetch(`${backendUrl}/api/v1/users`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    const data = res.json();
-
-    setUser({});
-    setLoggedIn(false);
-
-    localStorage.removeItem("user");
-    localStorage.removeItem("loggedIn");
-
-    setShowErrorMessage(true);
-
-    setTimeout(() => {
-      setShowErrorMessage(false);
-      navigate("/signup");
-    }, 1000);
-  };
-
   return (
     <div className="min-h-svh">
       <HeaderNav pathname={pathname} user={user} />
@@ -95,7 +74,10 @@ const UserProfilePageEdit = () => {
               />
             )}
           </div>
-          <form className="flex flex-col gap-6 px-8" onSubmit={handleSubmitEdit}>
+          <form
+            className="flex flex-col gap-6 px-8"
+            onSubmit={handleSubmitEdit}
+          >
             <CustomInput
               type={"text"}
               label={"Firstname"}
@@ -129,7 +111,10 @@ const UserProfilePageEdit = () => {
               row={4}
             />
 
-            <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
+            <Categories
+              categoriesArray={categoriesArray}
+              setCategoriesArray={setCategoriesArray}
+            />
             <CustomUpload name="profileImage" />
             <CustomButton
               fontSize={"16px"}
@@ -160,34 +145,7 @@ const UserProfilePageEdit = () => {
       )}
 
       {toggleDeletePopup && (
-        <div className="flex flex-col items-center pt-56 gap-4 h-svh w-full absolute top-0 left-0 bg-white z-20 px-8 text-center">
-          <p className="font-roboto-medium text-lg mb-4 px-4">
-            Attention: With one click your account will be deleted. This cannot be undone.
-          </p>
-          <CustomButton
-            fontSize={"16px"}
-            width={"100%"}
-            borderRadius={"15px"}
-            bgcolor={"#f87171"}
-            bgcolorHover={"#ef4444"}
-            padding={"16px"}
-            text={"Delete User"}
-            endIcon={<DeleteIcon />}
-            onClick={handleDeleteUser}
-          />
-          <CustomButton
-            fontSize={"16px"}
-            width={"100%"}
-            borderRadius={"15px"}
-            bgcolor={"#4ade80"}
-            bgcolorHover={"#16a34a"}
-            padding={"16px"}
-            text={"Cancel"}
-            endIcon={<CancelIcon />}
-            onClick={() => setToggleDeletePopup(false)}
-          />
-          {showErrorMessage && <p className="text-[#4ade80]">User successfully deleted</p>}
-        </div>
+        <DeleteButton setToggleDeletePopup={setToggleDeletePopup} />
       )}
     </div>
   );
