@@ -4,6 +4,7 @@ import { backendUrl } from "../api/api";
 import EventForm from "../components/EventForm.jsx";
 import HeaderNav from "../components/HeaderNav.jsx";
 import { UserContext } from "../context/UserContext.jsx";
+import DeleteButton from "../components/DeleteButton.jsx";
 
 const EditEventPage = () => {
   const { user } = useContext(UserContext);
@@ -33,6 +34,7 @@ const EditEventPage = () => {
           <div className="pt-20">
             <EventForm eventToEdit={eventToEdit} />
           </div>
+          <DeleteButton eventId={eventId} />
         </div>
       ) : (
         <div>

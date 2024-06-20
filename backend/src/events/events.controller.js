@@ -190,6 +190,7 @@ export const getSingleEventCtrl = async (req, res) => {
 export const deleteEventCtrl = async (req, res) => {
   try {
     const eventId = req.params.eventId;
+    console.log(eventId);
 
     // delete event with all referenced bookmarks and registrations
     const [deletedEvent, deletedBookmarks, deletedParticipants] =
@@ -198,6 +199,7 @@ export const deleteEventCtrl = async (req, res) => {
         Bookmark.deleteMany({ eventId }),
         Participant.deleteMany({ eventId }),
       ]);
+    console.log(deletedEvent);
 
     if (!deletedEvent)
       return res.status(404).json({

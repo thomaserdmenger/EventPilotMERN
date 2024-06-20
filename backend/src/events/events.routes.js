@@ -21,5 +21,5 @@ export const eventRouter = Router()
     doUserAuth,
     upload.single("eventImage"),
     patchEditEventCtrl
-  ) // doJwtAuth ergänzen
-  .delete("/:eventId", deleteEventCtrl); // doJwtAuth ergänzen
+  )
+  .delete("/:eventId", doUserAuth, deleteEventCtrl);
