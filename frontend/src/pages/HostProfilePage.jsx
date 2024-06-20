@@ -108,9 +108,12 @@ const HostProfilePage = () => {
           </div>
         </article>
         <article className="flex justify-center gap-2 mb-9">
-          <div className="w-[40%]" onClick={() => setToggleFollow(!toggleFollow)}>
-            <FollowButton followedUserId={userId} />
-          </div>
+          {!istHostAlsoAuthUser(host) && (
+            <div className="w-[40%]" onClick={() => setToggleFollow(!toggleFollow)}>
+              <FollowButton followedUserId={!istHostAlsoAuthUser(host) && userId} />
+            </div>
+          )}
+
           {!istHostAlsoAuthUser(host) && (
             <CustomButton
               fontSize={"16px"}
