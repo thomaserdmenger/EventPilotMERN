@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import CustomTextArea from "../components/CustomTextArea";
 import CustomUpload from "./CustomUpload.jsx";
 import { styled } from "@mui/material";
+import SearchLocation from "./SearchLocation.jsx";
 
 const EventForm = ({ eventToEdit }) => {
   const [errorMessage, setErrorMessage] = useState();
@@ -19,7 +20,7 @@ const EventForm = ({ eventToEdit }) => {
 
   // states and useEffect to fill input fields if it's an edit event form:
   const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState({});
   const [categoriesArray, setCategoriesArray] = useState([]);
   const [description, setDescription] = useState("");
 
@@ -39,6 +40,7 @@ const EventForm = ({ eventToEdit }) => {
     const form = e.target;
     const formData = new FormData(form);
     formData.append("categories", categoriesArray);
+    formData.append("locationObj", JSON.stringify(location));
 
     const res = await fetch(`${backendUrl}/api/v1/events`, {
       method: "POST",
@@ -47,7 +49,7 @@ const EventForm = ({ eventToEdit }) => {
     });
 
     const data = await res.json();
-    console.log(data.newEvent);
+
     if (data.errorMessage) return setErrorMessage(data.errorMessage);
     setErrorMessage("");
     navigate(`/events/${data.newEvent._id}`);
@@ -60,6 +62,7 @@ const EventForm = ({ eventToEdit }) => {
     const form = e.target;
     const formData = new FormData(form);
     formData.append("categories", categoriesArray);
+    formData.append("locationObj", JSON.stringify(location));
 
     const res = await fetch(`${backendUrl}/api/v1/events/${eventToEdit._id}`, {
       method: "PATCH",
@@ -75,37 +78,44 @@ const EventForm = ({ eventToEdit }) => {
     setErrorMessage("");
     navigate(`/events/${eventToEdit._id}`);
   };
-  const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(({ theme }) => ({
-    "& .MuiInputBase-root": {
-      borderRadius: "15px",
-      color: "#7254EE", // Default text color
-    },
-    "& .MuiInputLabel-root": {
-      color: "#7254EE", // Default label color
-    },
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
+
+  // styling for dateTimePicker from MUI
+  const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
+    ({ theme }) => ({
+      "& .MuiInputBase-root": {
         borderRadius: "15px",
-        borderColor: "#7254EE", // Default border color
+        color: "#7254EE", // Default text color
       },
-      "&:hover fieldset": {
-        borderColor: "#7254EE", // Border color on hover
+      "& .MuiInputLabel-root": {
+        color: "#7254EE", // Default label color
       },
-      "&.Mui-focused": {
+      "& .MuiOutlinedInput-root": {
         "& fieldset": {
-          borderColor: "#00ECAA", // Border color when focused
+          borderRadius: "15px",
+          borderColor: "#7254EE", // Default border color
         },
-        "& .MuiInputLabel-root": {
-          color: "#00ECAA !important", // Label color when focused
+        "&:hover fieldset": {
+          borderColor: "#7254EE", // Border color on hover
+        },
+        "&.Mui-focused": {
+          "& fieldset": {
+            borderColor: "#00ECAA", // Border color when focused
+          },
+          "& .MuiInputLabel-root": {
+            color: "#00ECAA !important", // Label color when focused
+          },
         },
       },
-    },
-  }));
+    })
+  );
 
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <form className="flex flex-col gap-5" onSubmit={eventToEdit ? editEvent : addEvent}>
+        <form
+          className="flex flex-col gap-5"
+          onSubmit={eventToEdit ? editEvent : addEvent}
+        >
           <CustomInput
             type="text"
             placeholder="Title of your event"
@@ -114,6 +124,9 @@ const EventForm = ({ eventToEdit }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+
+          <SearchLocation location={location} setLocation={setLocation} />
+
           <div className="flex items-center justify-between gap-2">
             <CustomMobileDateTimePicker
               label="From"
@@ -127,17 +140,11 @@ const EventForm = ({ eventToEdit }) => {
               // defaultValue={dayjs(eventToEdit?.endDate)} //# noch default einbauen
             />
           </div>
-          {/* //# Location mit externer API vorschlagen? */}
-          <CustomInput
-            type="text"
-            label="Location"
-            placeholder="Location"
-            name="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
 
-          <Categories categoriesArray={categoriesArray} setCategoriesArray={setCategoriesArray} />
+          <Categories
+            categoriesArray={categoriesArray}
+            setCategoriesArray={setCategoriesArray}
+          />
 
           <CustomTextArea
             placeholder="Describe your event"
@@ -147,11 +154,8 @@ const EventForm = ({ eventToEdit }) => {
             value={description}
             row={4}
           />
-          {/* <input type="file" name="eventImage" /> */}
 
           <CustomUpload name={"eventImage"} />
-
-          {/* // --> folgt noch von Icaro */}
 
           <CustomButton
             type="submit"

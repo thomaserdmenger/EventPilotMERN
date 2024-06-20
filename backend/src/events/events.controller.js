@@ -8,10 +8,11 @@ import { User } from "../users/users.model.js";
 export const postAddEventCtrl = async (req, res) => {
   try {
     const authenticatedUserId = req.authenticatedUser._id;
-    const { title, startDate, endDate, location, categories, description } =
+    const { title, startDate, endDate, locationObj, categories, description } =
       req.body;
     const eventImage = req.file;
 
+    const location = JSON.parse(locationObj);
     const startDateTimestamp = new Date(startDate).getTime();
     const endDateTimestamp = new Date(endDate).getTime();
 
@@ -224,8 +225,11 @@ export const patchEditEventCtrl = async (req, res) => {
         errorMessage: `Could not find event with the id ${eventId}`,
       });
 
-    const { title, startDate, endDate, location, categories, description } =
+    const { title, startDate, endDate, locationObj, categories, description } =
       req.body;
+
+    // parse location JSON string
+    const location = JSON.parse(locationObj);
 
     // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
     // else: take the old event-image infos and save them anew
@@ -283,7 +287,7 @@ export const patchEditEventCtrl = async (req, res) => {
       title: title,
       startDate: startDateTimestamp,
       endDate: endDateTimestamp,
-      location: location,
+      location: location ? location : eventToEdit.location,
       categories: categories.split(","),
       description: description,
       "eventImage.public_id": public_id,

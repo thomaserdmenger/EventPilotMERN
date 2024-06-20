@@ -70,7 +70,7 @@ const EventDetailPage = () => {
         className={`bg-[image:var(--image-url)] bg-no-repeat bg-center bg-cover h-[250px] mb-10`}
       ></article>
 
-      <section className="pt-7 px-5 relative">
+      <section className="pt-7 px-5 relative pb-28">
         <article className="rounded-md   bg-white py-[16px] px-[20px] shadow-md absolute left-0 right-0 top-[-65px] text-center mx-16">
           {participants?.length === 0 ? (
             <p className="font-roboto-regular text-blue-1 cursor-pointer">
@@ -129,9 +129,10 @@ const EventDetailPage = () => {
               className="bg-[#ECEBEB] p-1 rounded-md"
             />
             <div>
-              <p>{eventDetails?.location} Verstaltungsort</p>
+              <p>{eventDetails?.location?.name}</p>
               <p className="font-roboto-thin">
-                {eventDetails?.location} Stadt, Land
+                {eventDetails?.location?.city},{" "}
+                {eventDetails?.location?.country}
               </p>
             </div>
           </div>

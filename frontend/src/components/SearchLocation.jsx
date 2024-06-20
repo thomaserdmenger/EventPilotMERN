@@ -22,59 +22,61 @@ function loadAsyncScript(src) {
   });
 }
 
-// extract the single address details from the searched place
-const extractAddress = (place) => {
-  const address = {
-    name: place.name,
-    street: "",
-    streetNumber: "",
-    city: "",
-    state: "",
-    zip: "",
-    country: "",
-    lat: place.geometry.location.lat(),
-    lon: place.geometry.location.lng(),
-  };
-
-  if (!Array.isArray(place?.address_components)) {
-    return address;
-  }
-
-  place.address_components.forEach((component) => {
-    const types = component.types;
-    const value = component.long_name;
-
-    if (types.includes("route")) {
-      address.street = value;
-    }
-    if (types.includes("street_number")) {
-      address.streetNumber = value;
-    }
-    if (types.includes("locality")) {
-      address.city = value;
-    }
-
-    if (types.includes("administrative_area_level_2")) {
-      address.state = value;
-    }
-
-    if (types.includes("postal_code")) {
-      address.zip = value;
-    }
-
-    if (types.includes("country")) {
-      address.country = value;
-    }
-  });
-
-  return address;
-};
-
 // Page starts here
-const SearchLocation = () => {
+const SearchLocation = ({ location, setLocation }) => {
   const searchInput = useRef(null);
   const [address, setAddress] = useState({});
   const [query, setQuery] = useState("");
+
+  // extract the single address details from the searched place
+  const extractAddress = (place) => {
+    const address = {
+      name: place.name,
+      street: "",
+      streetNumber: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
+      lat: place.geometry.location.lat(),
+      lon: place.geometry.location.lng(),
+    };
+
+    if (!Array.isArray(place?.address_components)) {
+      return address;
+    }
+
+    place.address_components.forEach((component) => {
+      const types = component.types;
+      const value = component.long_name;
+
+      if (types.includes("route")) {
+        address.street = value;
+      }
+      if (types.includes("street_number")) {
+        address.streetNumber = value;
+      }
+      if (types.includes("locality")) {
+        address.city = value;
+      }
+
+      if (types.includes("administrative_area_level_2")) {
+        address.state = value;
+      }
+
+      if (types.includes("postal_code")) {
+        address.zip = value;
+      }
+
+      if (types.includes("country")) {
+        address.country = value;
+      }
+    });
+
+    setLocation(address);
+
+    return address;
+  };
 
   // init gmap script
   const initMapScript = () => {
@@ -88,7 +90,6 @@ const SearchLocation = () => {
   // do something on address change
   const onChangeAddress = (autocomplete) => {
     const place = autocomplete.getPlace();
-    console.log(place);
     setAddress(extractAddress(place));
   };
 
@@ -119,7 +120,8 @@ const SearchLocation = () => {
             Location
           </h3>
           <input
-            name="location2"
+            name="location"
+            placeholder=""
             className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 w-full"
             ref={searchInput}
             type="text"
@@ -129,7 +131,7 @@ const SearchLocation = () => {
         </div>
 
         {Object.keys(address).length > 0 && (
-          <div className=" bg-purple-1 w-fit px-4 rounded-[16px] py-2 mb-2">
+          <div className=" bg-purple-1 w-fit px-4 rounded-[16px] py-2 mt-3 mb-2">
             <p className="text-white font-roboto-regular">{address?.name}</p>
             <p className="text-white font-roboto-regular">
               {address?.street} {address?.streetNumber}
