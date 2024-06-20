@@ -7,8 +7,7 @@ const FollowButton = ({ followedUserId }) => {
   const { user, setUser } = useContext(UserContext);
 
   const userIsFollowing = user?.followedUsers?.some(
-    (obj) =>
-      obj.userId === user?.user?._id && obj.followedUserId === followedUserId
+    (obj) => obj.userId === user?.user?._id && obj.followedUserId === followedUserId
   );
 
   const addFollower = async (e) => {
@@ -77,36 +76,28 @@ const FollowButton = ({ followedUserId }) => {
       {userIsFollowing ? (
         // unfollow Button
         <CustomButton
-          fontSize="12px"
-          border="#5D3EDE"
-          width="100px"
-          height="28px"
-          borderRadius="5px"
-          color="#1F1F1F"
-          bgcolor="#00ECAA"
-          bgcolorHover="#5D3EDE"
-          padding="16px"
+          fontSize="16px"
+          color="#00ECAA"
+          width="100%"
+          borderRadius="15px"
+          border="1px solid #00ECAA"
+          bgcolor={"#ffffff"}
+          bgcolorHover={"#ffffff"}
+          padding="14px"
           text={
-            <p className="flex items-center gap-4 font-roboto-thin">
+            <p className="flex items-center justify-between gap-4 font-roboto-medium">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="17"
                 viewBox="0 0 16 17"
-                fill="none"
-              >
+                fill="none">
                 <path
                   d="M1 17V14C1 12.3431 2.34315 11 4 11H12C13.6569 11 15 12.3431 15 14V17"
-                  stroke="#1F1F1F"
+                  stroke="#00ECAA"
                   strokeWidth="1.5"
                 />
-                <circle
-                  cx="8"
-                  cy="4"
-                  r="3.25"
-                  stroke="#1F1F1F"
-                  strokeWidth="1.5"
-                />
+                <circle cx="8" cy="4" r="3.25" stroke="#00ECAA" strokeWidth="1.5" />
               </svg>
               Following
             </p>
@@ -117,24 +108,22 @@ const FollowButton = ({ followedUserId }) => {
       ) : (
         // follow Button
         <CustomButton
-          fontSize="12px"
-          //   border="1px solid #5D3EDE"
-          width="100px"
-          height="28px"
-          borderRadius="5px"
+          fontSize="16px"
           color="#5D3EDE"
-          bgcolor="white"
-          bgcolorHover="#00ECAA"
-          padding="16px"
+          width="100%"
+          borderRadius="15px"
+          bgcolor="#ffffff"
+          bgcolorHover="#ffffff"
+          padding="14px"
+          border="1px solid #7254EE"
           text={
-            <p className="flex items-center gap-4 font-roboto-thin">
+            <p className="flex items-center gap-4 font-roboto-medium">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="23"
                 height="23"
                 viewBox="0 0 23 23"
-                fill="none"
-              >
+                fill="none">
                 <path
                   d="M2 20V17C2 15.3431 3.34315 14 5 14H13C14.6569 14 16 15.3431 16 17V20"
                   stroke="#5D3EDE"
@@ -154,13 +143,7 @@ const FollowButton = ({ followedUserId }) => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-                <circle
-                  cx="9"
-                  cy="7"
-                  r="3.25"
-                  stroke="#5D3EDE"
-                  strokeWidth="1.5"
-                />
+                <circle cx="9" cy="7" r="3.25" stroke="#5D3EDE" strokeWidth="1.5" />
               </svg>
               Follow
             </p>

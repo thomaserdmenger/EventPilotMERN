@@ -7,6 +7,7 @@ import ReviewCard from "../components/ReviewCard";
 import CustomButton from "../components/CustomButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { UserContext } from "../context/UserContext";
+import FollowButton from "../components/FollowButton";
 
 const HostProfilePage = () => {
   const [host, setHost] = useState({});
@@ -20,6 +21,7 @@ const HostProfilePage = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  const [toggleFollow, setToggleFollow] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +63,7 @@ const HostProfilePage = () => {
       setHostEvents(hostEventsData?.createdEvents);
     };
     fetchData();
-  }, []);
+  }, [toggleFollow]);
 
   const isUserAlreadyReviewed = (host) => {
     return host?.receivedReviews?.some(
@@ -106,7 +108,12 @@ const HostProfilePage = () => {
           </div>
         </article>
         <article className="flex justify-center gap-2 mb-9">
-          <p>FollowButton</p>
+          {!istHostAlsoAuthUser(host) && (
+            <div className="w-[40%]" onClick={() => setToggleFollow(!toggleFollow)}>
+              <FollowButton followedUserId={!istHostAlsoAuthUser(host) && userId} />
+            </div>
+          )}
+
           {!istHostAlsoAuthUser(host) && (
             <CustomButton
               fontSize={"16px"}
@@ -163,12 +170,18 @@ const HostProfilePage = () => {
               hostEvents
                 ?.sort((a, b) => a.startDate - b.startDate)
                 ?.map((event) => <EventCardSmall key={event?._id} event={event} />)}
+            {toggleEvents && hostEvents?.length === 0 && (
+              <p className="font-roboto-regular">No created events</p>
+            )}
             {toggleReviews &&
               host?.receivedReviews
                 ?.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
                 ?.map((review) => {
                   return <ReviewCard key={review._id} review={review} />;
                 })}
+            {toggleReviews && host?.receivedReviews?.length === 0 && (
+              <p className="font-roboto-regular">No reviews</p>
+            )}
           </div>
         </article>
       </section>
