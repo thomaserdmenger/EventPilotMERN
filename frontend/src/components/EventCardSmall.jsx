@@ -59,7 +59,7 @@ const EventCardSmall = ({ event, bookmark }) => {
           <article>
             <div className="grid grid-cols-7 gap-2 mb-2 rounded-[15px] overflow-hidden p-2 shadow">
               <img
-                className="col-span-2 rounded-[15px] w-full h-full object-cover"
+                className="col-span-2 rounded-[15px] w-full h-full object-cover object-center"
                 src={event?.eventImage?.secure_url}
                 alt="Event Image"
               />
@@ -87,7 +87,7 @@ const EventCardSmall = ({ event, bookmark }) => {
           <article>
             <div className="grid grid-cols-7 gap-2 mb-2 rounded-[15px] overflow-hidden p-2 shadow">
               <img
-                className="col-span-2 rounded-[15px] w-full h-full object-cover"
+                className="col-span-2 rounded-[15px] w-full h-full object-cover object-center"
                 src={bookmark?.eventId?.eventImage?.secure_url}
                 alt="Event Image"
               />

@@ -165,7 +165,10 @@ export const showOneUserCtrl = async (req, res) => {
 
     const receivedReviews = await Review.find({
       reviewedUserId: userId,
-    }).populate("reviews.userId", "username email");
+    }).populate({
+      path: "reviews.userId",
+      select: "_id username firstname lastname profileImage",
+    });
 
     const createdEvents = await Event.find({ userId });
 
