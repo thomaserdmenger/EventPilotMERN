@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
+// * Idee
+// mit input nach Vorschlägen suchen
+// beim Klick auf Vorschlag: diesen im Input feld anzeigen
+// beim Absenden des Formulars: Infos für den Ort speichern und ans Backend senden
+// dort differenziert abspeichern
+
 // https://www.youtube.com/watch?v=LnF79PMKHUs
 // https://github.com/delowardev/google-places-autocomplete
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
@@ -31,12 +37,6 @@ const extractAddress = (place) => {
     country: "",
     lat: place.geometry.location.lat(),
     lon: place.geometry.location.lng(),
-    plain() {
-      const city = this.city ? this.city + ", " : "";
-      const zip = this.zip ? this.zip + ", " : "";
-      const state = this.state ? this.state + ", " : "";
-      return city + zip + state + this.country;
-    },
   };
 
   if (!Array.isArray(place?.address_components)) {
@@ -49,6 +49,9 @@ const extractAddress = (place) => {
 
     if (types.includes("route")) {
       address.street = value;
+    }
+    if (types.includes("street_number")) {
+      address.streetNumber = value;
     }
     if (types.includes("locality")) {
       address.city = value;
@@ -88,9 +91,9 @@ const SearchLocation = () => {
   // do something on address change
   const onChangeAddress = (autocomplete) => {
     const place = autocomplete.getPlace();
+    console.log(place);
     setAddress(extractAddress(place));
   };
-  console.log(address);
 
   // init autocomplete
   const initAutocomplete = () => {
@@ -99,15 +102,10 @@ const SearchLocation = () => {
       searchInput.current
     );
     autocomplete.setFields(["address_component", "geometry", "name"]); // --> hier können wietere Felder gesetzt werden, falls benötigt
-    //# mit dem Folgenden passiert noch ein Fehler -> das Input Feld ändert sich zurück auf den eingegebenen Text, setValue auch setzen?
     autocomplete.addListener("place_changed", () =>
       onChangeAddress(autocomplete)
     );
   };
-
-  // notwendig, falls wir Standort Infos brauchen - bei Input eig unnötig
-  //   const reverseGeocode = ({ latitude: lat, longitude: lng }) => {};
-  //   const findMyLocation = () => {};
 
   // load map script after mounted
   useEffect(() => {
@@ -129,8 +127,10 @@ const SearchLocation = () => {
       />
       {/* <button onClick={findMyLocation}>search</button> */}
       <div>
-        <p>{address?.name}</p>
-        <p>{address?.street}</p>
+        <p>
+          {address?.name}, {address?.street} {address?.streetNumber},{" "}
+          {address?.zip} {address?.city}, {address?.country}
+        </p>
       </div>
     </>
   );
