@@ -119,7 +119,7 @@ const EventForm = ({ eventToEdit }) => {
       {eventToEdit && authUser ? (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <form
-            className="flex flex-col gap-5"
+            className="flex flex-col gap-5 mb-5"
             onSubmit={eventToEdit ? editEvent : addEvent}
           >
             <CustomInput
@@ -171,6 +171,19 @@ const EventForm = ({ eventToEdit }) => {
               endIcon={<ArrowCircleRightIcon />}
             />
           </form>
+          {eventToEdit && (
+            <CustomButton
+              type="button"
+              fontSize="16px"
+              width="100%"
+              borderRadius="15px"
+              bgcolor="#7254EE"
+              bgcolorHover="#5D3EDE"
+              padding="16px"
+              text="Delete your event"
+              endIcon={<ArrowCircleRightIcon />}
+            />
+          )}
         </LocalizationProvider>
       ) : (
         <p className="text-red-500 text-center">
