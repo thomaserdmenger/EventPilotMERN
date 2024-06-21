@@ -3,7 +3,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import EventCardLarge from '../components/EventCardLarge'
 import { UserContext } from '../context/UserContext'
 import { backendUrl } from '../api/api'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import LogoCanvas from '../components/LogoCanvas'
 import CurrentLocation from '../components/CurrentLocation'
 
@@ -13,6 +13,7 @@ const ExplorePage = () => {
   const [trending, setTrending] = useState([])
   const [localCity, setLocalCity] = useState('')
   const [filteredUpcomingEvents, setFilteredUpcomingEvents] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,12 +38,19 @@ const ExplorePage = () => {
     )
   }, [upcoming, localCity])
 
+  const handleNavigateUpcoming = () => {
+    navigate('/search', { state: { filter: 'upcoming' } })
+  }
+  const handleNavigateLocation = () => {
+    navigate('/search', { state: { filter: localCity } })
+  }
+
   return (
     <div className="h-svh">
-      <div className="pb-[6.375rem] flex flex-col gap-5 px-2">
+      <div className="pb-[6.375rem] pt-2 flex flex-col gap-5 px-2">
         <div className="w-full flex items-center ">
-          <div className="h-20 w-20">
-            <LogoCanvas scale={0.3} />
+          <div className="h-20 w-20 absolute">
+            <LogoCanvas scale={0.2} />
           </div>
           <div className="w-full">
             <CurrentLocation
@@ -57,16 +65,16 @@ const ExplorePage = () => {
             <h2 className="mb-2 pl-2 font-roboto-bold text-black-1">
               Trending Events
             </h2>
-            <Link>
-              <div className="flex items-center font-roboto-regular text-[14px] text-black-1">
-                <p>See All</p>
-                <div className="pb-[3px] text-black-1">
-                  <KeyboardDoubleArrowRightIcon
-                    sx={{ stroke: '#ffffff', strokeWidth: 1 }}
-                  />
-                </div>
+            <div
+              className="flex items-center font-roboto-regular text-[14px] text-black-1"
+              onClick={handleNavigateUpcoming}>
+              <p>See All</p>
+              <div className="pb-[3px] text-black-1">
+                <KeyboardDoubleArrowRightIcon
+                  sx={{ stroke: '#ffffff', strokeWidth: 1 }}
+                />
               </div>
-            </Link>
+            </div>
           </div>
           <div className="flex gap-5 overflow-x-scroll px-1 pb-3 whitespace-nowrap scrollbar-hide">
             {trending?.slice(0, 5).map(event => (
@@ -84,16 +92,16 @@ const ExplorePage = () => {
             <h2 className="mb-2 pl-2 font-roboto-bold text-black-1">
               Upcoming Events
             </h2>
-            <Link>
-              <div className="flex items-center font-roboto-regular text-[14px] text-black-1">
-                <p>See All</p>
-                <div className="pb-[3px] text-black-1">
-                  <KeyboardDoubleArrowRightIcon
-                    sx={{ stroke: '#ffffff', strokeWidth: 1 }}
-                  />
-                </div>
+            <div
+              className="flex items-center font-roboto-regular text-[14px] text-black-1"
+              onClick={handleNavigateUpcoming}>
+              <p>See All</p>
+              <div className="pb-[3px] text-black-1">
+                <KeyboardDoubleArrowRightIcon
+                  sx={{ stroke: '#ffffff', strokeWidth: 1 }}
+                />
               </div>
-            </Link>
+            </div>
           </div>
           <div className="flex gap-5 overflow-x-scroll px-1 pb-3 whitespace-nowrap scrollbar-hide">
             {upcoming?.slice(0, 5).map(event => (
@@ -112,16 +120,16 @@ const ExplorePage = () => {
             <h2 className="mb-2 pl-2 font-roboto-bold text-black-1">
               Events In Your City
             </h2>
-            <Link>
-              <div className="flex items-center font-roboto-regular text-[14px] text-black-1">
-                <p>See All</p>
-                <div className="pb-[3px] text-black-1">
-                  <KeyboardDoubleArrowRightIcon
-                    sx={{ stroke: '#ffffff', strokeWidth: 1 }}
-                  />
-                </div>
+            <div
+              className="flex items-center font-roboto-regular text-[14px] text-black-1"
+              onClick={handleNavigateLocation}>
+              <p>See All</p>
+              <div className="pb-[3px] text-black-1">
+                <KeyboardDoubleArrowRightIcon
+                  sx={{ stroke: '#ffffff', strokeWidth: 1 }}
+                />
               </div>
-            </Link>
+            </div>
           </div>
           <div className="flex gap-5 overflow-x-scroll px-1 pb-3 whitespace-nowrap scrollbar-hide">
             {filteredUpcomingEvents.length > 0 ?

@@ -17,47 +17,53 @@ const SignInPage = () => {
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
 
   const handleSignIn = async e => {
     e.preventDefault()
+    setLoading(true)
+    try {
+      const res = await fetch(`${backendUrl}/api/v1/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
 
-    console.log('signin ', user)
+      const data = await res.json()
 
-    const res = await fetch(`${backendUrl}/api/v1/users/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
+      if (data?.errorMessage) {
+        setErrorMessage(data.errorMessage)
+        setLoading(false)
+        return
+      }
 
-    const data = await res.json()
+      if (data?.message) {
+        setSuccessMessage(data.message)
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 3000)
+      }
 
-    if (data?.errorMessage) {
-      return setErrorMessage(data.errorMessage)
+      setUser(data)
+      setLoggedIn(true)
+      setEmail('')
+      setPassword('')
+
+      localStorage.setItem('user', JSON.stringify(data))
+      localStorage.setItem('loggedIn', JSON.stringify(true))
+
+      navigate('/')
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
     }
-
-    if (data?.message) {
-      setSuccessMessage(data.message)
-      setTimeout(() => {
-        setSuccessMessage('')
-      }, 3000)
-    }
-
-    setUser(data)
-
-    setLoggedIn(true)
-    setEmail('')
-    setPassword('')
-
-    localStorage.setItem('user', JSON.stringify(data))
-    localStorage.setItem('loggedIn', JSON.stringify(true))
-
-    navigate('/')
   }
 
   return (
@@ -67,7 +73,7 @@ const SignInPage = () => {
         <h1 className="text-center mb-6 text-purple-1 self-center font-roboto-bold text-xl border-b-2 border-green-1">
           Sign In
         </h1>
-        <form className="flex flex-col gap-6">
+        <form className="flex flex-col gap-6" onSubmit={handleSignIn}>
           <CustomInput
             type="text"
             label="Email"
@@ -92,20 +98,21 @@ const SignInPage = () => {
               {successMessage}
             </p>
           )}
+          <CustomButton
+            fontSize="16px"
+            width="100%"
+            borderRadius="15px"
+            loading={loading}
+            bgcolor="#7254EE"
+            bgcolorHover="#5D3EDE"
+            padding="16px"
+            text="Sign In"
+            endIcon={<ArrowCircleRightIcon />}
+            type="submit"
+          />
         </form>
       </div>
       <div className="flex flex-col gap-4 items-center pt-6">
-        <CustomButton
-          fontSize="16px"
-          width="100%"
-          borderRadius="15px"
-          bgcolor="#7254EE"
-          bgcolorHover="#5D3EDE"
-          padding="16px"
-          text="Sign In"
-          endIcon={<ArrowCircleRightIcon />}
-          onClick={handleSignIn}
-        />
         <p className="text-sm text-green-1">
           Don’t have an account?{' '}
           <Link

@@ -1,41 +1,41 @@
-import BookmarkButton from "./BookmarkButton";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { Link } from "react-router-dom";
-import { backendUrl } from "../api/api";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context/UserContext";
-import ProfileImage from "./ProfileImage";
+import BookmarkButton from './BookmarkButton'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import { Link } from 'react-router-dom'
+import { backendUrl } from '../api/api'
+import { useContext, useEffect, useState } from 'react'
+import { UserContext } from '../context/UserContext'
+import ProfileImage from './ProfileImage'
 
 const EventCardLarge = ({ event, bookmark }) => {
-  const [participants, setParticipants] = useState([]);
-  const [location, setLocation] = useState();
-  const { user } = useContext(UserContext);
+  const [participants, setParticipants] = useState([])
+  const [location, setLocation] = useState()
+  const { user } = useContext(UserContext)
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${backendUrl}/api/v1/events/${event?._id}`);
+      const res = await fetch(`${backendUrl}/api/v1/events/${event?._id}`)
 
-      const data = await res.json();
-      setParticipants(data?.participants);
-      setLocation(data?.event?.location);
-    };
-    fetchData();
-  }, [event._id, user]);
+      const data = await res.json()
+      setParticipants(data?.participants)
+      setLocation(data?.event?.location)
+    }
+    fetchData()
+  }, [event._id, user])
 
   // convert timestamp to date format for event details
-  const changeDateFormat = (timestamp) => {
-    const date = new Date(timestamp);
+  const changeDateFormat = timestamp => {
+    const date = new Date(timestamp)
 
-    const day = date.toLocaleString("en-GB", { day: "numeric" });
-    const month = date.toLocaleString("en-GB", { month: "long" });
+    const day = date.toLocaleString('en-GB', { day: 'numeric' })
+    const month = date.toLocaleString('en-GB', { month: 'long' })
 
     return {
       day: `${day}`,
       month: `${month}`,
-    };
-  };
-  const startDate = changeDateFormat(event?.startDate);
-  const endDate = changeDateFormat(event?.endDate);
+    }
+  }
+  const startDate = changeDateFormat(event?.startDate)
+  const endDate = changeDateFormat(event?.endDate)
 
   return (
     <Link to={`/events/${event?._id}`}>
@@ -57,42 +57,44 @@ const EventCardLarge = ({ event, bookmark }) => {
           </div>
         </div>
         <p className="font-roboto-regular text-black-1">{event.title}</p>
+        <div className="flex gap-1 items-center ml-[-5px] mt-[-5px] overflow-x-hidden">
+          <LocationOnIcon
+            style={{
+              width: '15px',
+              color: '#00ECAA',
+              marginTop: '-1px',
+            }}
+          />
+          <p className="capitalize text-[12px]">{location?.city}</p>
+        </div>
         <div>
           <div className="flex items-center justify-between">
             <div className="flex gap-5 items-center justify-center relative">
               <div className="flex h-9 [&>*:not(:nth-child(1))]:ml-[-10px] mr-[-15px]">
-                {participants?.slice(0, 3).map((singleParticipant) => (
+                {participants?.slice(0, 3).map(singleParticipant => (
                   <ProfileImage
                     key={singleParticipant?.userId?._id}
                     className={
-                      "max-w-10 rounded-full h-[34px] w-[34px] object-cover overflow-hidden border-white border-2 "
+                      'max-w-10 rounded-full h-[34px] w-[34px] object-cover overflow-hidden border-white border-2 '
                     }
-                    src={singleParticipant?.userId?.profileImage?.secure_url}
+                    src={
+                      singleParticipant?.userId?.profileImage?.secure_url
+                    }
                     to={`/hostprofile/${singleParticipant?.userId?._id}`}
                   />
                 ))}
               </div>
               <p className="text-[12px]">
-                {participants?.length >= 99
-                  ? "+99"
-                  : `${participants?.length} Registered`}
+                {participants?.length >= 99 ?
+                  '+99'
+                : `${participants?.length} Registered`}
               </p>
-            </div>
-            <div className="flex gap-1 items-center ml-[-5px]">
-              <LocationOnIcon
-                style={{
-                  width: "15px",
-                  color: "#00ECAA",
-                  marginTop: "-1px",
-                }}
-              />
-              <p className="capitalize text-[12px]">{location?.city}</p>
             </div>
           </div>
         </div>
       </div>
     </Link>
-  );
-};
+  )
+}
 
-export default EventCardLarge;
+export default EventCardLarge
