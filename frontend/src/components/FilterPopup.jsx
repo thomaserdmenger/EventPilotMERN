@@ -19,11 +19,9 @@ const FilterPopup = ({
   handleCategories,
 }) => {
   const [date, setDate] = useState("");
+  const [categorySelector, setCategorySelector] = useState("");
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
-  console.log(location?.city);
-
-  console.log(dateSelector);
 
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
@@ -55,7 +53,38 @@ const FilterPopup = ({
     })
   );
 
-  // # Kategorien auch erst ab Submit
+  // * Functions to filter Category Stuff
+  const selectCategory = (e) => {
+    const isClicked = selectedCategory === categorySelector;
+
+    if (isClicked) {
+      setSelectedCategory("");
+      if (searchText) {
+        setFilteredData(
+          eventsData?.filter((item) =>
+            item?.title.toLowerCase().includes(searchText)
+          )
+        );
+        return;
+      } else {
+        return setFilteredData(eventsData);
+      }
+    }
+
+    setSelectedCategory(categorySelector);
+    const selectedCategoryConst = categorySelector;
+
+    const filteredCategories =
+      filteredData.length < 1
+        ? eventsData?.filter((item) =>
+            item?.categories?.find((item) => item === selectedCategoryConst)
+          )
+        : filteredData?.filter((item) =>
+            item?.categories?.find((item) => item === selectedCategoryConst)
+          );
+
+    setFilteredData(filteredCategories);
+  };
 
   //  * Functions to filter Date Stuff
   const convertTimestampToDate = (timestamp) => {
@@ -109,7 +138,8 @@ const FilterPopup = ({
   // neuer State als Zwischenspeicher mit spread-Operator für alle Zwischenschritte/Filter und erst das Endergebnis in filteredData speichern: bei selectDate und bei selectCategory (handleCategory V2)
   const handleApply = () => {
     // selectDate();
-    selectLocation();
+    // selectLocation();
+    selectCategory();
     setShowPopup(false);
   };
 
@@ -124,9 +154,11 @@ const FilterPopup = ({
             {categories?.map((cat, index) => {
               return (
                 <div
-                  onClick={handleCategories}
+                  onClick={(e) =>
+                    setCategorySelector(e.currentTarget.textContent)
+                  }
                   className={` py-2 px-3 flex items-center justify-center gap-2 rounded-[10px] cursor-pointer ${
-                    selectedCategory === cat?.category
+                    categorySelector === cat?.category
                       ? "text-purple-1 bg-green-1"
                       : "bg-purple-2 text-white"
                   }`}
