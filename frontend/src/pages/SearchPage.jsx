@@ -13,8 +13,7 @@ const SearchPage = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [localCity, setLocalCity] = useState("");
-  // console.log(showPopup);
+  const [localCity, setLocalCity] = useState(""); // # useLocation von ExplorePage, falls vorhanden, sonst leerer String
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -29,6 +28,7 @@ const SearchPage = () => {
     fetchEvents();
   }, []);
 
+  // # if-Abfrage für filteredData, dann das filtern
   const handleSearch = (e) => {
     setSearchText(e.target.value);
     const searchTextConst = e.target.value.toLowerCase();
@@ -45,14 +45,16 @@ const SearchPage = () => {
 
     if (isClicked) {
       setSelectedCategory("");
-      if (searchText)
+      if (searchText) {
         setFilteredData(
           eventsData?.filter((item) =>
             item?.title.toLowerCase().includes(searchText)
           )
         );
-      setFilteredData(eventsData);
-      return;
+        return;
+      } else {
+        return setFilteredData(eventsData);
+      }
     }
 
     setSelectedCategory(e.currentTarget.textContent);
@@ -74,7 +76,7 @@ const SearchPage = () => {
     <div className="flex flex-col items-center justify-start min-h-svh pb-32">
       <div className="bg-purple-1 w-full py-4 flex flex-col items-center">
         <div className="mb-5 text-white">
-          <CurrentLocation />
+          <CurrentLocation setLocalCity={setLocalCity} />
         </div>
         <div className="flex items-center mb-5">
           {/* Search Input Field */}
@@ -102,19 +104,15 @@ const SearchPage = () => {
             return (
               <div
                 onClick={handleCategories}
-                className="border-[1px] p-1 flex items-center justify-center gap-2"
+                className={` py-2 px-3 flex items-center justify-center gap-2 rounded-[10px] cursor-pointer ${
+                  selectedCategory === cat?.category
+                    ? "text-purple-1 bg-green-1"
+                    : "bg-purple-2 text-white"
+                }`}
                 key={index}
               >
                 <img className="w-[15px]" src={cat?.src} alt="" />
-                <p
-                  className={
-                    selectedCategory === cat?.category
-                      ? `text-blue-500`
-                      : "text-red-500"
-                  }
-                >
-                  {cat?.category}
-                </p>
+                <p className="font-roboto-thin">{cat?.category}</p>
               </div>
             );
           })}
@@ -141,6 +139,12 @@ const SearchPage = () => {
           setShowPopup={setShowPopup}
           selectedCategory={selectedCategory}
           localCity={localCity}
+          eventsData={eventsData}
+          filteredData={filteredData}
+          setFilteredData={setFilteredData}
+          setSelectedCategory={setSelectedCategory}
+          setLocalCity={setLocalCity}
+          handleCategories={handleCategories}
         />
       )}
     </div>
@@ -153,9 +157,9 @@ export default SearchPage;
 // - toggleState für Popup
 // - Filter Button => Toggle Popup
 // - neuer State: localCity, setLocalCity
-// - CurrentLocation mit Props setLocalCity
+// - CurrentLocation mit Props setLocalCity => falls von explorePage kommend, aus useLocation holen, sonst leerer String (wie setzen wir currentLocation auf die currentLocation aus der explorePage?)
 
-// - Popup-Komponente mit props: togglePopup, setTogglePopup, selectedCategory, setFilteredEvents, localCity
+// - Popup-Komponente mit props: showPopup, setShowPopup, selectedCategory, setFilteredEvents, localCity
 // - Positioning
 // - in Popup-Komponente category-State setzen auf selectedCategory oder ""
 // - in Popup-Komponente location-State setzen auf localCity oder ""
