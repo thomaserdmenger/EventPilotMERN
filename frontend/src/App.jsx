@@ -30,84 +30,87 @@ const App = () => {
 
   return (
     <div className="max-w-[30rem] mx-auto relative h-svh font-roboto-regular bg-white ">
-      {splash ?
-        <SplashScreen />
-      : <LoggedInProvider>
-          <UserProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <AuthRequired>
-                      <ExplorePage />
-                      <Navbar />
-                    </AuthRequired>
-                  }
-                />
-                <Route path="/signin" element={<SignInPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/verifyemail" element={<VerifyEmailPage />} />
-                <Route
-                  path="/events/add"
-                  element={
-                    <AuthRequired>
-                      <AddEventPage />
-                    </AuthRequired>
-                  }
-                />
-                <Route
-                  path="/events/edit/:eventId"
-                  element={<EditEventPage />}
-                />
-                <Route
-                  path="/events"
-                  element={
-                    <AuthRequired>
-                      <EventsPage />
-                      <Navbar />
-                    </AuthRequired>
-                  }
-                />
-                <Route
-                  path="/search"
-                  element={
-                    <AuthRequired>
-                      <SearchPage />
-                      <Navbar />
-                    </AuthRequired>
-                  }
-                />
-                <Route
-                  path="/events/:eventId"
-                  element={<EventDetailPage />}
-                />
-                <Route
-                  path="/userprofile"
-                  element={
-                    <AuthRequired>
-                      <UserProfilePage />
-                      <Navbar />
-                    </AuthRequired>
-                  }
-                />
-                <Route
-                  path="/userprofileedit"
-                  element={<UserProfilePageEdit />}
-                />
-                <Route
-                  path="/hostprofile/rate/:userId"
-                  element={<ReviewHostPage />}
-                />
-                <Route
-                  path="/hostprofile/:userId"
-                  element={<HostProfilePage />}
-                />
-              </Routes>
-            </BrowserRouter>
-          </UserProvider>
-        </LoggedInProvider>
-      }
+      <LoggedInProvider>
+        <UserProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <AuthRequired>
+                    <ExplorePage />
+                    <Navbar />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/signin"
+                element={splash ? <SplashScreen /> : <SignInPage />}
+              />
+              <Route
+                path="/signup"
+                element={splash ? <SplashScreen /> : <SignUpPage />}
+              />
+              <Route path="/verifyemail" element={<VerifyEmailPage />} />
+              <Route
+                path="/events/add"
+                element={
+                  <AuthRequired>
+                    <AddEventPage />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/events/edit/:eventId"
+                element={<EditEventPage />}
+              />
+              <Route
+                path="/events"
+                element={
+                  <AuthRequired>
+                    <EventsPage />
+                    <Navbar />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <AuthRequired>
+                    <SearchPage />
+                    <Navbar />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/events/:eventId"
+                element={<EventDetailPage />}
+              />
+              <Route
+                path="/userprofile"
+                element={
+                  <AuthRequired>
+                    <UserProfilePage />
+                    <Navbar />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/userprofileedit"
+                element={<UserProfilePageEdit />}
+              />
+              <Route
+                path="/hostprofile/rate/:userId"
+                element={<ReviewHostPage />}
+              />
+              <Route
+                path="/hostprofile/:userId"
+                element={<HostProfilePage />}
+              />
+            </Routes>
+          </BrowserRouter>
+        </UserProvider>
+      </LoggedInProvider>
     </div>
   )
 }

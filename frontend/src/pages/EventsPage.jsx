@@ -1,82 +1,80 @@
 import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../context/UserContext'
 import { backendUrl } from '../api/api'
+import EventCardLarge from '../components/EventCardLarge'
+import EventCardSmall from '../components/EventCardSmall'
 
 const EventsPage = () => {
   const { user } = useContext(UserContext)
-  const [activeTab, setActiveTab] = useState('upcoming')
   const [events, setEvents] = useState([])
+  const [tab, setTab] = useState('upcoming')
 
-  console.log(events)
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(`${backendUrl}/api/v1/eventRegistration`, {
         credentials: 'include',
       })
-
       const data = await res.json()
-
-      setEvents(data?.eventRegistrations)
+      setEvents(data?.eventRegistrations || [])
     }
     fetchData()
   }, [user])
 
-  const getUpcomingEvents = () => {
-    const currentDate = new Date()
-    return events.filter(event => {
-      const eventDate = new Date(event.createdAt)
-      return eventDate >= currentDate
-    })
-  }
+  // Filter upcoming events
+  const upcomingEvents = events.filter(
+    event => new Date(event.eventId.startDate) > new Date(),
+  )
 
-  const getPastEvents = () => {
-    const currentDate = new Date()
-    return events.filter(event => {
-      const eventDate = new Date(event.createdAt)
-      return eventDate < currentDate
-    })
-  }
-
-  const handleTabChange = tab => {
-    setActiveTab(tab)
-  }
-
-  let eventsToDisplay = []
-  if (activeTab === 'upcoming') {
-    eventsToDisplay = getUpcomingEvents()
-  } else if (activeTab === 'past') {
-    eventsToDisplay = getPastEvents()
-  }
+  // Filter past events
+  const pastEvents = events.filter(
+    event => new Date(event.eventId.startDate) <= new Date(),
+  )
 
   return (
     <div className="h-svh">
-      {/* <div className="pb-[4.375rem]">
-        <h1>Events</h1>
-        <div className="tabs">
+      <div className="pb-14 px-2">
+        <h1 className="py-8 text-center font-roboto-bold text-xl">
+          <span className="text-green-1">Your</span> registrations
+        </h1>
+        <div className="flex items-center justify-center gap-2">
           <button
-            className={activeTab === 'upcoming' ? 'active' : ''}
-            onClick={() => handleTabChange('upcoming')}>
+            className={`${tab === 'upcoming' ? 'bg-purple-2 border-2 border-purple-2 text-white shadow-md' : 'text-green-1 border-2 border-green-1'} px-4 text-sm py-2 rounded-[15px]`}
+            onClick={() => setTab('upcoming')}>
             Upcoming Events
           </button>
           <button
-            className={activeTab === 'past' ? 'active' : ''}
-            onClick={() => handleTabChange('past')}>
+            className={`${tab === 'past' ? 'bg-purple-2 border-2 border-purple-2 text-white shadow-md' : 'text-green-1 border-2 border-green-1'} px-4 py-2 text-sm rounded-[15px]`}
+            onClick={() => setTab('past')}>
             Past Events
           </button>
         </div>
-        <div>
-          {eventsToDisplay.length === 0 ?
-            <p>No events</p>
-          : <ul>
-              {eventsToDisplay.map(event => (
-                <li key={event.eventId}>
-                  <p>Event ID: {event.eventId}</p>
-                </li>
-              ))}
-            </ul>
-          }
+        <div className="mt-4">
+          {tab === 'upcoming' && (
+            <div>
+              {upcomingEvents.length > 0 ?
+                upcomingEvents.map(event => (
+                  <EventCardSmall
+                    key={event.eventId._id}
+                    event={event.eventId}
+                  />
+                ))
+              : <p>No upcoming events</p>}
+            </div>
+          )}
+          {tab === 'past' && (
+            <div>
+              {pastEvents.length > 0 ?
+                pastEvents.map(event => (
+                  <EventCardSmall
+                    key={event.eventId._id}
+                    event={event.eventId}
+                  />
+                ))
+              : <p>No past events</p>}
+            </div>
+          )}
         </div>
-      </div> */}
+      </div>
     </div>
   )
 }
