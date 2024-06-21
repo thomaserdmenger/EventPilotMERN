@@ -49,9 +49,7 @@ const EventCardSmall = ({ event, bookmark }) => {
     hours = hours % 12;
     hours = hours ? hours : 12;
 
-    return `${day}${ordinalSuffix(
-      day
-    )} ${month}-${dayOfWeek}-${hours}:${minutes} ${ampm}`;
+    return `${day}${ordinalSuffix(day)} ${month}-${dayOfWeek}-${hours}:${minutes} ${ampm}`;
   };
 
   return (
@@ -66,9 +64,7 @@ const EventCardSmall = ({ event, bookmark }) => {
                 alt="Event Image"
               />
               <div className="col-span-5 p-2 flex flex-col relative">
-                <p className="text-[12px] text-purple-4">
-                  {formatDate(eventTimestamp)}
-                </p>
+                <p className="text-[12px] text-purple-4">{formatDate(eventTimestamp)}</p>
                 <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
                   {event?.title}
                 </h2>
@@ -102,9 +98,7 @@ const EventCardSmall = ({ event, bookmark }) => {
                 alt="Event Image"
               />
               <div className="col-span-5 p-2 flex flex-col relative">
-                <p className="text-[12px] text-purple-4">
-                  {formatDate(bookmarkEventTimestamp)}
-                </p>
+                <p className="text-[12px] text-purple-4">{formatDate(bookmarkEventTimestamp)}</p>
                 <h2 className="capitalize mb-3 text-[18px] break-words overflow-hidden">
                   {bookmark?.eventId?.title}
                 </h2>
