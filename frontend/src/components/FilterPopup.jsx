@@ -23,6 +23,11 @@ const FilterPopup = ({
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
 
+  // - state als Zwischenspeicher
+  // - darein mit spread einzelne Funktionen speichern
+  // - apply setFilteredEvents auf Zwischenspiecher-state setzen
+  // - transition stylen
+
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
     ({ theme }) => ({
@@ -53,7 +58,14 @@ const FilterPopup = ({
     })
   );
 
+  // * Function to check length of filteredData
+  const checkFilteredData = () => {
+    const isNotFilled = filteredData?.length === 0;
+    return isNotFilled;
+  };
+
   // * Functions to filter Category Stuff
+  // -> Kategorien lassen sich im Filter Popup noch nicht abwählen
   const selectCategory = (e) => {
     const isClicked = selectedCategory === categorySelector;
 
@@ -74,16 +86,17 @@ const FilterPopup = ({
     setSelectedCategory(categorySelector);
     const selectedCategoryConst = categorySelector;
 
-    const filteredCategories =
-      filteredData.length < 1
-        ? eventsData?.filter((item) =>
-            item?.categories?.find((item) => item === selectedCategoryConst)
-          )
-        : filteredData?.filter((item) =>
-            item?.categories?.find((item) => item === selectedCategoryConst)
-          );
-
-    setFilteredData(filteredCategories);
+    if (checkFilteredData()) {
+      const filteredEvents = eventsData?.filter((item) =>
+        item?.categories?.find((item) => item === selectedCategoryConst)
+      );
+      setFilteredData(filteredEvents);
+    } else {
+      const filteredEvents = filteredData?.filter((item) =>
+        item?.categories?.find((item) => item === selectedCategoryConst)
+      );
+      setFilteredData(filteredEvents);
+    }
   };
 
   //  * Functions to filter Date Stuff
@@ -100,28 +113,65 @@ const FilterPopup = ({
   };
 
   const selectDate = () => {
-    if (dateSelector === "Today" || dateSelector === "Tomorrow") {
-      const filteredEvents = eventsData?.filter(
-        (event) =>
-          convertTimestampToDate(event?.startDate) ===
-          convertTimestampToDate(date)
-      );
-      setFilteredData(filteredEvents);
-    } else if (dateSelector === "This week") {
-      const filteredEvents = eventsData?.filter(
-        (event) =>
-          event?.startDate > Date.now() &&
-          event?.startDate < Date.now() + 7 * 24 * 60 * 60 * 1000
-      );
-      setFilteredData(filteredEvents);
+    if (checkFilteredData()) {
+      if (dateSelector === "Today" || dateSelector === "Tomorrow") {
+        const filteredEvents = eventsData?.filter(
+          (event) =>
+            convertTimestampToDate(event?.startDate) ===
+            convertTimestampToDate(date)
+        );
+        setFilteredData(filteredEvents);
+      } else if (dateSelector === "This week") {
+        const filteredEvents = eventsData?.filter(
+          (event) =>
+            event?.startDate > Date.now() &&
+            event?.startDate < Date.now() + 7 * 24 * 60 * 60 * 1000
+        );
+        setFilteredData(filteredEvents);
+      } else {
+        const filteredEvents = eventsData?.filter(
+          (event) =>
+            convertTimestampToDate(event?.startDate) ===
+            convertTimestampToDate(date)
+        );
+        setFilteredData(filteredEvents);
+      }
     } else {
-      const filteredEvents = eventsData?.filter(
-        (event) =>
-          convertTimestampToDate(event?.startDate) ===
-          convertTimestampToDate(date)
-      );
-      setFilteredData(filteredEvents);
+      if (dateSelector === "Today" || dateSelector === "Tomorrow") {
+        const filteredEvents = filteredData?.filter(
+          (event) =>
+            convertTimestampToDate(event?.startDate) ===
+            convertTimestampToDate(date)
+        );
+        setFilteredData(filteredEvents);
+      } else if (dateSelector === "This week") {
+        const filteredEvents = filteredData?.filter(
+          (event) =>
+            event?.startDate > Date.now() &&
+            event?.startDate < Date.now() + 7 * 24 * 60 * 60 * 1000
+        );
+        setFilteredData(filteredEvents);
+      } else {
+        const filteredEvents = filteredData?.filter(
+          (event) =>
+            convertTimestampToDate(event?.startDate) ===
+            convertTimestampToDate(date)
+        );
+        setFilteredData(filteredEvents);
+      }
     }
+
+    // if (checkFilteredData()) {
+    //   const filteredEvents = eventsData?.filter((item) =>
+    //     item?.categories?.find((item) => item === selectedCategoryConst)
+    //   );
+    //   setFilteredData(filteredEvents);
+    // } else {
+    //   const filteredEvents = filteredData?.filter((item) =>
+    //     item?.categories?.find((item) => item === selectedCategoryConst)
+    //   );
+    //   setFilteredData(filteredEvents);
+    // }
 
     setDateSelector("");
   };
@@ -131,14 +181,12 @@ const FilterPopup = ({
     const filteredEvents = eventsData?.filter((event) =>
       event?.location?.city?.includes(location.city)
     );
-    setFilteredData(filteredEvents);
   };
 
   // * apply all selected filters
-  // neuer State als Zwischenspeicher mit spread-Operator für alle Zwischenschritte/Filter und erst das Endergebnis in filteredData speichern: bei selectDate und bei selectCategory (handleCategory V2)
   const handleApply = () => {
-    // selectDate();
-    // selectLocation();
+    selectDate();
+    selectLocation();
     selectCategory();
     setShowPopup(false);
   };
@@ -223,12 +271,3 @@ const FilterPopup = ({
 };
 
 export default FilterPopup;
-
-// - Popup-Komponente mit props: showPopup, setShowPopup, selectedCategory, setFilteredEvents, localCity
-// - Positioning
-// - in Popup-Komponente category-State setzen auf selectedCategory oder ""
-// - in Popup-Komponente location-State setzen auf localCity oder ""
-// - filtern nach 3 Sachen .....
-// - Ergebnis in filteredEvents setten
-// - popup schließen
-// - transition vom popup
