@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import EventCardLarge from '../components/EventCardLarge'
 import { UserContext } from '../context/UserContext'
@@ -13,9 +13,6 @@ const ExplorePage = () => {
   const [trending, setTrending] = useState([])
   const [localCity, setLocalCity] = useState('')
   const [filteredUpcomingEvents, setFilteredUpcomingEvents] = useState([])
-  const scrollContainerRef = useRef(null)
-
-  console.log(upcoming)
 
   useEffect(() => {
     const fetchData = async () => {

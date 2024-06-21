@@ -43,7 +43,7 @@ const Navbar = () => {
                   height: 50,
                   padding: 0.8,
                   borderRadius: '100%',
-                  color: 'rgba(0, 236, 170, 0.5)',
+                  color: 'rgba( 255, 255,  255, 0.3)',
                 }}
               />
             </IconButton>
