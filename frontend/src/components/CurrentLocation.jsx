@@ -5,6 +5,7 @@ const CurrentLocation = ({
   borderFind,
   textColorFind,
   textColorTitle,
+  setLocalCity,
 }) => {
   const [city, setCity] = useState('')
 
@@ -34,6 +35,7 @@ const CurrentLocation = ({
             component.types.includes('locality'),
           ).long_name
 
+          setLocalCity(city)
           setCity(city)
         })
         .catch(error => console.log(error))
@@ -46,7 +48,10 @@ const CurrentLocation = ({
         Current Location
       </p>
       {city ?
-        <p className="">{city}</p>
+        <p
+          className={`text-[14px] ${borderFind} ${textColorFind}  border-2 px-2 py-1 rounded-[15px]`}>
+          {city}
+        </p>
       : <div
           className={`flex gap-2 items-center cursor-pointer ${borderFind} ${textColorFind}  border-2 px-2 py-1 rounded-[15px] `}
           onClick={getMyLocation}>

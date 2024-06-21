@@ -4,19 +4,19 @@
 
 @layer base {
   @font-face {
-    font-family: "roboto-thin";
+    font-family: 'roboto-thin';
     src: url(/font/Roboto-Thin.ttf);
   }
   @font-face {
-    font-family: "roboto-medium";
+    font-family: 'roboto-medium';
     src: url(/font/Roboto-Medium.ttf);
   }
   @font-face {
-    font-family: "roboto-bold";
+    font-family: 'roboto-bold';
     src: url(/font/Roboto-Bold.ttf);
   }
   @font-face {
-    font-family: "roboto-regular";
+    font-family: 'roboto-regular';
     src: url(/font/Roboto-Regular.ttf);
   }
 }
@@ -49,9 +49,18 @@
 
 .pac-item-query {
   color: #5d3ede;
-  font-family: "roboto-regular";
+  font-family: 'roboto-regular';
 }
 
 .pac-matched {
-  font-family: "roboto-bold";
+  font-family: 'roboto-bold';
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
