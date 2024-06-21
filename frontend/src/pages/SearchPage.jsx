@@ -138,6 +138,10 @@ const SearchPage = () => {
           setShowPopup={setShowPopup}
           selectedCategory={selectedCategory}
           localCity={localCity}
+          setFilteredData={setFilteredData}
+          setSelectedCategory={setSelectedCategory}
+          setLocalCity={setLocalCity}
+          handleCategories={handleCategories}
         />
       )}
     </div>
@@ -152,7 +156,7 @@ export default SearchPage;
 // - neuer State: localCity, setLocalCity
 // - CurrentLocation mit Props setLocalCity => falls von explorePage kommend, aus useLocation holen, sonst leerer String (wie setzen wir currentLocation auf die currentLocation aus der explorePage?)
 
-// - Popup-Komponente mit props: togglePopup, setTogglePopup, selectedCategory, setFilteredEvents, localCity
+// - Popup-Komponente mit props: showPopup, setShowPopup, selectedCategory, setFilteredEvents, localCity
 // - Positioning
 // - in Popup-Komponente category-State setzen auf selectedCategory oder ""
 // - in Popup-Komponente location-State setzen auf localCity oder ""
