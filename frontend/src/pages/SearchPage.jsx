@@ -121,6 +121,5 @@ export default SearchPage;
 
 // # Cat
 // - Event Form
-// - Search
 // - Popup
 // - Edit User Profile
