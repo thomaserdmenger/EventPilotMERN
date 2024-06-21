@@ -4,7 +4,7 @@ import { backendUrl } from "../api/api";
 import EventForm from "../components/EventForm.jsx";
 import HeaderNav from "../components/HeaderNav.jsx";
 import { UserContext } from "../context/UserContext.jsx";
-import DeleteButton from "../components/DeleteButton.jsx";
+import DeletePopup from "../components/DeletePopup.jsx";
 import CustomButton from "../components/CustomButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -68,7 +68,7 @@ const EditEventPage = () => {
       )}
 
       {toggleDeletePopup && (
-        <DeleteButton
+        <DeletePopup
           eventId={eventId}
           setToggleDeletePopup={setToggleDeletePopup}
         />

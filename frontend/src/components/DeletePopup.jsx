@@ -1,13 +1,13 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import CustomButton from "../components/CustomButton";
+import CustomButton from "./CustomButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { backendUrl } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { LoggedInContext } from "../context/LoggedInContext";
 
-const DeleteButton = ({ eventId, setToggleDeletePopup }) => {
+const DeletePopup = ({ eventId, setToggleDeletePopup }) => {
   const { user, setUser } = useContext(UserContext);
   const { setLoggedIn } = useContext(LoggedInContext);
 
@@ -97,4 +97,4 @@ const DeleteButton = ({ eventId, setToggleDeletePopup }) => {
   );
 };
 
-export default DeleteButton;
+export default DeletePopup;

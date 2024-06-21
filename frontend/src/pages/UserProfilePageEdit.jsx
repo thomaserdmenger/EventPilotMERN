@@ -14,7 +14,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { LoggedInContext } from "../context/LoggedInContext";
 import CustomTextArea from "../components/CustomTextArea";
 import CustomUpload from "../components/CustomUpload";
-import DeleteButton from "../components/DeleteButton";
+import DeletePopup from "../components/DeletePopup";
 
 const UserProfilePageEdit = () => {
   const { user, setUser } = useContext(UserContext);
@@ -145,7 +145,7 @@ const UserProfilePageEdit = () => {
       )}
 
       {toggleDeletePopup && (
-        <DeleteButton setToggleDeletePopup={setToggleDeletePopup} />
+        <DeletePopup setToggleDeletePopup={setToggleDeletePopup} />
       )}
     </div>
   );
