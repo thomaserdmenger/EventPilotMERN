@@ -28,6 +28,7 @@ const SearchPage = () => {
     fetchEvents();
   }, []);
 
+  // # if-Abfrage für filteredData, dann das filtern
   const handleSearch = (e) => {
     setSearchText(e.target.value);
     const searchTextConst = e.target.value.toLowerCase();
@@ -138,6 +139,8 @@ const SearchPage = () => {
           setShowPopup={setShowPopup}
           selectedCategory={selectedCategory}
           localCity={localCity}
+          eventsData={eventsData}
+          filteredData={filteredData}
           setFilteredData={setFilteredData}
           setSelectedCategory={setSelectedCategory}
           setLocalCity={setLocalCity}

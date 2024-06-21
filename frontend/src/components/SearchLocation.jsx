@@ -23,7 +23,7 @@ function loadAsyncScript(src) {
 }
 
 // Page starts here
-const SearchLocation = ({ location, setLocation }) => {
+const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
   const searchInput = useRef(null);
   const [address, setAddress] = useState({});
   const [query, setQuery] = useState("");
