@@ -36,7 +36,7 @@ const SearchPage = () => {
   };
 
   const handleCategories = (e) => {
-    const isClicked = selectedCategory === e.target.textContent;
+    const isClicked = selectedCategory === e.currentTarget.textContent;
 
     if (isClicked) {
       setSelectedCategory("");
@@ -44,11 +44,12 @@ const SearchPage = () => {
         setFilteredData(
           eventsData?.filter((item) => item?.title.toLowerCase().includes(searchText))
         );
+      setFilteredData(eventsData);
       return;
     }
 
-    setSelectedCategory(e.target.textContent);
-    const selectedCategoryConst = e.target.textContent;
+    setSelectedCategory(e.currentTarget.textContent);
+    const selectedCategoryConst = e.currentTarget.textContent;
 
     const filteredCategories =
       filteredData.length < 1
@@ -79,8 +80,14 @@ const SearchPage = () => {
       <div className="flex gap-2 flex-wrap justify-center mb-8">
         {categories?.map((cat, index) => {
           return (
-            <div onClick={handleCategories} className="border-[1px] p-1" key={index}>
-              <p className={selectedCategory === cat ? `text-blue-500` : "text-red-500"}>{cat}</p>
+            <div
+              onClick={handleCategories}
+              className="border-[1px] p-1 flex items-center justify-center gap-2"
+              key={index}>
+              <img className="w-[15px]" src={cat?.src} alt="" />
+              <p className={selectedCategory === cat?.category ? `text-blue-500` : "text-red-500"}>
+                {cat?.category}
+              </p>
             </div>
           );
         })}
@@ -106,6 +113,14 @@ const SearchPage = () => {
 export default SearchPage;
 
 // ! Was brauchen wir alles?
-// - Categories aus JS Rendern
-// - Ausgewählte Kategorien in State(s) speichern
-// - FilteredData beeinflussen oder EventsData => Ergebnis in Filtered speichern
+// - toggleState für Popup
+// - Filter Button => Toggle Popup
+// - Conditional Rendering
+
+// 1. Popup wird Komponente
+
+// # Cat
+// - Event Form
+// - Search
+// - Popup
+// - Edit User Profile
