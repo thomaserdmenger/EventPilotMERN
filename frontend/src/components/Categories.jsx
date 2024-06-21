@@ -26,16 +26,16 @@ const Categories = ({ categoriesArray, setCategoriesArray }) => {
       <div className="flex flex-wrap gap-4 items-center justify-center">
         {categories?.map((singleCategory) => (
           <p
-            onClick={() => handleCatArray(singleCategory)}
+            onClick={() => handleCatArray(singleCategory.category)}
             className={`min-w-20 text-center py-1 px-2 text-sm rounded-[1rem] border-purple-2 border font-roboto-regular cursor-pointer ${
-              checkCategoriesArray(singleCategory)
+              checkCategoriesArray(singleCategory.category)
                 ? "text-white bg-purple-2 "
                 : "  text-gray-300"
             }`}
-            key={singleCategory}
-            name={singleCategory}
+            key={singleCategory.id}
+            name={singleCategory.category}
           >
-            {singleCategory}
+            {singleCategory.category}
           </p>
         ))}
       </div>
