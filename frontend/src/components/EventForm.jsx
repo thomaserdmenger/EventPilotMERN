@@ -168,19 +168,6 @@ const EventForm = ({ eventToEdit }) => {
             endIcon={<ArrowCircleRightIcon />}
           />
         </form>
-        {eventToEdit && (
-          <CustomButton
-            type="button"
-            fontSize="16px"
-            width="100%"
-            borderRadius="15px"
-            bgcolor="#7254EE"
-            bgcolorHover="#5D3EDE"
-            padding="16px"
-            text="Delete your event"
-            endIcon={<ArrowCircleRightIcon />}
-          />
-        )}
       </LocalizationProvider>
     </>
   );
