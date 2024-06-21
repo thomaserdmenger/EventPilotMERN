@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight'
 import EventCardLarge from '../components/EventCardLarge'
 import { UserContext } from '../context/UserContext'
@@ -11,6 +11,11 @@ const ExplorePage = () => {
   const { user } = useContext(UserContext)
   const [upcoming, setUpcoming] = useState([])
   const [trending, setTrending] = useState([])
+  const [localCity, setLocalCity] = useState('')
+  const [filteredUpcomingEvents, setFilteredUpcomingEvents] = useState([])
+  const scrollContainerRef = useRef(null)
+
+  console.log(upcoming)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +34,12 @@ const ExplorePage = () => {
     fetchData()
   }, [user])
 
+  useEffect(() => {
+    setFilteredUpcomingEvents(
+      upcoming.filter(event => event.location.name === localCity),
+    )
+  }, [upcoming, localCity])
+
   return (
     <div className="h-svh">
       <div className="pb-[6.375rem] flex flex-col gap-5 px-2">
@@ -40,6 +51,7 @@ const ExplorePage = () => {
             <CurrentLocation
               borderFind={'border-purple-4'}
               textColorFind={'text-purple-4'}
+              setLocalCity={setLocalCity}
             />
           </div>
         </div>
@@ -101,7 +113,7 @@ const ExplorePage = () => {
         <div>
           <div className="flex justify-between items-center">
             <h2 className="mb-2 pl-2 font-roboto-bold text-black-1">
-              Near by You Events
+              Events In Your City
             </h2>
             <Link>
               <div className="flex items-center font-roboto-regular text-[14px] text-black-1">
@@ -115,14 +127,21 @@ const ExplorePage = () => {
             </Link>
           </div>
           <div className="flex gap-5 overflow-x-scroll px-1 pb-3 whitespace-nowrap scrollbar-hide">
-            {upcoming?.slice(0, 5).map(event => (
-              <div key={event?._id}>
-                <EventCardLarge
-                  event={event}
-                  className="inline-block mr-4"
-                />
+            {filteredUpcomingEvents.length > 0 ?
+              filteredUpcomingEvents.slice(0, 5).map(event => (
+                <div key={event?._id}>
+                  <EventCardLarge
+                    event={event}
+                    className="inline-block mr-4"
+                  />
+                </div>
+              ))
+            : <div className="text-center w-full">
+                <p className="text-grey-2 pt-4 font-roboto-thin">
+                  No upcoming events found in your location.
+                </p>
               </div>
-            ))}
+            }
           </div>
         </div>
       </div>
