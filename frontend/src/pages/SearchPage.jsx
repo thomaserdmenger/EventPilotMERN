@@ -4,12 +4,17 @@ import SearchLocation from "../components/SearchLocation";
 import { backendUrl } from "../api/api";
 import EventCardSmall from "../components/EventCardSmall";
 import { categories } from "../constants/categories.js";
+import FilterPopup from "../components/FilterPopup.jsx";
+import FilterListIcon from "@mui/icons-material/FilterList";
 
 const SearchPage = () => {
   const [searchText, setSearchText] = useState("");
   const [eventsData, setEventsData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [localCity, setLocalCity] = useState("");
+  // console.log(showPopup);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -42,7 +47,9 @@ const SearchPage = () => {
       setSelectedCategory("");
       if (searchText)
         setFilteredData(
-          eventsData?.filter((item) => item?.title.toLowerCase().includes(searchText))
+          eventsData?.filter((item) =>
+            item?.title.toLowerCase().includes(searchText)
+          )
         );
       setFilteredData(eventsData);
       return;
@@ -61,37 +68,59 @@ const SearchPage = () => {
           );
 
     setFilteredData(filteredCategories);
-
-    // setSelectedCategory([...selectedCategories, e.target.textContent]);
   };
 
   return (
-    <div className="flex flex-col items-center justify-start h-svh">
-      <div className="pb-[4.375rem]">{/* <CurrentLocation /> */}</div>
-      {/* Search Input Field */}
-      <input
-        onChange={handleSearch}
-        value={searchText}
-        className="border-[1px] p-2 mb-8"
-        type="text"
-        placeholder="Search"
-      />
-      {/* Categories Filter */}
-      <div className="flex gap-2 flex-wrap justify-center mb-8">
-        {categories?.map((cat, index) => {
-          return (
-            <div
-              onClick={handleCategories}
-              className="border-[1px] p-1 flex items-center justify-center gap-2"
-              key={index}>
-              <img className="w-[15px]" src={cat?.src} alt="" />
-              <p className={selectedCategory === cat?.category ? `text-blue-500` : "text-red-500"}>
-                {cat?.category}
-              </p>
-            </div>
-          );
-        })}
+    <div className="flex flex-col items-center justify-start min-h-svh pb-32">
+      <div className="bg-purple-1 w-full py-4 flex flex-col items-center">
+        <div className="mb-5 text-white">
+          <CurrentLocation />
+        </div>
+        <div className="flex items-center mb-5">
+          {/* Search Input Field */}
+          <input
+            onChange={handleSearch}
+            value={searchText}
+            className="border-[1px] p-2"
+            type="text"
+            placeholder="Search"
+          />
+          <div className="h-full">
+            <FilterListIcon
+              sx={{
+                fontSize: "2.6rem",
+                color: "#00ECAA",
+              }}
+              className="bg-purple-2 cursor-pointer"
+              onClick={() => setShowPopup(true)}
+            />
+          </div>
+        </div>
+        {/* Categories Filter */}
+        <div className="flex gap-2 flex-wrap justify-center mb-8">
+          {categories?.map((cat, index) => {
+            return (
+              <div
+                onClick={handleCategories}
+                className="border-[1px] p-1 flex items-center justify-center gap-2"
+                key={index}
+              >
+                <img className="w-[15px]" src={cat?.src} alt="" />
+                <p
+                  className={
+                    selectedCategory === cat?.category
+                      ? `text-blue-500`
+                      : "text-red-500"
+                  }
+                >
+                  {cat?.category}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
+
       {/* Small Cards */}
       <div className="px-8">
         {filteredData.length < 1 && searchText.length > 0 ? (
@@ -106,6 +135,14 @@ const SearchPage = () => {
           })
         )}
       </div>
+      {showPopup && (
+        <FilterPopup
+          showPopup={showPopup}
+          setShowPopup={setShowPopup}
+          selectedCategory={selectedCategory}
+          localCity={localCity}
+        />
+      )}
     </div>
   );
 };
@@ -115,11 +152,13 @@ export default SearchPage;
 // ! Was brauchen wir alles?
 // - toggleState für Popup
 // - Filter Button => Toggle Popup
-// - Conditional Rendering
+// - neuer State: localCity, setLocalCity
+// - CurrentLocation mit Props setLocalCity
 
-// 1. Popup wird Komponente
-
-// # Cat
-// - Event Form
-// - Popup
-// - Edit User Profile
+// - Popup-Komponente mit props: togglePopup, setTogglePopup, selectedCategory, setFilteredEvents, localCity
+// - Positioning
+// - in Popup-Komponente category-State setzen auf selectedCategory oder ""
+// - in Popup-Komponente location-State setzen auf localCity oder ""
+// - filtern nach 3 Sachen .....
+// - Ergebnis in filteredEvents setten
+// - popup schließen
