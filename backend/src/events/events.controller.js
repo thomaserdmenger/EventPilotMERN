@@ -114,7 +114,10 @@ export const getTrendingEventsCtrl = async (req, res) => {
     // trending => (bookmarks per event + participants per event) / lifespan of event => for all events of the last week
     const recentEvents = await Event.find({
       createdAt: { $gte: Date.now() - 7 * 24 * 60 * 60 * 1000 },
-    });
+      startDate: {
+        $gte: Date.now(),
+      },
+    }).sort({ startDate: 1 });
 
     const bookmarksPerEvent = await Promise.all(
       recentEvents.map((event) =>
