@@ -192,8 +192,20 @@ export const getSingleEventCtrl = async (req, res) => {
 
 export const deleteEventCtrl = async (req, res) => {
   try {
+    const authenticatedUserId = req.authenticatedUser._id;
+
     const eventId = req.params.eventId;
-    console.log(eventId);
+    const event = await Event.findById(eventId);
+
+    if (!event)
+      return res.status(404).json({
+        errorMessage: `The event with the id ${eventId} does not exist.`,
+      });
+
+    if (event.userId !== authenticatedUserId)
+      return res.status(404).json({
+        errorMessage: `You are not authorized to delete this event.`,
+      });
 
     // delete event with all referenced bookmarks and registrations
     const [deletedEvent, deletedBookmarks, deletedParticipants] =
@@ -203,11 +215,6 @@ export const deleteEventCtrl = async (req, res) => {
         Participant.deleteMany({ eventId }),
       ]);
     console.log(deletedEvent);
-
-    if (!deletedEvent)
-      return res.status(404).json({
-        errorMessage: `The event with the id ${eventId} does not exist.`,
-      });
 
     // delete event image from cloudinary
     deleteImage(deletedEvent.eventImage.public_id);
