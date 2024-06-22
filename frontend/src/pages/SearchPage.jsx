@@ -13,7 +13,8 @@ const SearchPage = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [localCity, setLocalCity] = useState(""); // # useLocation von ExplorePage, falls vorhanden, sonst leerer String
+  const [localCity, setLocalCity] = useState("");
+  const [noEventsFound, setNoEventsFound] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -28,62 +29,53 @@ const SearchPage = () => {
     fetchEvents();
   }, []);
 
-  // # if-Abfrage für filteredData, dann das filtern
+  const filterEvents = (events, text, category) => {
+    return events.filter((item) => {
+      const matchesText = item?.title
+        .toLowerCase()
+        .includes(text.toLowerCase());
+
+      const matchesCategory = category
+        ? item?.categories?.includes(category)
+        : true;
+
+      return matchesText && matchesCategory;
+    });
+  };
+
   const handleSearch = (e) => {
-    setSearchText(e.target.value);
-    const searchTextConst = e.target.value.toLowerCase();
+    const text = e.target.value;
+    setSearchText(text);
 
-    const filteredData = eventsData?.filter((item) =>
-      item?.title.toLowerCase().includes(searchTextConst)
-    );
-
-    setFilteredData(filteredData);
+    const filteredEvents = filterEvents(eventsData, text, selectedCategory);
+    setFilteredData(filteredEvents);
+    setNoEventsFound(filteredEvents.length === 0);
   };
 
   const handleCategories = (e) => {
-    const isClicked = selectedCategory === e.currentTarget.textContent;
+    const category = e.currentTarget.textContent;
+    const isClicked = selectedCategory === category;
+    const newCategory = isClicked ? "" : category;
 
-    if (isClicked) {
-      setSelectedCategory("");
-      if (searchText) {
-        setFilteredData(
-          eventsData?.filter((item) =>
-            item?.title.toLowerCase().includes(searchText)
-          )
-        );
-        return;
-      } else {
-        return setFilteredData(eventsData);
-      }
-    }
+    setSelectedCategory(newCategory);
 
-    setSelectedCategory(e.currentTarget.textContent);
-    const selectedCategoryConst = e.currentTarget.textContent;
-
-    const filteredCategories =
-      filteredData.length < 1
-        ? eventsData?.filter((item) =>
-            item?.categories?.find((item) => item === selectedCategoryConst)
-          )
-        : filteredData?.filter((item) =>
-            item?.categories?.find((item) => item === selectedCategoryConst)
-          );
-
-    setFilteredData(filteredCategories);
+    const filteredEvents = filterEvents(eventsData, searchText, newCategory);
+    setFilteredData(filteredEvents);
+    setNoEventsFound(filteredEvents.length === 0);
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-svh pb-32">
       <div className="bg-purple-1 w-full py-4 flex flex-col items-center">
-        <div className="mb-5 text-white">
+        {/* <div className="mb-5 text-white">
           <CurrentLocation setLocalCity={setLocalCity} />
-        </div>
-        <div className="flex items-center mb-5">
+        </div> */}
+        <div className="flex items-center mb-5 pt-6 w-full px-5">
           {/* Search Input Field */}
           <input
             onChange={handleSearch}
             value={searchText}
-            className="border-[1px] p-2"
+            className="border-[1px] p-2 w-full"
             type="text"
             placeholder="Search"
           />
@@ -121,18 +113,17 @@ const SearchPage = () => {
 
       {/* Small Cards */}
       <div className="px-8">
-        {filteredData.length < 1 && searchText.length > 0 ? (
-          <p>Nothing found.</p>
-        ) : filteredData.length > 0 ? (
-          filteredData?.map((item) => {
-            return <EventCardSmall key={item?._id} event={item} />;
-          })
-        ) : (
-          eventsData?.map((item) => {
-            return <EventCardSmall key={item?._id} event={item} />;
-          })
-        )}
+        {noEventsFound && <p>No events found.</p>}
+        {!noEventsFound &&
+          (filteredData?.length > 0
+            ? filteredData?.map((item) => {
+                return <EventCardSmall key={item?._id} event={item} />;
+              })
+            : eventsData?.map((item) => {
+                return <EventCardSmall key={item?._id} event={item} />;
+              }))}
       </div>
+
       {showPopup && (
         <FilterPopup
           showPopup={showPopup}
@@ -145,6 +136,8 @@ const SearchPage = () => {
           setSelectedCategory={setSelectedCategory}
           setLocalCity={setLocalCity}
           handleCategories={handleCategories}
+          searchText={searchText}
+          setNoEventsFound={setNoEventsFound}
         />
       )}
     </div>
@@ -152,17 +145,3 @@ const SearchPage = () => {
 };
 
 export default SearchPage;
-
-// ! Was brauchen wir alles?
-// - toggleState für Popup
-// - Filter Button => Toggle Popup
-// - neuer State: localCity, setLocalCity
-// - CurrentLocation mit Props setLocalCity => falls von explorePage kommend, aus useLocation holen, sonst leerer String (wie setzen wir currentLocation auf die currentLocation aus der explorePage?)
-
-// - Popup-Komponente mit props: showPopup, setShowPopup, selectedCategory, setFilteredEvents, localCity
-// - Positioning
-// - in Popup-Komponente category-State setzen auf selectedCategory oder ""
-// - in Popup-Komponente location-State setzen auf localCity oder ""
-// - filtern nach 3 Sachen .....
-// - Ergebnis in filteredEvents setten
-// - popup schließen

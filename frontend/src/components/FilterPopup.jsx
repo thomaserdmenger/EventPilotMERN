@@ -17,13 +17,13 @@ const FilterPopup = ({
   localCity,
   setLocalCity,
   handleCategories,
+  searchText,
+  setNoEventsFound,
 }) => {
   const [date, setDate] = useState("");
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
-  console.log(location?.city);
-
-  console.log(dateSelector);
+  const [tempCategories, setTempCategories] = useState([]);
 
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
@@ -55,62 +55,33 @@ const FilterPopup = ({
     })
   );
 
-  // # Kategorien auch erst ab Submit
+  const filterEvents = () => {
+    const filtered = eventsData.filter((event) => {
+      const matchesCategory = selectedCategory
+        ? event.categories.includes(selectedCategory)
+        : true;
+      const matchesDate = date
+        ? new Date(event.startDate).toDateString() ===
+          new Date(date).toDateString()
+        : true;
+      const matchesLocation = location
+        ? event?.location?.city === location.city
+        : true;
+      const matchesSearch = searchText
+        ? event.title.toLowerCase().includes(searchText.toLowerCase())
+        : true;
 
-  //  * Functions to filter Date Stuff
-  const convertTimestampToDate = (timestamp) => {
-    // Ein Date-Objekt aus dem Timestamp erstellen
-    const date = new Date(timestamp);
+      return matchesCategory && matchesDate && matchesLocation && matchesSearch;
+    });
 
-    // Tag, Monat und Jahr extrahieren
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Monate sind nullbasiert
-    const year = date.getFullYear();
-
-    return `${day}.${month}.${year}`;
-  };
-
-  const selectDate = () => {
-    if (dateSelector === "Today" || dateSelector === "Tomorrow") {
-      const filteredEvents = eventsData?.filter(
-        (event) =>
-          convertTimestampToDate(event?.startDate) ===
-          convertTimestampToDate(date)
-      );
-      setFilteredData(filteredEvents);
-    } else if (dateSelector === "This week") {
-      const filteredEvents = eventsData?.filter(
-        (event) =>
-          event?.startDate > Date.now() &&
-          event?.startDate < Date.now() + 7 * 24 * 60 * 60 * 1000
-      );
-      setFilteredData(filteredEvents);
-    } else {
-      const filteredEvents = eventsData?.filter(
-        (event) =>
-          convertTimestampToDate(event?.startDate) ===
-          convertTimestampToDate(date)
-      );
-      setFilteredData(filteredEvents);
-    }
-
-    setDateSelector("");
-  };
-
-  // * Functions to filter Location Stuff
-  const selectLocation = () => {
-    const filteredEvents = eventsData?.filter((event) =>
-      event?.location?.city?.includes(location.city)
-    );
-    setFilteredData(filteredEvents);
-  };
-
-  // * apply all selected filters
-  // neuer State als Zwischenspeicher mit spread-Operator für alle Zwischenschritte/Filter und erst das Endergebnis in filteredData speichern: bei selectDate und bei selectCategory (handleCategory V2)
-  const handleApply = () => {
-    // selectDate();
-    selectLocation();
+    setFilteredData(filtered);
     setShowPopup(false);
+    setNoEventsFound(filtered.length === 0);
+  };
+
+  const selectCategory = (e) => {
+    const category = e.currentTarget.textContent;
+    setSelectedCategory(category === selectedCategory ? "" : category);
   };
 
   return (
@@ -124,7 +95,7 @@ const FilterPopup = ({
             {categories?.map((cat, index) => {
               return (
                 <div
-                  onClick={handleCategories}
+                  onClick={selectCategory}
                   className={` py-2 px-3 flex items-center justify-center gap-2 rounded-[10px] cursor-pointer ${
                     selectedCategory === cat?.category
                       ? "text-purple-1 bg-green-1"
@@ -161,7 +132,7 @@ const FilterPopup = ({
               <p
                 onClick={(e) => {
                   setDateSelector(e.currentTarget.textContent);
-                  setDate(Date.now() + 24 * 60 * 60 * 1000);
+                  setDate(Date.now());
                 }}
               >
                 This week
@@ -181,7 +152,7 @@ const FilterPopup = ({
           <SearchLocation setLocation={setLocation} />
           {/* //# localCity übergeben */}
 
-          <button className="bg-purple-1 p-2 text-white" onClick={handleApply}>
+          <button className="bg-purple-1 p-2 text-white" onClick={filterEvents}>
             Apply
           </button>
         </div>
@@ -191,12 +162,3 @@ const FilterPopup = ({
 };
 
 export default FilterPopup;
-
-// - Popup-Komponente mit props: showPopup, setShowPopup, selectedCategory, setFilteredEvents, localCity
-// - Positioning
-// - in Popup-Komponente category-State setzen auf selectedCategory oder ""
-// - in Popup-Komponente location-State setzen auf localCity oder ""
-// - filtern nach 3 Sachen .....
-// - Ergebnis in filteredEvents setten
-// - popup schließen
-// - transition vom popup
