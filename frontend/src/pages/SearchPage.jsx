@@ -28,48 +28,37 @@ const SearchPage = () => {
     fetchEvents();
   }, []);
 
-  // # if-Abfrage für filteredData, dann das filtern
+  const filterEvents = (events, text, category) => {
+    return events.filter((item) => {
+      const matchesText = item?.title
+        .toLowerCase()
+        .includes(text.toLowerCase());
+
+      const matchesCategory = category
+        ? item?.categories?.includes(category)
+        : true;
+
+      return matchesText && matchesCategory;
+    });
+  };
+
   const handleSearch = (e) => {
-    setSearchText(e.target.value);
-    const searchTextConst = e.target.value.toLowerCase();
+    const text = e.target.value;
+    setSearchText(text);
 
-    const filteredData = eventsData?.filter((item) =>
-      item?.title.toLowerCase().includes(searchTextConst)
-    );
-
-    setFilteredData(filteredData);
+    const filteredEvents = filterEvents(eventsData, text, selectedCategory);
+    setFilteredData(filteredEvents);
   };
 
   const handleCategories = (e) => {
-    const isClicked = selectedCategory === e.currentTarget.textContent;
+    const category = e.currentTarget.textContent;
+    const isClicked = selectedCategory === category;
+    const newCategory = isClicked ? "" : category;
 
-    if (isClicked) {
-      setSelectedCategory("");
-      if (searchText) {
-        setFilteredData(
-          eventsData?.filter((item) =>
-            item?.title.toLowerCase().includes(searchText)
-          )
-        );
-        return;
-      } else {
-        return setFilteredData(eventsData);
-      }
-    }
+    setSelectedCategory(newCategory);
 
-    setSelectedCategory(e.currentTarget.textContent);
-    const selectedCategoryConst = e.currentTarget.textContent;
-
-    const filteredCategories =
-      filteredData.length < 1
-        ? eventsData?.filter((item) =>
-            item?.categories?.find((item) => item === selectedCategoryConst)
-          )
-        : filteredData?.filter((item) =>
-            item?.categories?.find((item) => item === selectedCategoryConst)
-          );
-
-    setFilteredData(filteredCategories);
+    const filteredEvents = filterEvents(eventsData, searchText, newCategory);
+    setFilteredData(filteredEvents);
   };
 
   return (
@@ -121,9 +110,9 @@ const SearchPage = () => {
 
       {/* Small Cards */}
       <div className="px-8">
-        {filteredData.length < 1 && searchText.length > 0 ? (
+        {filteredData?.length < 1 && searchText.length > 0 ? (
           <p>Nothing found.</p>
-        ) : filteredData.length > 0 ? (
+        ) : filteredData?.length > 0 ? (
           filteredData?.map((item) => {
             return <EventCardSmall key={item?._id} event={item} />;
           })
@@ -145,6 +134,7 @@ const SearchPage = () => {
           setSelectedCategory={setSelectedCategory}
           setLocalCity={setLocalCity}
           handleCategories={handleCategories}
+          searchText={searchText}
         />
       )}
     </div>

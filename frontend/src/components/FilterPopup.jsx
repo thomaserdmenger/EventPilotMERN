@@ -17,15 +17,15 @@ const FilterPopup = ({
   localCity,
   setLocalCity,
   handleCategories,
+  searchText,
 }) => {
   const [date, setDate] = useState("");
-  const [categorySelector, setCategorySelector] = useState("");
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
+  const [tempCategories, setTempCategories] = useState([]);
 
-  // - state als Zwischenspeicher
-  // - darein mit spread einzelne Funktionen speichern
-  // - apply setFilteredEvents auf Zwischenspiecher-state setzen
+  // - 3 Filterfunktionen unabhängig von apply filtern die events
+  // - dabei muss darauf geachtet werden, dass nur beim ersten Klick die eventsData, sonst filteredData gefiltert werden
   // - transition stylen
 
   // styling for dateTimePicker from MUI
@@ -59,45 +59,59 @@ const FilterPopup = ({
   );
 
   // * Function to check length of filteredData
-  const checkFilteredData = () => {
-    const isNotFilled = filteredData?.length === 0;
-    return isNotFilled;
+  const chooseArrayToFilter = () => {
+    const dataToFilter = filteredData?.length === 0 ? eventsData : filteredData;
+
+    return dataToFilter;
   };
 
   // * Functions to filter Category Stuff
   // -> Kategorien lassen sich im Filter Popup noch nicht abwählen
   const selectCategory = (e) => {
-    const isClicked = selectedCategory === categorySelector;
+    const isClicked = selectedCategory === e.currentTarget.textContent;
 
     if (isClicked) {
       setSelectedCategory("");
-      if (searchText) {
-        setFilteredData(
-          eventsData?.filter((item) =>
-            item?.title.toLowerCase().includes(searchText)
-          )
-        );
-        return;
-      } else {
-        return setFilteredData(eventsData);
-      }
-    }
-
-    setSelectedCategory(categorySelector);
-    const selectedCategoryConst = categorySelector;
-
-    if (checkFilteredData()) {
-      const filteredEvents = eventsData?.filter((item) =>
-        item?.categories?.find((item) => item === selectedCategoryConst)
-      );
-      setFilteredData(filteredEvents);
     } else {
-      const filteredEvents = filteredData?.filter((item) =>
-        item?.categories?.find((item) => item === selectedCategoryConst)
-      );
-      setFilteredData(filteredEvents);
+      setSelectedCategory(e.currentTarget.textContent);
     }
+
+    const category = e.currentTarget.textContent;
+    console.log({ category });
+    console.log({ filteredData });
+    let filteredEvents;
+
+    if (filteredData?.length < 1) {
+      filteredEvents = eventsData?.filter((item) =>
+        item?.categories?.find((item) => item === category)
+      );
+    } else if (filteredData?.length > 0) {
+      filteredEvents = filteredData?.filter((item) =>
+        item?.categories?.find((item) => item === category)
+      );
+    }
+
+    console.log(filteredEvents);
+
+    // setTempCategories(filteredEvents);
+
+    // - Auswahl Cat && Filtered Data === 0 => Auswahl aus eventsData und speichern in Temp
+    // - Abwahl Cat && Filtered Data === 0 => Zurück auf EventsData
+
+    // - Auswahl Cat && Filterd Data !== 0 => Auswahl aus Filtered Data und speichern in Temp
+    // - Abwahl Cat && Filterd DAta !?== 0 => Zurück auf Filterd Data
+
+    // const selectedCategoryConst = e.currentTarget.textContent;
+
+    // const dataToFilter = chooseArrayToFilter();
+    // console.log({ dataToFilter });
+
+    // const filteredEvents = dataToFilter?.filter((item) =>
+    //   item?.categories?.find((item) => item === selectedCategoryConst)
+    // );
+    // setFilteredData(filteredEvents);
   };
+  // console.log({ filteredData });
 
   //  * Functions to filter Date Stuff
   const convertTimestampToDate = (timestamp) => {
@@ -185,9 +199,6 @@ const FilterPopup = ({
 
   // * apply all selected filters
   const handleApply = () => {
-    selectDate();
-    selectLocation();
-    selectCategory();
     setShowPopup(false);
   };
 
@@ -202,11 +213,9 @@ const FilterPopup = ({
             {categories?.map((cat, index) => {
               return (
                 <div
-                  onClick={(e) =>
-                    setCategorySelector(e.currentTarget.textContent)
-                  }
+                  onClick={selectCategory}
                   className={` py-2 px-3 flex items-center justify-center gap-2 rounded-[10px] cursor-pointer ${
-                    categorySelector === cat?.category
+                    selectedCategory === cat?.category
                       ? "text-purple-1 bg-green-1"
                       : "bg-purple-2 text-white"
                   }`}
@@ -241,7 +250,7 @@ const FilterPopup = ({
               <p
                 onClick={(e) => {
                   setDateSelector(e.currentTarget.textContent);
-                  setDate(Date.now() + 24 * 60 * 60 * 1000);
+                  setDate(Date.now());
                 }}
               >
                 This week
