@@ -13,7 +13,8 @@ const SearchPage = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [localCity, setLocalCity] = useState(""); // # useLocation von ExplorePage, falls vorhanden, sonst leerer String
+  const [localCity, setLocalCity] = useState("");
+  const [noEventsFound, setNoEventsFound] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -48,6 +49,7 @@ const SearchPage = () => {
 
     const filteredEvents = filterEvents(eventsData, text, selectedCategory);
     setFilteredData(filteredEvents);
+    setNoEventsFound(filteredEvents.length === 0);
   };
 
   const handleCategories = (e) => {
@@ -59,6 +61,7 @@ const SearchPage = () => {
 
     const filteredEvents = filterEvents(eventsData, searchText, newCategory);
     setFilteredData(filteredEvents);
+    setNoEventsFound(filteredEvents.length === 0);
   };
 
   return (
@@ -110,18 +113,17 @@ const SearchPage = () => {
 
       {/* Small Cards */}
       <div className="px-8">
-        {filteredData?.length < 1 && searchText.length > 0 ? (
-          <p>Nothing found.</p>
-        ) : filteredData?.length > 0 ? (
-          filteredData?.map((item) => {
-            return <EventCardSmall key={item?._id} event={item} />;
-          })
-        ) : (
-          eventsData?.map((item) => {
-            return <EventCardSmall key={item?._id} event={item} />;
-          })
-        )}
+        {noEventsFound && <p>No events found.</p>}
+        {!noEventsFound &&
+          (filteredData?.length > 0
+            ? filteredData?.map((item) => {
+                return <EventCardSmall key={item?._id} event={item} />;
+              })
+            : eventsData?.map((item) => {
+                return <EventCardSmall key={item?._id} event={item} />;
+              }))}
       </div>
+
       {showPopup && (
         <FilterPopup
           showPopup={showPopup}
@@ -135,6 +137,7 @@ const SearchPage = () => {
           setLocalCity={setLocalCity}
           handleCategories={handleCategories}
           searchText={searchText}
+          setNoEventsFound={setNoEventsFound}
         />
       )}
     </div>
@@ -142,17 +145,3 @@ const SearchPage = () => {
 };
 
 export default SearchPage;
-
-// ! Was brauchen wir alles?
-// - toggleState für Popup
-// - Filter Button => Toggle Popup
-// - neuer State: localCity, setLocalCity
-// - CurrentLocation mit Props setLocalCity => falls von explorePage kommend, aus useLocation holen, sonst leerer String (wie setzen wir currentLocation auf die currentLocation aus der explorePage?)
-
-// - Popup-Komponente mit props: showPopup, setShowPopup, selectedCategory, setFilteredEvents, localCity
-// - Positioning
-// - in Popup-Komponente category-State setzen auf selectedCategory oder ""
-// - in Popup-Komponente location-State setzen auf localCity oder ""
-// - filtern nach 3 Sachen .....
-// - Ergebnis in filteredEvents setten
-// - popup schließen

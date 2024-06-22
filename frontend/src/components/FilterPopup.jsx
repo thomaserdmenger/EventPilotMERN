@@ -18,15 +18,12 @@ const FilterPopup = ({
   setLocalCity,
   handleCategories,
   searchText,
+  setNoEventsFound,
 }) => {
   const [date, setDate] = useState("");
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
   const [tempCategories, setTempCategories] = useState([]);
-
-  // - 3 Filterfunktionen unabhängig von apply filtern die events
-  // - dabei muss darauf geachtet werden, dass nur beim ersten Klick die eventsData, sonst filteredData gefiltert werden
-  // - transition stylen
 
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
@@ -58,148 +55,33 @@ const FilterPopup = ({
     })
   );
 
-  // * Function to check length of filteredData
-  const chooseArrayToFilter = () => {
-    const dataToFilter = filteredData?.length === 0 ? eventsData : filteredData;
+  const filterEvents = () => {
+    const filtered = eventsData.filter((event) => {
+      const matchesCategory = selectedCategory
+        ? event.categories.includes(selectedCategory)
+        : true;
+      const matchesDate = date
+        ? new Date(event.startDate).toDateString() ===
+          new Date(date).toDateString()
+        : true;
+      const matchesLocation = location
+        ? event?.location?.city === location.city
+        : true;
+      const matchesSearch = searchText
+        ? event.title.toLowerCase().includes(searchText.toLowerCase())
+        : true;
 
-    return dataToFilter;
-  };
+      return matchesCategory && matchesDate && matchesLocation && matchesSearch;
+    });
 
-  // * Functions to filter Category Stuff
-  // -> Kategorien lassen sich im Filter Popup noch nicht abwählen
-  const selectCategory = (e) => {
-    const isClicked = selectedCategory === e.currentTarget.textContent;
-
-    if (isClicked) {
-      setSelectedCategory("");
-    } else {
-      setSelectedCategory(e.currentTarget.textContent);
-    }
-
-    const category = e.currentTarget.textContent;
-    console.log({ category });
-    console.log({ filteredData });
-    let filteredEvents;
-
-    if (filteredData?.length < 1) {
-      filteredEvents = eventsData?.filter((item) =>
-        item?.categories?.find((item) => item === category)
-      );
-    } else if (filteredData?.length > 0) {
-      filteredEvents = filteredData?.filter((item) =>
-        item?.categories?.find((item) => item === category)
-      );
-    }
-
-    console.log(filteredEvents);
-
-    // setTempCategories(filteredEvents);
-
-    // - Auswahl Cat && Filtered Data === 0 => Auswahl aus eventsData und speichern in Temp
-    // - Abwahl Cat && Filtered Data === 0 => Zurück auf EventsData
-
-    // - Auswahl Cat && Filterd Data !== 0 => Auswahl aus Filtered Data und speichern in Temp
-    // - Abwahl Cat && Filterd DAta !?== 0 => Zurück auf Filterd Data
-
-    // const selectedCategoryConst = e.currentTarget.textContent;
-
-    // const dataToFilter = chooseArrayToFilter();
-    // console.log({ dataToFilter });
-
-    // const filteredEvents = dataToFilter?.filter((item) =>
-    //   item?.categories?.find((item) => item === selectedCategoryConst)
-    // );
-    // setFilteredData(filteredEvents);
-  };
-  // console.log({ filteredData });
-
-  //  * Functions to filter Date Stuff
-  const convertTimestampToDate = (timestamp) => {
-    // Ein Date-Objekt aus dem Timestamp erstellen
-    const date = new Date(timestamp);
-
-    // Tag, Monat und Jahr extrahieren
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Monate sind nullbasiert
-    const year = date.getFullYear();
-
-    return `${day}.${month}.${year}`;
-  };
-
-  const selectDate = () => {
-    if (checkFilteredData()) {
-      if (dateSelector === "Today" || dateSelector === "Tomorrow") {
-        const filteredEvents = eventsData?.filter(
-          (event) =>
-            convertTimestampToDate(event?.startDate) ===
-            convertTimestampToDate(date)
-        );
-        setFilteredData(filteredEvents);
-      } else if (dateSelector === "This week") {
-        const filteredEvents = eventsData?.filter(
-          (event) =>
-            event?.startDate > Date.now() &&
-            event?.startDate < Date.now() + 7 * 24 * 60 * 60 * 1000
-        );
-        setFilteredData(filteredEvents);
-      } else {
-        const filteredEvents = eventsData?.filter(
-          (event) =>
-            convertTimestampToDate(event?.startDate) ===
-            convertTimestampToDate(date)
-        );
-        setFilteredData(filteredEvents);
-      }
-    } else {
-      if (dateSelector === "Today" || dateSelector === "Tomorrow") {
-        const filteredEvents = filteredData?.filter(
-          (event) =>
-            convertTimestampToDate(event?.startDate) ===
-            convertTimestampToDate(date)
-        );
-        setFilteredData(filteredEvents);
-      } else if (dateSelector === "This week") {
-        const filteredEvents = filteredData?.filter(
-          (event) =>
-            event?.startDate > Date.now() &&
-            event?.startDate < Date.now() + 7 * 24 * 60 * 60 * 1000
-        );
-        setFilteredData(filteredEvents);
-      } else {
-        const filteredEvents = filteredData?.filter(
-          (event) =>
-            convertTimestampToDate(event?.startDate) ===
-            convertTimestampToDate(date)
-        );
-        setFilteredData(filteredEvents);
-      }
-    }
-
-    // if (checkFilteredData()) {
-    //   const filteredEvents = eventsData?.filter((item) =>
-    //     item?.categories?.find((item) => item === selectedCategoryConst)
-    //   );
-    //   setFilteredData(filteredEvents);
-    // } else {
-    //   const filteredEvents = filteredData?.filter((item) =>
-    //     item?.categories?.find((item) => item === selectedCategoryConst)
-    //   );
-    //   setFilteredData(filteredEvents);
-    // }
-
-    setDateSelector("");
-  };
-
-  // * Functions to filter Location Stuff
-  const selectLocation = () => {
-    const filteredEvents = eventsData?.filter((event) =>
-      event?.location?.city?.includes(location.city)
-    );
-  };
-
-  // * apply all selected filters
-  const handleApply = () => {
+    setFilteredData(filtered);
     setShowPopup(false);
+    setNoEventsFound(filtered.length === 0);
+  };
+
+  const selectCategory = (e) => {
+    const category = e.currentTarget.textContent;
+    setSelectedCategory(category === selectedCategory ? "" : category);
   };
 
   return (
@@ -270,7 +152,7 @@ const FilterPopup = ({
           <SearchLocation setLocation={setLocation} />
           {/* //# localCity übergeben */}
 
-          <button className="bg-purple-1 p-2 text-white" onClick={handleApply}>
+          <button className="bg-purple-1 p-2 text-white" onClick={filterEvents}>
             Apply
           </button>
         </div>
