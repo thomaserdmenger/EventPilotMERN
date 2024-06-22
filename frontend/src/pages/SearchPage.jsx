@@ -67,15 +67,15 @@ const SearchPage = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-svh pb-32">
       <div className="bg-purple-1 w-full py-4 flex flex-col items-center">
-        <div className="mb-5 text-white">
+        {/* <div className="mb-5 text-white">
           <CurrentLocation setLocalCity={setLocalCity} />
-        </div>
-        <div className="flex items-center mb-5">
+        </div> */}
+        <div className="flex items-center mb-5 pt-6 w-full px-5">
           {/* Search Input Field */}
           <input
             onChange={handleSearch}
             value={searchText}
-            className="border-[1px] p-2"
+            className="border-[1px] p-2 w-full"
             type="text"
             placeholder="Search"
           />
