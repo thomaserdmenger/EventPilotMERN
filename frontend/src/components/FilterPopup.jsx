@@ -3,7 +3,7 @@ import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { styled } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchLocation from "./SearchLocation";
 import CustomButton from "./CustomButton";
 
@@ -20,6 +20,12 @@ const FilterPopup = ({
   const [date, setDate] = useState("");
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHiding, setIsHiding] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(({ theme }) => ({
@@ -77,8 +83,14 @@ const FilterPopup = ({
     });
 
     setFilteredData(filtered);
-    setShowPopup(false);
-    setNoEventsFound(filtered.length === 0);
+
+    setIsHiding(true);
+
+    setTimeout(() => {
+      setShowPopup(false);
+      setNoEventsFound(filtered.length === 0);
+      setIsHiding(false);
+    }, 500);
   };
 
   const selectCategory = (e) => {
@@ -103,7 +115,10 @@ const FilterPopup = ({
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div className="fixed bottom-0 z-20 bg-white w-full h-[80%] rounded-tl-[15px] rounded-tr-[15px] p-4">
+        <div
+          className={`fixed bottom-0 z-20 bg-white w-full h-[80%] rounded-tl-[15px] rounded-tr-[15px] p-4 transition-transform duration-500 ease-in-out transform ${
+            isVisible && !isHiding ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+          } ${isHiding ? "animate-shrink" : ""}`}>
           <h2 className="text-[25px] mb-2">Filter</h2>
           <h3 className="font-roboto-regular mb-4">Category</h3>
           {/* Categories Filter */}
