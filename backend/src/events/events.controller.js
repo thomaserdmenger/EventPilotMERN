@@ -199,13 +199,16 @@ export const deleteEventCtrl = async (req, res) => {
 
     const eventId = req.params.eventId;
     const event = await Event.findById(eventId);
+    console.log({ event });
+    console.log({ userId: event.userId });
+    console.log({ authenticatedUserId });
 
     if (!event)
       return res.status(404).json({
         errorMessage: `The event with the id ${eventId} does not exist.`,
       });
 
-    if (event.userId !== authenticatedUserId)
+    if (event.userId.toString() !== authenticatedUserId.toString())
       return res.status(404).json({
         errorMessage: `You are not authorized to delete this event.`,
       });
