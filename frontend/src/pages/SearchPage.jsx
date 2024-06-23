@@ -4,6 +4,7 @@ import EventCardSmall from "../components/EventCardSmall";
 import { categories } from "../constants/categories.js";
 import FilterPopup from "../components/FilterPopup.jsx";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import CustomInput from "../components/CustomInput.jsx";
 
 const SearchPage = () => {
   const [searchText, setSearchText] = useState("");
@@ -64,16 +65,16 @@ const SearchPage = () => {
         {/* <div className="mb-5 text-white">
           <CurrentLocation setLocalCity={setLocalCity} />
         </div> */}
-        <div className="flex items-center mb-5 pt-6 w-full px-5">
+        <div className="flex mb-5 pt-6 w-full px-4">
           {/* Search Input Field */}
           <input
             onChange={handleSearch}
             value={searchText}
-            className="border-[1px] p-2 w-full"
+            className="border-[1px] p-2 w-full rounded-tl-[10px] rounded-bl-[10px] outline-none"
             type="text"
             placeholder="Search"
           />
-          <div className="h-full">
+          <div className="h-full rounded-tr-[10px] rounded-br-[10px] overflow-hidden pr-1">
             <FilterListIcon
               sx={{
                 fontSize: "2.6rem",
@@ -85,12 +86,12 @@ const SearchPage = () => {
           </div>
         </div>
         {/* Categories Filter */}
-        <div className="flex gap-2 flex-wrap justify-center mb-8">
+        <div className="flex gap-2 flex-wrap justify-center mb-8 px-4">
           {categories?.map((cat, index) => {
             return (
               <div
                 onClick={handleCategories}
-                className={` py-2 px-3 flex items-center justify-center gap-2 rounded-[10px] cursor-pointer ${
+                className={`py-2 px-3 flex items-center justify-center gap-2 rounded-[10px] cursor-pointer ${
                   selectedCategory === cat?.category
                     ? "text-purple-1 bg-green-1"
                     : "bg-purple-2 text-white"
@@ -111,7 +112,7 @@ const SearchPage = () => {
       </div>
 
       {/* Small Cards */}
-      <div className="px-8">
+      <div className="px-8 mt-4">
         {noEventsFound && <p className="px-8 font-roboto-regular mt-4">No events found.</p>}
         {!noEventsFound &&
           (filteredData?.length > 0
