@@ -96,7 +96,13 @@ const SearchPage = () => {
                     : "bg-purple-2 text-white"
                 }`}
                 key={index}>
-                <img className="w-[15px]" src={cat?.src} alt="" />
+                <img
+                  className={`w-[15px] ${
+                    selectedCategory === cat?.category ? "filter-purple" : "filter-white"
+                  }`}
+                  src={cat?.src}
+                  alt="Category Icon"
+                />
                 <p className="font-roboto-thin">{cat?.category}</p>
               </div>
             );
