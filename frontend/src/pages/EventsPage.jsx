@@ -56,24 +56,24 @@ const EventsPage = () => {
         </div>
         <div className="mt-4">
           {tab === "upcoming" && (
-            <div>
+            <div className="px-6">
               {upcomingEvents.length > 0 ? (
                 upcomingEvents.map((event) => (
                   <EventCardSmall key={event?.eventId?._id} event={event.eventId} />
                 ))
               ) : (
-                <p>No upcoming events</p>
+                <p className="text-center pt-2 font-roboto-medium">No upcoming events</p>
               )}
             </div>
           )}
           {tab === "past" && (
-            <div>
+            <div className="px-6">
               {pastEvents.length > 0 ? (
                 pastEvents.map((event) => (
                   <EventCardSmall key={event?.eventId?._id} event={event.eventId} />
                 ))
               ) : (
-                <p>No past events</p>
+                <p className="text-center pt-2 font-roboto-medium">No past events</p>
               )}
             </div>
           )}
