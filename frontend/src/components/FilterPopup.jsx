@@ -63,7 +63,7 @@ const FilterPopup = ({
       const matchesDate =
         dateSelector === "This week"
           ? eventDate >= selectedDate && eventDate <= endOfWeek
-          : date
+          : dateSelector === "Today" || dateSelector === "Tomorrow"
           ? eventDate.toDateString() === selectedDate.toDateString()
           : true;
 
