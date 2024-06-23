@@ -106,7 +106,7 @@ const SearchPage = () => {
 
       {/* Small Cards */}
       <div className="px-8">
-        {noEventsFound && <p>No events found.</p>}
+        {noEventsFound && <p className="px-8 font-roboto-regular mt-4">No events found.</p>}
         {!noEventsFound &&
           (filteredData?.length > 0
             ? filteredData?.map((item) => {
