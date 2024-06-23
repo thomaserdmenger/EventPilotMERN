@@ -41,7 +41,7 @@ export const postAddEventCtrl = async (req, res) => {
       });
     if (title.length < 5 || title.length > 15)
       return res.status(422).json({
-        errorMessage: "Title must be between 5 and 20 characters.",
+        errorMessage: "Title must be between 5 and 15 characters.",
       });
     if (description.length < 20 || description.length > 500)
       return res.status(422).json({
@@ -60,7 +60,11 @@ export const postAddEventCtrl = async (req, res) => {
         .json({ errorMessage: "This user does not exist." });
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
-    const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
+    const uploadResult = await uploadImage(
+      eventImage.buffer,
+      "eventImages",
+      "jkyzgu2i"
+    );
 
     // finally create new Event ...
     const newEvent = await Event.create({
@@ -260,7 +264,11 @@ export const patchEditEventCtrl = async (req, res) => {
     let secure_url;
     if (eventImage) {
       deleteImage(eventToEdit.eventImage.public_id);
-      const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
+      const uploadResult = await uploadImage(
+        eventImage.buffer,
+        "eventImages",
+        "jkyzgu2i"
+      );
       public_id = uploadResult.public_id;
       secure_url = uploadResult.secure_url;
     } else {
@@ -287,7 +295,7 @@ export const patchEditEventCtrl = async (req, res) => {
       });
     if (title.length < 5 || title.length > 15)
       return res.status(422).json({
-        errorMessage: "Title must be between 5 and 20 characters.",
+        errorMessage: "Title must be between 5 and 15 characters.",
       });
     if (description.length < 20 || description.length > 500)
       return res.status(422).json({

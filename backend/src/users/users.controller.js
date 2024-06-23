@@ -231,7 +231,8 @@ export const patchUserCtrl = async (req, res) => {
       deleteImage(user.profileImage.public_id);
       const uploadResult = await uploadImage(
         profileImage.buffer,
-        "profileImages"
+        "profileImages",
+        "vauldipj"
       );
       public_id = uploadResult.public_id;
       secure_url = uploadResult.secure_url;
