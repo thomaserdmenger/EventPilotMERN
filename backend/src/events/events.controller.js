@@ -35,16 +35,15 @@ export const postAddEventCtrl = async (req, res) => {
       return res.status(422).json({
         errorMessage: "Enddate must be later than startdate.",
       });
-
     if (startDateTimestamp < Date.now())
       return res.status(422).json({
         errorMessage: "Startdate must be in the future.",
       });
-    if (title < 5 || title > 20)
+    if (title.length < 5 || title.length > 15)
       return res.status(422).json({
         errorMessage: "Title must be between 5 and 20 characters.",
       });
-    if (description < 20 || description > 500)
+    if (description.length < 20 || description.length > 500)
       return res.status(422).json({
         errorMessage: "Description must be between 20 and 500 characters.",
       });
@@ -286,11 +285,11 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.status(422).json({
         errorMessage: "Startdate must be in the future.",
       });
-    if (title < 5 || title > 20)
+    if (title.length < 5 || title.length > 15)
       return res.status(422).json({
         errorMessage: "Title must be between 5 and 20 characters.",
       });
-    if (description < 20 || description > 500)
+    if (description.length < 20 || description.length > 500)
       return res.status(422).json({
         errorMessage: "Description must be between 20 and 500 characters.",
       });
