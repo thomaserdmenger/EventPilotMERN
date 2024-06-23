@@ -124,7 +124,6 @@ const FilterPopup = ({
               );
             })}
           </div>
-
           <h3 className="font-roboto-regular mb-4">Time & Date</h3>
           <div className="flex flex-col  justify-center gap-2 mb-8">
             <div className="flex gap-2">
@@ -168,7 +167,24 @@ const FilterPopup = ({
             <h3 className="font-roboto-regular mb-4">Location</h3>
             <SearchLocation setLocation={setLocation} />
           </div>
-          <div>
+          <div className="flex gap-2">
+            <CustomButton
+              fontSize={"16px"}
+              borderRadius={"15px"}
+              bgcolor={"#ffffff"}
+              bgcolorHover={"#ffffff"}
+              color="#7254EE"
+              border="1px solid #7254EE"
+              padding={"16px"}
+              text={"Reset"}
+              boxShadow={"none"}
+              width={"30%"}
+              onClick={() => {
+                setSelectedCategory("");
+                setDateSelector("");
+                setLocation("");
+              }}
+            />
             <CustomButton
               fontSize={"16px"}
               width={"100%"}
@@ -178,6 +194,7 @@ const FilterPopup = ({
               padding={"16px"}
               text={"Apply"}
               onClick={filterEvents}
+              boxShadow={"none"}
             />
           </div>
         </div>
