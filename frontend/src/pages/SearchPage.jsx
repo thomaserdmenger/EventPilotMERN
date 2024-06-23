@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import CurrentLocation from "../components/CurrentLocation";
-import SearchLocation from "../components/SearchLocation";
 import { backendUrl } from "../api/api";
 import EventCardSmall from "../components/EventCardSmall";
 import { categories } from "../constants/categories.js";
@@ -31,13 +29,9 @@ const SearchPage = () => {
 
   const filterEvents = (events, text, category) => {
     return events.filter((item) => {
-      const matchesText = item?.title
-        .toLowerCase()
-        .includes(text.toLowerCase());
+      const matchesText = item?.title.toLowerCase().includes(text.toLowerCase());
 
-      const matchesCategory = category
-        ? item?.categories?.includes(category)
-        : true;
+      const matchesCategory = category ? item?.categories?.includes(category) : true;
 
       return matchesText && matchesCategory;
     });
@@ -101,8 +95,7 @@ const SearchPage = () => {
                     ? "text-purple-1 bg-green-1"
                     : "bg-purple-2 text-white"
                 }`}
-                key={index}
-              >
+                key={index}>
                 <img className="w-[15px]" src={cat?.src} alt="" />
                 <p className="font-roboto-thin">{cat?.category}</p>
               </div>

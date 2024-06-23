@@ -7,23 +7,18 @@ import { useState } from "react";
 import SearchLocation from "./SearchLocation";
 
 const FilterPopup = ({
-  showPopup,
   setShowPopup,
   selectedCategory,
   setSelectedCategory,
   eventsData,
-  filteredData,
   setFilteredData,
   localCity,
-  setLocalCity,
-  handleCategories,
   searchText,
   setNoEventsFound,
 }) => {
   const [date, setDate] = useState("");
   const [dateSelector, setDateSelector] = useState("");
   const [location, setLocation] = useState(localCity || "");
-  const [tempCategories, setTempCategories] = useState([]);
 
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(({ theme }) => ({
@@ -152,8 +147,6 @@ const FilterPopup = ({
 
           <h3>Location</h3>
           <SearchLocation setLocation={setLocation} />
-          {/* //# localCity übergeben */}
-
           <button className="bg-purple-1 p-2 text-white" onClick={filterEvents}>
             Apply
           </button>
