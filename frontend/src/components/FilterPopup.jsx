@@ -26,47 +26,53 @@ const FilterPopup = ({
   const [tempCategories, setTempCategories] = useState([]);
 
   // styling for dateTimePicker from MUI
-  const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
-    ({ theme }) => ({
-      "& .MuiInputBase-root": {
+  const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(({ theme }) => ({
+    "& .MuiInputBase-root": {
+      borderRadius: "15px",
+      color: "#7254EE", // Default text color
+    },
+    "& .MuiInputLabel-root": {
+      color: "#7254EE", // Default label color
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
         borderRadius: "15px",
-        color: "#7254EE", // Default text color
+        borderColor: "#7254EE", // Default border color
       },
-      "& .MuiInputLabel-root": {
-        color: "#7254EE", // Default label color
+      "&:hover fieldset": {
+        borderColor: "#7254EE", // Border color on hover
       },
-      "& .MuiOutlinedInput-root": {
+      "&.Mui-focused": {
         "& fieldset": {
-          borderRadius: "15px",
-          borderColor: "#7254EE", // Default border color
+          borderColor: "#00ECAA", // Border color when focused
         },
-        "&:hover fieldset": {
-          borderColor: "#7254EE", // Border color on hover
-        },
-        "&.Mui-focused": {
-          "& fieldset": {
-            borderColor: "#00ECAA", // Border color when focused
-          },
-          "& .MuiInputLabel-root": {
-            color: "#00ECAA !important", // Label color when focused
-          },
+        "& .MuiInputLabel-root": {
+          color: "#00ECAA !important", // Label color when focused
         },
       },
-    })
-  );
+    },
+  }));
 
   const filterEvents = () => {
     const filtered = eventsData.filter((event) => {
-      const matchesCategory = selectedCategory
-        ? event.categories.includes(selectedCategory)
-        : true;
-      const matchesDate = date
-        ? new Date(event.startDate).toDateString() ===
-          new Date(date).toDateString()
-        : true;
-      const matchesLocation = location
-        ? event?.location?.city === location.city
-        : true;
+      const matchesCategory = selectedCategory ? event.categories.includes(selectedCategory) : true;
+
+      const eventDate = new Date(event.startDate);
+      const selectedDate = new Date(date);
+
+      const endOfWeek = new Date(selectedDate);
+      endOfWeek.setDate(selectedDate.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      const matchesDate =
+        dateSelector === "This week"
+          ? eventDate >= selectedDate && eventDate <= endOfWeek
+          : date
+          ? eventDate.toDateString() === selectedDate.toDateString()
+          : true;
+
+      const matchesLocation = location ? event?.location?.city === location.city : true;
+
       const matchesSearch = searchText
         ? event.title.toLowerCase().includes(searchText.toLowerCase())
         : true;
@@ -101,8 +107,7 @@ const FilterPopup = ({
                       ? "text-purple-1 bg-green-1"
                       : "bg-purple-2 text-white"
                   }`}
-                  key={index}
-                >
+                  key={index}>
                   <img className="w-[15px]" src={cat?.src} alt="" />
                   <p className="font-roboto-thin">{cat?.category}</p>
                 </div>
@@ -117,24 +122,21 @@ const FilterPopup = ({
                 onClick={(e) => {
                   setDateSelector(e.currentTarget.textContent);
                   setDate(Date.now());
-                }}
-              >
+                }}>
                 Today
               </p>
               <p
                 onClick={(e) => {
                   setDateSelector(e.currentTarget.textContent);
                   setDate(Date.now() + 24 * 60 * 60 * 1000);
-                }}
-              >
+                }}>
                 Tomorrow
               </p>
               <p
                 onClick={(e) => {
                   setDateSelector(e.currentTarget.textContent);
                   setDate(Date.now());
-                }}
-              >
+                }}>
                 This week
               </p>
             </div>
