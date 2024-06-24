@@ -162,7 +162,10 @@ const EventDetailPage = () => {
                 to={`/hostprofile/${eventDetails?.userId?._id}`}
               />
 
-              <div className="">
+              <Link
+                to={`/hostprofile/${eventDetails?.userId?._id}`}
+                className=""
+              >
                 <p className="font-roboto-regular">
                   {eventDetails?.userId?.username}
                 </p>
@@ -171,7 +174,7 @@ const EventDetailPage = () => {
                     ? "You're the organizer"
                     : "Organizer"}
                 </p>
-              </div>
+              </Link>
             </div>
             {user?.user?._id === eventDetails?.userId?._id ? (
               <Link
