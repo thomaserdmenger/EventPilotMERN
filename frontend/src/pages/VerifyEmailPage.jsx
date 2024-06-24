@@ -7,9 +7,11 @@ import { useContext, useState } from 'react'
 import LogoCanvas from '../components/LogoCanvas'
 import { backendUrl } from '../api/api'
 import { UserContext } from '../context/UserContext'
+import EmailIcon from '@mui/icons-material/Email'
 
 const VerifyEmailPage = () => {
   const [sixDigitCode, setSixDigitCode] = useState('')
+  const [email, setEmail] = useState('')
   const { user, setUser } = useContext(UserContext)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -24,7 +26,7 @@ const VerifyEmailPage = () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: user.user.email,
+        email: email,
       }),
     })
 
@@ -55,12 +57,16 @@ const VerifyEmailPage = () => {
         setLoading(false)
         return
       }
+      if (!email) {
+        setLoading(false)
+        return
+      }
 
       const res = await fetch(`${backendUrl}/api/v1/users/verify-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: user.user.email,
+          email: email,
           verificationCode: sixDigitCode,
         }),
       })
@@ -69,6 +75,7 @@ const VerifyEmailPage = () => {
 
       if (data?.errorMessage) {
         setSixDigitCode('')
+        setEmail('')
         setLoading(false)
         return setErrorMessage(data.errorMessage)
       }
@@ -83,6 +90,7 @@ const VerifyEmailPage = () => {
       setUser(data)
 
       setSixDigitCode('')
+      setEmail('')
       setErrorMessage('')
 
       navigate('/signin')
@@ -101,6 +109,13 @@ const VerifyEmailPage = () => {
           Verify Email
         </h1>
         <form className="flex flex-col gap-6" onSubmit={handleVerify}>
+          <CustomInput
+            type="email"
+            label="Email"
+            icon={<EmailIcon sx={{ color: '#00ECAA' }} />}
+            onChange={e => setEmail(e.target.value)}
+            value={email}
+          />
           <CustomInput
             type="text"
             label="Code"

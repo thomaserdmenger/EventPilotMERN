@@ -37,6 +37,14 @@ const SignInPage = () => {
 
       const data = await res.json()
 
+      if (
+        data?.errorMessage ===
+        'Please verify your Email address to login to your account.'
+      ) {
+        navigate('/verifyemail')
+        return
+      }
+
       if (data?.errorMessage) {
         setErrorMessage(data.errorMessage)
         setLoading(false)
