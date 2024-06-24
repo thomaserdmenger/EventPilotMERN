@@ -13,6 +13,8 @@ const VerifyEmailPage = () => {
   const { user, setUser } = useContext(UserContext)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const navigate = useNavigate()
 
   const handleSendEmail = async e => {
@@ -46,40 +48,49 @@ const VerifyEmailPage = () => {
 
   const handleVerify = async e => {
     e.preventDefault()
+    setLoading(true)
 
-    if (!sixDigitCode) {
-      return
-    }
+    try {
+      if (!sixDigitCode) {
+        setLoading(false)
+        return
+      }
 
-    const res = await fetch(`${backendUrl}/api/v1/users/verify-email`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: user.user.email,
-        verificationCode: sixDigitCode,
-      }),
-    })
+      const res = await fetch(`${backendUrl}/api/v1/users/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: user.user.email,
+          verificationCode: sixDigitCode,
+        }),
+      })
 
-    const data = await res.json()
+      const data = await res.json()
 
-    if (data?.errorMessage) {
+      if (data?.errorMessage) {
+        setSixDigitCode('')
+        setLoading(false)
+        return setErrorMessage(data.errorMessage)
+      }
+
+      if (data?.message) {
+        setSuccessMessage(data.message)
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 3000)
+      }
+
+      setUser(data)
+
       setSixDigitCode('')
-      return setErrorMessage(data.errorMessage)
+      setErrorMessage('')
+
+      navigate('/signin')
+    } catch (error) {
+      setErrorMessage('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
     }
-
-    if (data?.message) {
-      setSuccessMessage(data.message)
-      setTimeout(() => {
-        setSuccessMessage('')
-      }, 3000)
-    }
-
-    setUser(data)
-
-    setSixDigitCode('')
-    setErrorMessage('')
-
-    navigate('/signin')
   }
 
   return (
@@ -89,7 +100,7 @@ const VerifyEmailPage = () => {
         <h1 className="text-center mb-6 text-purple-1 self-center font-roboto-bold text-xl border-b-2 border-green-1">
           Verify Email
         </h1>
-        <form className="flex flex-col gap-6">
+        <form className="flex flex-col gap-6" onSubmit={handleVerify}>
           <CustomInput
             type="text"
             label="Code"
@@ -115,20 +126,19 @@ const VerifyEmailPage = () => {
               Resend code
             </button>
           </p>
+          <CustomButton
+            type={'submit'}
+            fontSize="16px"
+            width="100%"
+            borderRadius="16px"
+            bgcolor="#7254EE"
+            bgcolorHover="#5D3EDE"
+            padding="15px"
+            text="Verify"
+            loading={loading}
+            endIcon={<VerifiedUserIcon />}
+          />
         </form>
-      </div>
-      <div className="flex flex-col gap-4 items-center pt-6">
-        <CustomButton
-          fontSize="16px"
-          width="100%"
-          borderRadius="16px"
-          bgcolor="#7254EE"
-          bgcolorHover="#5D3EDE"
-          padding="15px"
-          text="Verify"
-          endIcon={<VerifiedUserIcon />}
-          onClick={handleVerify}
-        />
       </div>
     </div>
   )

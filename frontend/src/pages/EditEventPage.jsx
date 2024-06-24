@@ -1,36 +1,36 @@
-import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { backendUrl } from "../api/api";
-import EventForm from "../components/EventForm.jsx";
-import HeaderNav from "../components/HeaderNav.jsx";
-import { UserContext } from "../context/UserContext.jsx";
-import DeletePopup from "../components/DeletePopup.jsx";
-import CustomButton from "../components/CustomButton";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { backendUrl } from '../api/api'
+import EventForm from '../components/EventForm.jsx'
+import HeaderNav from '../components/HeaderNav.jsx'
+import { UserContext } from '../context/UserContext.jsx'
+import DeletePopup from '../components/DeletePopup.jsx'
+import CustomButton from '../components/CustomButton'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 const EditEventPage = () => {
-  const { user } = useContext(UserContext);
-  const { eventId } = useParams();
-  const [eventToEdit, setEventToEdit] = useState();
-  const [toggleDeletePopup, setToggleDeletePopup] = useState(false);
+  const { user } = useContext(UserContext)
+  const { eventId } = useParams()
+  const [eventToEdit, setEventToEdit] = useState()
+  const [toggleDeletePopup, setToggleDeletePopup] = useState(false)
 
-  const authUser = eventToEdit?.userId?._id === user?.user?._id;
+  const authUser = eventToEdit?.userId?._id === user?.user?._id
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`${backendUrl}/api/v1/events/${eventId}`);
+      const res = await fetch(`${backendUrl}/api/v1/events/${eventId}`)
 
-      const data = await res.json();
-      setEventToEdit(data.event);
-    };
-    fetchData();
-  }, [eventId]);
+      const data = await res.json()
+      setEventToEdit(data.event)
+    }
+    fetchData()
+  }, [eventId])
 
   return (
     <>
       {!toggleDeletePopup && (
         <div className="min-h-svh flex flex-col px-5 pb-12 pt-4">
-          {authUser ? (
+          {authUser ?
             <div>
               <HeaderNav
                 pathname={`/events/edit/${eventId}`}
@@ -39,22 +39,24 @@ const EditEventPage = () => {
               <div className="pt-20">
                 <EventForm eventToEdit={eventToEdit} />
               </div>
-              <div className="px-8 mt-4">
+              <div className=" mt-4">
                 <CustomButton
-                  fontSize={"16px"}
-                  width={"100%"}
-                  borderRadius={"15px"}
-                  bgcolor={"#f87171"}
-                  bgcolorHover={"#ef4444"}
-                  padding={"16px"}
-                  text={eventId ? "Delete Event" : "Delete User"}
+                  fontSize={'16px'}
+                  width={'100%'}
+                  borderRadius={'15px'}
+                  color={'#f87171'}
+                  bgcolor={'#fff'}
+                  border={'1px solid #f87171'}
+                  boxShadow={0}
+                  bgcolorHover={'#fff'}
+                  padding={'16px'}
+                  text={eventId ? 'Delete Event' : 'Delete User'}
                   endIcon={<DeleteIcon />}
                   onClick={() => setToggleDeletePopup(true)}
                 />
               </div>
             </div>
-          ) : (
-            <div>
+          : <div>
               <HeaderNav
                 pathname={`/events/edit/${eventId}`}
                 eventDetails={eventToEdit}
@@ -63,7 +65,7 @@ const EditEventPage = () => {
                 You are not authorized to edit this event.
               </p>
             </div>
-          )}
+          }
         </div>
       )}
 
@@ -74,7 +76,7 @@ const EditEventPage = () => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default EditEventPage;
+export default EditEventPage
