@@ -14,6 +14,13 @@ import { reviewsRouter } from "./reviews/reviews.routes.js";
 
 const app = express();
 
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
+
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -21,12 +28,6 @@ cloudinary.v2.config({
   secure: true,
 });
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  })
-);
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
