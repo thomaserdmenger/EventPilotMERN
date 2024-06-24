@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 // # im Elternelement einen state mit leerem Objekt erstellen, hier als Props übergeben und dann mit den einzelnen Daten befüllen, damit sie als append zur formData mit ans Backend geschickt werden können
 
@@ -27,6 +28,7 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
   const searchInput = useRef(null);
   const [address, setAddress] = useState({});
   const [query, setQuery] = useState("");
+  const { pathname } = useLocation();
 
   // extract the single address details from the searched place
   const extractAddress = (place) => {
@@ -96,13 +98,9 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
   // init autocomplete
   const initAutocomplete = () => {
     if (!searchInput.current) return;
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      searchInput.current
-    );
+    const autocomplete = new window.google.maps.places.Autocomplete(searchInput.current);
     autocomplete.setFields(["address_component", "geometry", "name"]); // --> hier können wietere Felder gesetzt werden, falls benötigt
-    autocomplete.addListener("place_changed", () =>
-      onChangeAddress(autocomplete)
-    );
+    autocomplete.addListener("place_changed", () => onChangeAddress(autocomplete));
   };
 
   // load map script after mounted
@@ -117,12 +115,12 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
       <div className="">
         <div className="relative">
           <h3 className="absolute top-[-10px] left-4 text-[#7254EE] text-[13px] bg-white px-1 ml-[-7px] font-roboto-regular">
-            Location
+            {pathname === "/search" ? "" : "Location"}
           </h3>
           <input
             name="location"
-            placeholder=""
-            className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 w-full"
+            placeholder={pathname === "/search" ? "Your locaton" : ""}
+            className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 w-full placeholder:text-purple-2"
             ref={searchInput}
             type="text"
             value={query}
