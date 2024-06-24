@@ -228,19 +228,19 @@ export const patchUserCtrl = async (req, res) => {
     let public_id;
     let secure_url;
     if (profileImage) {
-      if (user.profileImage.public_id) {
-        deleteImage(user.profileImage.public_id);
+      if (user?.profileImage?.public_id) {
+        deleteImage(user?.profileImage?.public_id);
       }
       const uploadResult = await uploadImage(
         profileImage.buffer,
         "profileImages",
         "vauldipj"
       );
-      public_id = uploadResult.public_id;
-      secure_url = uploadResult.secure_url;
+      public_id = uploadResult?.public_id;
+      secure_url = uploadResult?.secure_url;
     } else {
-      public_id = user.profileImage.public_id;
-      secure_url = user.profileImage.secure_url;
+      public_id = user?.profileImage?.public_id;
+      secure_url = user?.profileImage?.secure_url;
     }
 
     // update authenticated user infos
