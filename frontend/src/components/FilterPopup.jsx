@@ -6,6 +6,7 @@ import { styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import SearchLocation from "./SearchLocation";
 import CustomButton from "./CustomButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const FilterPopup = ({
   setShowPopup,
@@ -22,12 +23,13 @@ const FilterPopup = ({
   const [location, setLocation] = useState(localCity || "");
   const [isVisible, setIsVisible] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
+  const [address, setAddress] = useState({});
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  console.log(location);
   // styling for dateTimePicker from MUI
   const CustomMobileDateTimePicker = styled(MobileDateTimePicker)(
     ({ theme }) => ({
@@ -118,13 +120,16 @@ const FilterPopup = ({
       setDate(Date.now());
     }
   };
-  console.log(location);
+
+  // console.log({query});
+  console.log({ address });
+  console.log({ location });
 
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div
-          className={`fixed bottom-0 z-20 bg-white w-full h-[80%] rounded-tl-[15px] rounded-tr-[15px] p-4 transition-transform duration-500 ease-in-out transform ${
+          className={`fixed bottom-0 z-20 bg-white w-full h-[80%] rounded-tl-[15px] rounded-tr-[15px] p-4 transition-transform duration-500 ease-in-out transform overflow-auto ${
             isVisible && !isHiding
               ? "translate-y-0 opacity-100"
               : "translate-y-full opacity-0"
@@ -132,17 +137,16 @@ const FilterPopup = ({
         >
           <div className="flex justify-between items-center mr-3">
             <h2 className="text-[25px] mb-2">Filter</h2>
-            <p
-              className="text-[20px]"
+
+            <CloseIcon
               onClick={() => {
                 setSelectedCategory("");
                 setDateSelector("");
                 setLocation("");
                 setShowPopup(false);
               }}
-            >
-              X
-            </p>
+              className="cursor-pointer"
+            />
           </div>
           <h3 className="font-roboto-regular mb-4">Category</h3>
           {/* Categories Filter */}
@@ -222,7 +226,13 @@ const FilterPopup = ({
           {/* Location Filter */}
           <div className="mb-8">
             <h3 className="font-roboto-regular mb-4">Location</h3>
-            <SearchLocation setLocation={setLocation} />
+            <SearchLocation
+              setLocation={setLocation}
+              query={query}
+              setQuery={setQuery}
+              address={address}
+              setAddress={setAddress}
+            />
           </div>
           <div className="flex gap-2">
             <CustomButton
@@ -239,7 +249,9 @@ const FilterPopup = ({
               onClick={() => {
                 setSelectedCategory("");
                 setDateSelector("");
-                setLocation("");
+                setLocation({});
+                setAddress({});
+                setQuery("");
               }}
             />
             <CustomButton

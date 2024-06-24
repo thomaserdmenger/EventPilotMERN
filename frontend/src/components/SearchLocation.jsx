@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 
-// # im Elternelement einen state mit leerem Objekt erstellen, hier als Props übergeben und dann mit den einzelnen Daten befüllen, damit sie als append zur formData mit ans Backend geschickt werden können
-
-// https://www.youtube.com/watch?v=LnF79PMKHUs
-// https://github.com/delowardev/google-places-autocomplete
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 const mapApiJs = "https://maps.googleapis.com/maps/api/js";
 const geocodeJson = "https://maps.googleapis.com/maps/api/geocode/json";
@@ -24,10 +21,16 @@ function loadAsyncScript(src) {
 }
 
 // Page starts here
-const SearchLocation = ({ setLocation }) => {
+const SearchLocation = ({
+  setLocation,
+  query,
+  setQuery,
+  setAddress,
+  address,
+}) => {
   const searchInput = useRef(null);
-  const [address, setAddress] = useState({});
-  const [query, setQuery] = useState("");
+  // const [address, setAddress] = useState({});
+  // const [query, setQuery] = useState("");
   const { pathname } = useLocation();
 
   // extract the single address details from the searched place
@@ -79,7 +82,6 @@ const SearchLocation = ({ setLocation }) => {
 
     return address;
   };
-  console.log(address);
 
   // init gmap script
   const initMapScript = () => {
@@ -145,15 +147,14 @@ const SearchLocation = ({ setLocation }) => {
               </p>
               <p className="font-roboto-regular">{address?.country}</p>
             </div>
-            <p
-              className="absolute top-2 right-5"
+            <CloseIcon
               onClick={() => {
                 setAddress({});
+                setLocation({});
                 setQuery("");
               }}
-            >
-              X
-            </p>
+              className="absolute top-2 right-5 cursor-pointer"
+            />
           </div>
         )}
       </div>
