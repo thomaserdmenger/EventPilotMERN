@@ -24,7 +24,7 @@ function loadAsyncScript(src) {
 }
 
 // Page starts here
-const SearchLocation = ({ location, setLocation }) => {
+const SearchLocation = ({ setLocation }) => {
   const searchInput = useRef(null);
   const [address, setAddress] = useState({});
   const [query, setQuery] = useState("");
@@ -124,7 +124,7 @@ const SearchLocation = ({ location, setLocation }) => {
           </h3>
           <input
             name="location"
-            placeholder={pathname === "/search" ? "Your locaton" : ""}
+            placeholder={pathname === "/search" ? "Your location" : ""}
             className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 w-full placeholder:text-purple-2"
             ref={searchInput}
             type="text"

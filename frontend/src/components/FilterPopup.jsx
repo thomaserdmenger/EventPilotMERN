@@ -118,6 +118,7 @@ const FilterPopup = ({
       setDate(Date.now());
     }
   };
+  console.log(location);
 
   return (
     <>
