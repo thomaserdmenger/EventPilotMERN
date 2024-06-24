@@ -221,11 +221,12 @@ const HostProfilePage = () => {
               <p className="font-roboto-regular">No created events</p>
             )}
             {toggleReviews &&
-              host?.receivedReviews
-                ?.sort(
+              host?.receivedReviews?.length > 0 &&
+              host.receivedReviews
+                .sort(
                   (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
                 )
-                ?.map((review) => {
+                .map((review) => {
                   return <ReviewCard key={review._id} review={review} />;
                 })}
             {toggleReviews && host?.receivedReviews?.length === 0 && (
