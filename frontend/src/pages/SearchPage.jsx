@@ -28,11 +28,23 @@ const SearchPage = () => {
     fetchEvents();
   }, []);
 
+  useEffect(() => {
+    if (showPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showPopup]);
+
   const filterEvents = (events, text, category) => {
     return events.filter((item) => {
-      const matchesText = item?.title.toLowerCase().includes(text.toLowerCase());
+      const matchesText = item?.title
+        .toLowerCase()
+        .includes(text.toLowerCase());
 
-      const matchesCategory = category ? item?.categories?.includes(category) : true;
+      const matchesCategory = category
+        ? item?.categories?.includes(category)
+        : true;
 
       return matchesText && matchesCategory;
     });
@@ -60,7 +72,11 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-svh pb-32">
+    <div
+      className={`flex flex-col items-center justify-start min-h-svh pb-32 ${
+        showPopup ? "overflow-hidden" : ""
+      }`}
+    >
       <div className="bg-purple-1 w-full py-4 flex flex-col items-center">
         {/* <div className="mb-5 text-white">
           <CurrentLocation setLocalCity={setLocalCity} />
@@ -96,10 +112,13 @@ const SearchPage = () => {
                     ? "text-purple-1 bg-green-1"
                     : "bg-purple-2 text-white"
                 }`}
-                key={index}>
+                key={index}
+              >
                 <img
                   className={`w-[15px] ${
-                    selectedCategory === cat?.category ? "filter-purple" : "filter-white"
+                    selectedCategory === cat?.category
+                      ? "filter-purple"
+                      : "filter-white"
                   }`}
                   src={cat?.src}
                   alt="Category Icon"
@@ -113,7 +132,9 @@ const SearchPage = () => {
 
       {/* Small Cards */}
       <div className="px-8 mt-4">
-        {noEventsFound && <p className="px-8 font-roboto-regular mt-4">No events found.</p>}
+        {noEventsFound && (
+          <p className="px-8 font-roboto-regular mt-4">No events found.</p>
+        )}
         {!noEventsFound &&
           (filteredData?.length > 0
             ? filteredData?.map((item) => {

@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 
-// # im Elternelement einen state mit leerem Objekt erstellen, hier als Props übergeben und dann mit den einzelnen Daten befüllen, damit sie als append zur formData mit ans Backend geschickt werden können
-
-// https://www.youtube.com/watch?v=LnF79PMKHUs
-// https://github.com/delowardev/google-places-autocomplete
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 const mapApiJs = "https://maps.googleapis.com/maps/api/js";
 const geocodeJson = "https://maps.googleapis.com/maps/api/geocode/json";
@@ -24,10 +21,16 @@ function loadAsyncScript(src) {
 }
 
 // Page starts here
-const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
+const SearchLocation = ({
+  setLocation,
+  query,
+  setQuery,
+  setAddress,
+  address,
+}) => {
   const searchInput = useRef(null);
-  const [address, setAddress] = useState({});
-  const [query, setQuery] = useState("");
+  // const [address, setAddress] = useState({});
+  // const [query, setQuery] = useState("");
   const { pathname } = useLocation();
 
   // extract the single address details from the searched place
@@ -98,9 +101,13 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
   // init autocomplete
   const initAutocomplete = () => {
     if (!searchInput.current) return;
-    const autocomplete = new window.google.maps.places.Autocomplete(searchInput.current);
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      searchInput.current
+    );
     autocomplete.setFields(["address_component", "geometry", "name"]); // --> hier können wietere Felder gesetzt werden, falls benötigt
-    autocomplete.addListener("place_changed", () => onChangeAddress(autocomplete));
+    autocomplete.addListener("place_changed", () =>
+      onChangeAddress(autocomplete)
+    );
   };
 
   // load map script after mounted
@@ -119,7 +126,7 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
           </h3>
           <input
             name="location"
-            placeholder={pathname === "/search" ? "Your locaton" : ""}
+            placeholder={pathname === "/search" ? "Your location" : ""}
             className="border rounded-[16px] border-purple-1 p-4 text-purple-1 font-roboto-regular focus:outline-1 focus:outline-green-1 w-full placeholder:text-purple-2"
             ref={searchInput}
             type="text"
@@ -129,15 +136,25 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
         </div>
 
         {Object.keys(address).length > 0 && (
-          <div className=" bg-purple-1 px-4 rounded-[16px] py-2 mt-3 mb-2 flex flex-col items-center justify-center bg-opacity-80 text-[14px]">
-            <p className="text-white font-roboto-regular">{address?.name}</p>
-            <p className="text-white font-roboto-regular">
-              {address?.street} {address?.streetNumber}
-            </p>
-            <p className="text-white font-roboto-regular">
-              {address?.zip} {address?.city}
-            </p>
-            <p className="text-white font-roboto-regular">{address?.country}</p>
+          <div className=" bg-purple-1 px-4 rounded-[16px] py-2 mt-3 mb-2  bg-opacity-80 text-[14px] text-white relative">
+            <div className="flex flex-col items-center justify-center">
+              <p className="font-roboto-regular">{address?.name}</p>
+              <p className="font-roboto-regular">
+                {address?.street} {address?.streetNumber}
+              </p>
+              <p className="font-roboto-regular">
+                {address?.zip} {address?.city}
+              </p>
+              <p className="font-roboto-regular">{address?.country}</p>
+            </div>
+            <CloseIcon
+              onClick={() => {
+                setAddress({});
+                setLocation({});
+                setQuery("");
+              }}
+              className="absolute top-2 right-5 cursor-pointer"
+            />
           </div>
         )}
       </div>
