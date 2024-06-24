@@ -24,7 +24,7 @@ function loadAsyncScript(src) {
 }
 
 // Page starts here
-const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
+const SearchLocation = ({ location, setLocation }) => {
   const searchInput = useRef(null);
   const [address, setAddress] = useState({});
   const [query, setQuery] = useState("");
@@ -79,6 +79,7 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
 
     return address;
   };
+  console.log(address);
 
   // init gmap script
   const initMapScript = () => {
@@ -98,9 +99,13 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
   // init autocomplete
   const initAutocomplete = () => {
     if (!searchInput.current) return;
-    const autocomplete = new window.google.maps.places.Autocomplete(searchInput.current);
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      searchInput.current
+    );
     autocomplete.setFields(["address_component", "geometry", "name"]); // --> hier können wietere Felder gesetzt werden, falls benötigt
-    autocomplete.addListener("place_changed", () => onChangeAddress(autocomplete));
+    autocomplete.addListener("place_changed", () =>
+      onChangeAddress(autocomplete)
+    );
   };
 
   // load map script after mounted
@@ -129,15 +134,26 @@ const SearchLocation = ({ location, setLocation, setLocationSelector }) => {
         </div>
 
         {Object.keys(address).length > 0 && (
-          <div className=" bg-purple-1 px-4 rounded-[16px] py-2 mt-3 mb-2 flex flex-col items-center justify-center bg-opacity-80 text-[14px]">
-            <p className="text-white font-roboto-regular">{address?.name}</p>
-            <p className="text-white font-roboto-regular">
-              {address?.street} {address?.streetNumber}
+          <div className=" bg-purple-1 px-4 rounded-[16px] py-2 mt-3 mb-2  bg-opacity-80 text-[14px] text-white relative">
+            <div className="flex flex-col items-center justify-center">
+              <p className="font-roboto-regular">{address?.name}</p>
+              <p className="font-roboto-regular">
+                {address?.street} {address?.streetNumber}
+              </p>
+              <p className="font-roboto-regular">
+                {address?.zip} {address?.city}
+              </p>
+              <p className="font-roboto-regular">{address?.country}</p>
+            </div>
+            <p
+              className="absolute top-2 right-5"
+              onClick={() => {
+                setAddress({});
+                setQuery("");
+              }}
+            >
+              X
             </p>
-            <p className="text-white font-roboto-regular">
-              {address?.zip} {address?.city}
-            </p>
-            <p className="text-white font-roboto-regular">{address?.country}</p>
           </div>
         )}
       </div>
