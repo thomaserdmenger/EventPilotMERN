@@ -73,7 +73,7 @@ const HostProfilePage = () => {
       setHostEvents(hostEventsData?.createdEvents);
     };
     fetchData();
-  }, [toggleFollow]);
+  }, [toggleFollow, userId]);
 
   const isUserAlreadyReviewed = (host) => {
     return host?.receivedReviews?.some(

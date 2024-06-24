@@ -21,12 +21,14 @@ const EventsPage = () => {
   }, [user]);
 
   // Filter upcoming events
-  const upcomingEvents = events?.filter(
-    (event) => new Date(event?.eventId?.startDate) > new Date()
-  );
+  const upcomingEvents = events
+    ?.filter((event) => new Date(event?.eventId?.startDate) > new Date())
+    .sort((a, b) => a.eventId?.startDate - b.eventId?.startDate);
 
   // Filter past events
-  const pastEvents = events?.filter((event) => new Date(event?.eventId?.startDate) <= new Date());
+  const pastEvents = events
+    ?.filter((event) => new Date(event?.eventId?.startDate) <= new Date())
+    .sort((a, b) => a.eventId?.startDate - b.eventId?.startDate);
 
   return (
     <div className="h-svh">
@@ -41,7 +43,8 @@ const EventsPage = () => {
                 ? "bg-purple-2 border-2 border-purple-2 text-white shadow-md"
                 : "text-green-1 border-2 border-green-1"
             } px-4 text-sm py-2 rounded-[15px]`}
-            onClick={() => setTab("upcoming")}>
+            onClick={() => setTab("upcoming")}
+          >
             Upcoming Events
           </button>
           <button
@@ -50,7 +53,8 @@ const EventsPage = () => {
                 ? "bg-purple-2 border-2 border-purple-2 text-white shadow-md"
                 : "text-green-1 border-2 border-green-1"
             } px-4 py-2 text-sm rounded-[15px]`}
-            onClick={() => setTab("past")}>
+            onClick={() => setTab("past")}
+          >
             Past Events
           </button>
         </div>
@@ -59,10 +63,15 @@ const EventsPage = () => {
             <div className="px-6">
               {upcomingEvents.length > 0 ? (
                 upcomingEvents.map((event) => (
-                  <EventCardSmall key={event?.eventId?._id} event={event.eventId} />
+                  <EventCardSmall
+                    key={event?.eventId?._id}
+                    event={event.eventId}
+                  />
                 ))
               ) : (
-                <p className="text-center pt-2 font-roboto-medium">No upcoming events</p>
+                <p className="text-center pt-2 font-roboto-medium">
+                  No upcoming events
+                </p>
               )}
             </div>
           )}
@@ -70,10 +79,15 @@ const EventsPage = () => {
             <div className="px-6">
               {pastEvents.length > 0 ? (
                 pastEvents.map((event) => (
-                  <EventCardSmall key={event?.eventId?._id} event={event.eventId} />
+                  <EventCardSmall
+                    key={event?.eventId?._id}
+                    event={event.eventId}
+                  />
                 ))
               ) : (
-                <p className="text-center pt-2 font-roboto-medium">No past events</p>
+                <p className="text-center pt-2 font-roboto-medium">
+                  No past events
+                </p>
               )}
             </div>
           )}
