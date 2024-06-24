@@ -32,9 +32,12 @@ const UserProfilePage = () => {
       const data = await res.json();
       setFollowers(data?.followers?.length);
 
-      const usersEventsRes = await fetch(`${backendUrl}/api/v1/users/${userId}`, {
-        credentials: "include",
-      });
+      const usersEventsRes = await fetch(
+        `${backendUrl}/api/v1/users/${userId}`,
+        {
+          credentials: "include",
+        }
+      );
 
       const userEventsData = await usersEventsRes.json();
       setUsersEvents(userEventsData?.createdEvents);
@@ -59,13 +62,18 @@ const UserProfilePage = () => {
 
     await res.json();
 
+    localStorage.removeItem("user");
+    localStorage.removeItem("loggedIn");
+
     navigate("/signin");
   };
 
   return (
     <div className="min-h-svh pb-36">
       <HeaderNav pathname={pathname} user={user} />
-      <div onClick={logoutUser} className="absolute top-[22px] right-6 text-2xl cursor-pointer">
+      <div
+        onClick={logoutUser}
+        className="absolute top-[22px] right-6 text-2xl cursor-pointer">
         <RiLogoutCircleRLine />
       </div>
       <section>
@@ -86,12 +94,16 @@ const UserProfilePage = () => {
         <article className="flex gap-6 justify-center items-center mb-9">
           <div className="flex flex-col items-center text-center">
             <p>{user?.followedUsers?.length}</p>
-            <p className="text-grey-2 font-roboto-thin text-[14px]">Following</p>
+            <p className="text-grey-2 font-roboto-thin text-[14px]">
+              Following
+            </p>
           </div>
           <div className="border-[0.5px] min-h-8"></div>
           <div className="flex flex-col items-center text-center">
             <p>{followers}</p>
-            <p className="text-grey-2 font-roboto-thin text-[14px]">Followers</p>
+            <p className="text-grey-2 font-roboto-thin text-[14px]">
+              Followers
+            </p>
           </div>
         </article>
         <article className="flex justify-center mb-9">
@@ -113,7 +125,9 @@ const UserProfilePage = () => {
         <section>
           <nav className="flex justify-between font-roboto-regular mb-4 uppercase px-8">
             <p
-              className={`${toggleAbout && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              className={`${
+                toggleAbout && "text-purple-1 border-b-2 border-purple-1"
+              } pb-1`}
               onClick={() => {
                 setToggleAbout(true);
                 setToggleEvents(false);
@@ -122,7 +136,9 @@ const UserProfilePage = () => {
               About
             </p>
             <p
-              className={`${toggleEvents && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              className={`${
+                toggleEvents && "text-purple-1 border-b-2 border-purple-1"
+              } pb-1`}
               onClick={() => {
                 setToggleEvents(true);
                 setToggleAbout(false);
@@ -131,7 +147,9 @@ const UserProfilePage = () => {
               My Events
             </p>
             <p
-              className={`${toggleBookmarks && "text-purple-1 border-b-2 border-purple-1"} pb-1`}
+              className={`${
+                toggleBookmarks && "text-purple-1 border-b-2 border-purple-1"
+              } pb-1`}
               onClick={() => {
                 setToggleBookmarks(true);
                 setToggleAbout(false);
@@ -157,7 +175,9 @@ const UserProfilePage = () => {
                 <article>
                   {user?.user?.interests?.length > 0 && (
                     <article className="px-8">
-                      <h2 className="text-[18px] mb-[10px] font-roboto-medium">Interest</h2>
+                      <h2 className="text-[18px] mb-[10px] font-roboto-medium">
+                        Interest
+                      </h2>
                       <div className="flex gap-2 flex-wrap">
                         {user?.user?.interests?.sort().map((item, index) => {
                           return (

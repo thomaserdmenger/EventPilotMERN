@@ -44,8 +44,14 @@ const App = () => {
                   </AuthRequired>
                 }
               />
-              <Route path="/signin" element={splash ? <SplashScreen /> : <SignInPage />} />
-              <Route path="/signup" element={splash ? <SplashScreen /> : <SignUpPage />} />
+              <Route
+                path="/signin"
+                element={splash ? <SplashScreen /> : <SignInPage />}
+              />
+              <Route
+                path="/signup"
+                element={splash ? <SplashScreen /> : <SignUpPage />}
+              />
               <Route path="/verifyemail" element={<VerifyEmailPage />} />
               <Route
                 path="/events/add"
@@ -55,7 +61,14 @@ const App = () => {
                   </AuthRequired>
                 }
               />
-              <Route path="/events/edit/:eventId" element={<EditEventPage />} />
+              <Route
+                path="/events/edit/:eventId"
+                element={
+                  <AuthRequired>
+                    <EditEventPage />
+                  </AuthRequired>
+                }
+              />
               <Route
                 path="/events"
                 element={
@@ -84,10 +97,38 @@ const App = () => {
                   </AuthRequired>
                 }
               />
-              <Route path="/userprofileedit" element={<UserProfilePageEdit />} />
-              <Route path="/hostprofile/rate/:userId" element={<ReviewHostPage />} />
-              <Route path="/hostprofile/:userId" element={<HostProfilePage />} />
-              <Route path="*" element={<PageNotFound404 />} />
+              <Route
+                path="/userprofileedit"
+                element={
+                  <AuthRequired>
+                    <UserProfilePageEdit />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/hostprofile/rate/:userId"
+                element={
+                  <AuthRequired>
+                    <ReviewHostPage />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="/hostprofile/:userId"
+                element={
+                  <AuthRequired>
+                    <HostProfilePage />
+                  </AuthRequired>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <AuthRequired>
+                    <PageNotFound404 />
+                  </AuthRequired>
+                }
+              />
             </Routes>
           </BrowserRouter>
         </UserProvider>
