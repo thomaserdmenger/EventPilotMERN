@@ -41,3 +41,5 @@ app.use("/api/v1/reviews", reviewsRouter);
 await mongoose.connect(process.env.MONGODB_URI, { dbName: "EventPilot" });
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => console.log(`Server listens on port: ${PORT}`));
+
+// Bums
