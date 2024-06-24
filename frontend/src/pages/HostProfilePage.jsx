@@ -211,9 +211,10 @@ const HostProfilePage = () => {
               </p>
             )}
             {toggleEvents &&
+              hostEvents?.length > 0 &&
               hostEvents
-                ?.sort((a, b) => a.startDate - b.startDate)
-                ?.map((event) => (
+                .sort((a, b) => a.startDate - b.startDate)
+                .map((event) => (
                   <EventCardSmall key={event?._id} event={event} />
                 ))}
             {toggleEvents && hostEvents?.length === 0 && (
