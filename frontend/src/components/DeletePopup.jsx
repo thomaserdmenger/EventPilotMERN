@@ -74,7 +74,7 @@ const DeletePopup = ({ eventId, setToggleDeletePopup }) => {
           bgcolor={'#fff'}
           border={'1px solid #f87171'}
           boxShadow={0}
-          bgcolorHover={'#ef4444'}
+          bgcolorHover={'#fff'}
           padding={'16px'}
           text={eventId ? 'Delete Event' : 'Delete User'}
           endIcon={<DeleteIcon />}
@@ -85,7 +85,7 @@ const DeletePopup = ({ eventId, setToggleDeletePopup }) => {
           width={'100%'}
           borderRadius={'15px'}
           bgcolor={'#7254EE'}
-          bgcolorHover={'#16a34a'}
+          bgcolorHover={'#7254EE'}
           padding={'16px'}
           text={'Cancel'}
           endIcon={<CancelIcon />}
