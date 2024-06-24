@@ -121,10 +121,6 @@ const FilterPopup = ({
     }
   };
 
-  // console.log({query});
-  console.log({ address });
-  console.log({ location });
-
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -93,7 +93,6 @@ const EventForm = ({ eventToEdit }) => {
       //   console.log(value);
       // }
       const data = await res.json();
-      console.log(data);
 
       if (data.errorMessage) {
         setLoading(false);
