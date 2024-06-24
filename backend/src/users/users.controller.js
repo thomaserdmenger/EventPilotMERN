@@ -228,7 +228,9 @@ export const patchUserCtrl = async (req, res) => {
     let public_id;
     let secure_url;
     if (profileImage) {
-      deleteImage(user.profileImage.public_id);
+      if (user.profileImage.public_id) {
+        deleteImage(user.profileImage.public_id);
+      }
       const uploadResult = await uploadImage(
         profileImage.buffer,
         "profileImages",
