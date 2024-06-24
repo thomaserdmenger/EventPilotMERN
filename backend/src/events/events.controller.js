@@ -35,16 +35,15 @@ export const postAddEventCtrl = async (req, res) => {
       return res.status(422).json({
         errorMessage: "Enddate must be later than startdate.",
       });
-
     if (startDateTimestamp < Date.now())
       return res.status(422).json({
         errorMessage: "Startdate must be in the future.",
       });
-    if (title < 5 || title > 20)
+    if (title.length < 5 || title.length > 15)
       return res.status(422).json({
-        errorMessage: "Title must be between 5 and 20 characters.",
+        errorMessage: "Title must be between 5 and 15 characters.",
       });
-    if (description < 20 || description > 500)
+    if (description.length < 20 || description.length > 500)
       return res.status(422).json({
         errorMessage: "Description must be between 20 and 500 characters.",
       });
@@ -61,7 +60,11 @@ export const postAddEventCtrl = async (req, res) => {
         .json({ errorMessage: "This user does not exist." });
 
     // upload event-image to cloudinary-folder EventPilot/eventImages
-    const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
+    const uploadResult = await uploadImage(
+      eventImage.buffer,
+      "eventImages",
+      "jkyzgu2i"
+    );
 
     // finally create new Event ...
     const newEvent = await Event.create({
@@ -114,7 +117,10 @@ export const getTrendingEventsCtrl = async (req, res) => {
     // trending => (bookmarks per event + participants per event) / lifespan of event => for all events of the last week
     const recentEvents = await Event.find({
       createdAt: { $gte: Date.now() - 7 * 24 * 60 * 60 * 1000 },
-    });
+      startDate: {
+        $gte: Date.now(),
+      },
+    }).sort({ startDate: 1 });
 
     const bookmarksPerEvent = await Promise.all(
       recentEvents.map((event) =>
@@ -189,8 +195,23 @@ export const getSingleEventCtrl = async (req, res) => {
 
 export const deleteEventCtrl = async (req, res) => {
   try {
+    const authenticatedUserId = req.authenticatedUser._id;
+
     const eventId = req.params.eventId;
-    console.log(eventId);
+    const event = await Event.findById(eventId);
+    console.log({ event });
+    console.log({ userId: event.userId });
+    console.log({ authenticatedUserId });
+
+    if (!event)
+      return res.status(404).json({
+        errorMessage: `The event with the id ${eventId} does not exist.`,
+      });
+
+    if (event.userId.toString() !== authenticatedUserId.toString())
+      return res.status(404).json({
+        errorMessage: `You are not authorized to delete this event.`,
+      });
 
     // delete event with all referenced bookmarks and registrations
     const [deletedEvent, deletedBookmarks, deletedParticipants] =
@@ -200,11 +221,6 @@ export const deleteEventCtrl = async (req, res) => {
         Participant.deleteMany({ eventId }),
       ]);
     console.log(deletedEvent);
-
-    if (!deletedEvent)
-      return res.status(404).json({
-        errorMessage: `The event with the id ${eventId} does not exist.`,
-      });
 
     // delete event image from cloudinary
     deleteImage(deletedEvent.eventImage.public_id);
@@ -251,7 +267,11 @@ export const patchEditEventCtrl = async (req, res) => {
     let secure_url;
     if (eventImage) {
       deleteImage(eventToEdit.eventImage.public_id);
-      const uploadResult = await uploadImage(eventImage.buffer, "eventImages");
+      const uploadResult = await uploadImage(
+        eventImage.buffer,
+        "eventImages",
+        "jkyzgu2i"
+      );
       public_id = uploadResult.public_id;
       secure_url = uploadResult.secure_url;
     } else {
@@ -276,11 +296,11 @@ export const patchEditEventCtrl = async (req, res) => {
       return res.status(422).json({
         errorMessage: "Startdate must be in the future.",
       });
-    if (title < 5 || title > 20)
+    if (title.length < 5 || title.length > 15)
       return res.status(422).json({
-        errorMessage: "Title must be between 5 and 20 characters.",
+        errorMessage: "Title must be between 5 and 15 characters.",
       });
-    if (description < 20 || description > 500)
+    if (description.length < 20 || description.length > 500)
       return res.status(422).json({
         errorMessage: "Description must be between 20 and 500 characters.",
       });

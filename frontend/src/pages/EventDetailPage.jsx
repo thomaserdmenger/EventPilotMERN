@@ -99,12 +99,25 @@ const EventDetailPage = () => {
           )}
         </article>
 
-        <article className="mb-10">
-          <div className="mb-7">
-            <h2 className="font-roboto-thin text-4xl mb-5">
-              {eventDetails?.title}
-            </h2>
+        <article className="mb-8">
+          <div className="mb-5">
+            <h2 className="font-roboto-thin text-4xl">{eventDetails?.title}</h2>
           </div>
+
+          <article className="mb-5">
+            <div className="flex gap-2 flex-wrap">
+              {eventDetails?.categories?.sort().map((item, index) => {
+                return (
+                  <p
+                    key={index}
+                    className="bg-purple-1 text-white rounded-md px-3 py-1 text-[13px] font-roboto-thin"
+                  >
+                    {item}
+                  </p>
+                );
+              })}
+            </div>
+          </article>
 
           <div className="mb-5 flex gap-3 items-center ml-[-6px]">
             <CalendarMonthIcon
@@ -131,7 +144,9 @@ const EventDetailPage = () => {
             <div>
               <p>{eventDetails?.location?.name}</p>
               <p className="font-roboto-thin">
-                {eventDetails?.location?.city},{" "}
+                {eventDetails?.location?.city
+                  ? `${eventDetails?.location?.city}, `
+                  : ""}
                 {eventDetails?.location?.country}
               </p>
             </div>
@@ -147,7 +162,10 @@ const EventDetailPage = () => {
                 to={`/hostprofile/${eventDetails?.userId?._id}`}
               />
 
-              <div className="">
+              <Link
+                to={`/hostprofile/${eventDetails?.userId?._id}`}
+                className=""
+              >
                 <p className="font-roboto-regular">
                   {eventDetails?.userId?.username}
                 </p>
@@ -156,7 +174,7 @@ const EventDetailPage = () => {
                     ? "You're the organizer"
                     : "Organizer"}
                 </p>
-              </div>
+              </Link>
             </div>
             {user?.user?._id === eventDetails?.userId?._id ? (
               <Link

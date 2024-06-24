@@ -1,10 +1,11 @@
 import cloudinary from "cloudinary";
 
-export async function uploadImage(buffer, cloudinaryPath) {
+// upload preset sets the image size in cloudinary while uploading
+export async function uploadImage(buffer, cloudinaryPath, uploadPreset) {
   const uploadResult = await new Promise((resolve) => {
     cloudinary.v2.uploader
       .upload_stream(
-        { folder: `EventPilot/${cloudinaryPath}` },
+        { folder: `EventPilot/${cloudinaryPath}`, upload_preset: uploadPreset },
         (error, uploadResult) => {
           console.log({ uploadImageError: error });
           // console.log({ uploadImageResult: uploadResult });
