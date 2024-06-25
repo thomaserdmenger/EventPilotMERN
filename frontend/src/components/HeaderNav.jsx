@@ -21,17 +21,18 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
         )}
       </div>
 
-      <div className="absolute top-6 left-4 cursor-pointer">
+      {/* <div className="absolute top-6 left-4 cursor-pointer">
         {pathname === `/hostprofile/${host?.user?._id}` && (
           <ArrowCircleDownIcon
             sx={{ transform: "rotate(90deg)", fontSize: "2rem" }}
             onClick={() => navigate(`/`)}
           />
         )}
-      </div>
+      </div> */}
 
       <div className="absolute top-6 left-4 cursor-pointer">
-        {pathname === `/hostprofile/rate/${host?.user?._id}` && (
+        {(pathname === `/hostprofile/${host?.user?._id}` ||
+          pathname === `/hostprofile/rate/${host?.user?._id}`) && (
           <ArrowCircleDownIcon
             sx={{ transform: "rotate(90deg)", fontSize: "2rem" }}
             onClick={() => navigate(-1)}

@@ -170,7 +170,7 @@ const HostProfilePage = () => {
             <p
               className={`${
                 toggleAbout && "text-purple-1 border-b-2 border-purple-1"
-              } pb-1`}
+              } pb-1 cursor-pointer`}
               onClick={() => {
                 setToggleAbout(true);
                 setToggleEvents(false);
@@ -182,7 +182,7 @@ const HostProfilePage = () => {
             <p
               className={`${
                 toggleEvents && "text-purple-1 border-b-2 border-purple-1"
-              } pb-1`}
+              } pb-1 cursor-pointer`}
               onClick={() => {
                 setToggleEvents(true);
                 setToggleAbout(false);
@@ -194,7 +194,7 @@ const HostProfilePage = () => {
             <p
               className={`${
                 toggleReviews && "text-purple-1 border-b-2 border-purple-1"
-              } pb-1`}
+              } pb-1 cursor-pointer`}
               onClick={() => {
                 setToggleReviews(true);
                 setToggleAbout(false);
