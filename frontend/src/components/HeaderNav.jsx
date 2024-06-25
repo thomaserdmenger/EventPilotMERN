@@ -66,7 +66,7 @@ const HeaderNav = ({ pathname, user, host, eventDetails }) => {
               bgcolor: "#ECEBEB",
             }}
             className="cursor-pointer rounded-2xl"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
           />
           <BookmarkButton eventId={eventDetails?._id} />
         </div>
