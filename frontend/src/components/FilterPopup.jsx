@@ -245,8 +245,8 @@ const FilterPopup = ({
               onClick={() => {
                 setSelectedCategory("");
                 setDateSelector("");
-                setLocation({});
-                setAddress({});
+                setLocation("");
+                setAddress("");
                 setQuery("");
               }}
             />
