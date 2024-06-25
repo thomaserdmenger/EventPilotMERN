@@ -51,7 +51,6 @@ const DeletePopup = ({ eventId, setToggleDeletePopup }) => {
     });
 
     const data = await res.json();
-    console.log(data);
 
     if (data.errorMessage) return setShowErrorMessage(data.errorMessage);
 
@@ -80,21 +79,20 @@ const DeletePopup = ({ eventId, setToggleDeletePopup }) => {
           bgcolor={"#fff"}
           border={"1px solid #f87171"}
           boxShadow={0}
-          bgcolorHover={'#fff'}
-          padding={'16px'}
-          text={eventId ? 'Delete Event' : 'Delete User'}
+          bgcolorHover={"#fff"}
+          padding={"16px"}
+          text={eventId ? "Delete Event" : "Delete User"}
           endIcon={<DeleteIcon />}
           onClick={eventId ? handleDeleteEvent : handleDeleteUser}
         />
         <CustomButton
-          fontSize={'16px'}
-          width={'100%'}
-          borderRadius={'15px'}
-          bgcolor={'#7254EE'}
-          bgcolorHover={'#7254EE'}
-          padding={'16px'}
-          text={'Cancel'}
-
+          fontSize={"16px"}
+          width={"100%"}
+          borderRadius={"15px"}
+          bgcolor={"#7254EE"}
+          bgcolorHover={"#7254EE"}
+          padding={"16px"}
+          text={"Cancel"}
           endIcon={<CancelIcon />}
           onClick={() => setToggleDeletePopup(false)}
         />

@@ -199,9 +199,7 @@ export const deleteEventCtrl = async (req, res) => {
 
     const eventId = req.params.eventId;
     const event = await Event.findById(eventId);
-    console.log({ event });
-    console.log({ userId: event.userId });
-    console.log({ authenticatedUserId });
+   
 
     if (!event)
       return res.status(404).json({
@@ -220,7 +218,6 @@ export const deleteEventCtrl = async (req, res) => {
         Bookmark.deleteMany({ eventId }),
         Participant.deleteMany({ eventId }),
       ]);
-    console.log(deletedEvent);
 
     // delete event image from cloudinary
     deleteImage(deletedEvent.eventImage.public_id);

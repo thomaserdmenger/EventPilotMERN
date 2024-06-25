@@ -220,8 +220,6 @@ export const patchUserCtrl = async (req, res) => {
 
     const { firstname, lastname, username, bio, interests } = req.body;
 
-    console.log(req.body);
-
     // if there is a req.file: upload event-image to cloudinary-folder EventPilot/eventImages and delete the old event-image
     // else: take the old event-image infos and save them anew
     const profileImage = req.file ? req.file : null;
