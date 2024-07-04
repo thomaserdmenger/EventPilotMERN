@@ -116,7 +116,7 @@ export const getTrendingEventsCtrl = async (req, res) => {
   try {
     // trending => (bookmarks per event + participants per event) / lifespan of event => for all events of the last week
     const recentEvents = await Event.find({
-      createdAt: { $gte: Date.now() - 7 * 24 * 60 * 60 * 1000 },
+      // createdAt: { $gte: Date.now() - 7 * 24 * 60 * 60 * 1000 },
       startDate: {
         $gte: Date.now(),
       },
@@ -199,7 +199,6 @@ export const deleteEventCtrl = async (req, res) => {
 
     const eventId = req.params.eventId;
     const event = await Event.findById(eventId);
-   
 
     if (!event)
       return res.status(404).json({
