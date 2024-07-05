@@ -3,8 +3,9 @@ import nodemailer from "nodemailer";
 export const sendEmail = async ({ to, subject, text }) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
+      // host: "sandbox.smtp.mailtrap.io",
+      host: "live.smtp.mailtrap.io",
+      port: 587,
       auth: {
         user: process.env.MAILTRAP_USER,
         pass: process.env.MAILTRAP_PASSWORD,
@@ -12,7 +13,8 @@ export const sendEmail = async ({ to, subject, text }) => {
     });
 
     const sentMessageInfo = await transporter.sendMail({
-      from: "Hello from TemplateMERN",
+      // from: "Hello from TemplateMERN",
+      from: '"Event Pilot" <noreply@event-pilot.org>',
       to,
       subject,
       text,
